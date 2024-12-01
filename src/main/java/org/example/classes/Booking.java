@@ -14,7 +14,6 @@ public class Booking {
         this.bookingDate = bookingDate;
         this.returnDate = returnDate;
     }
-    //test
     public boolean returnCar(){
 
         return false;
