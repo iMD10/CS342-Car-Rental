@@ -17,6 +17,10 @@ public class Booking {
         this.end_date = end_date;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getUserId() {
         return userId;
     }
