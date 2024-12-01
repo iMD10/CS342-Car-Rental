@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class BrowseVehicles extends JFrame {
 
-    private JButton accountBtn, browseBtn, historyBtn;
+    private JLabel accountLabel, browseLabel, historyLabel;
     private ImageIcon accountIcon;
 
     public BrowseVehicles(){
@@ -17,29 +17,28 @@ public class BrowseVehicles extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        JPanel slideBarPanel = new JPanel(new GridLayout(4,1));
-        accountBtn = new JButton("Account");
-        accountBtn.setSize(100,100);
+        JPanel slideBarPanel = new JPanel(new GridLayout(3,1));
+
         accountIcon = new ImageIcon("C:\\Users\\Amer_\\Downloads\\Class_DB Digram - Frame 2.jpg");
-
         // Resize the image
-        Image scaledImage = accountIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaledImage = accountIcon.getImage().getScaledInstance(100, 100, Image.SCALE_AREA_AVERAGING);
         accountIcon = new ImageIcon(scaledImage);
-        browseBtn = new JButton("Browse");
-        browseBtn.setSize(100,100);
 
-        historyBtn = new JButton("History");
-        historyBtn.setSize(100,100);
+        accountLabel = new JLabel("Account");
+        accountLabel.setSize(100,100);
 
-        JLabel label = new JLabel("", accountIcon, JLabel.CENTER);
+        browseLabel = new JLabel("Browse");
+        browseLabel.setSize(100,100);
 
-        label.setSize(100,100);
+        historyLabel = new JLabel("History");
+        historyLabel.setSize(100,100);
 
 
-        slideBarPanel.add(accountBtn);
-        slideBarPanel.add(browseBtn);
-        slideBarPanel.add(historyBtn);
-        slideBarPanel.add(label);
+
+
+        slideBarPanel.add(accountLabel);
+        slideBarPanel.add(browseLabel);
+        slideBarPanel.add(historyLabel);
 
         mainPanel.add(slideBarPanel, BorderLayout.WEST);
 
@@ -52,5 +51,10 @@ public class BrowseVehicles extends JFrame {
 
     }
 
+    public static void main(String[] args) {
+
+        BrowseVehicles bv = new BrowseVehicles();
+
+    }
 
 }

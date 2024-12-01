@@ -1,62 +1,55 @@
-package com.mycompany.prog;
+package org.example.views;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class LogIn {
+public class Login extends JFrame {
 
+    private JLabel emailLabel, passwordLabel, problemLabel, forgetLabel;
+    private JButton loginButton, signUpButton;
+    private JTextField emailTextField;
+    private JPasswordField passwordField;
 
-    public abstract class LogIn extends JFrame {
-        private JLabel EmailL, PasswordL, ProblemL, ForgetL;
-        private JButton LogInb1, LogInb2,SignUpb1;
-        private JTextField EmailT;
-        private JPasswordField pass1;
+    public Login() {
+        setTitle("LogIn");
+        setLocation(250, 250);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 400);
+        setLayout(new BorderLayout());
 
-        public LogIn(){
-            setTitle("LogIn");
-            this.setLocation(250,250);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(400,400);
+        // Initialize components
+        emailLabel = new JLabel("Email:");
+        passwordLabel = new JLabel("Password:");
+        problemLabel = new JLabel("Having a problem? Contact Us");
+        forgetLabel = new JLabel("Forgot your password? Click here");
+        loginButton = new JButton("Log In");
+        signUpButton = new JButton("Sign Up");
+        emailTextField = new JTextField(20);
+        passwordField = new JPasswordField(20);
 
+        // Panel for login fields
+        JPanel loginPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        loginPanel.add(emailLabel);
+        loginPanel.add(emailTextField);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(passwordField);
+        loginPanel.add(loginButton);
+        loginPanel.add(forgetLabel);
 
+        // Panel for footer
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footerPanel.add(signUpButton);
+        footerPanel.add(problemLabel);
 
+        // Add panels to the frame
+        add(loginPanel, BorderLayout.CENTER);
+        add(footerPanel, BorderLayout.SOUTH);
 
-            EmailL = new JLabel("Email");
-            PasswordL = new JLabel("Password");
-            ProblemL = new JLabel("Haveing a problem? Contact Us");
-            ForgetL = new JLabel("Forgit your password? click here");
-            LogInb1 = new JButton("LogIn");
-            LogInb2 = new JButton("LogIn");
-            SignUpb1 = new JButton("SignUp");
-            EmailT = new JTextField(30);
-            pass1 = new JPasswordField(30);
+        // Make frame visible
+        setVisible(true);
+    }
 
-            JPanel p = (JPanel)this.getContentPane();
-            JPanel p1 = new JPanel();
-            JPanel p2 = new JPanel();
-
-            p1.add(LogInb1);
-            p1.add(SignUpb1);
-            p1.add(ProblemL);
-
-            p2.add(EmailL);
-            p2.add(EmailT);
-            p2.add(PasswordL);
-            p2.add(pass1);
-            p2.add(LogInb2);
-            p2.add(ForgetL);
-
-            p.add(p1, BorderLayout.WEST);
-            p.add(p2, BorderLayout.EAST);
-
-            p.setVisible(true);
-            p.pack();
-
-        }
-
-
-        public static void main(String[] args) {
-            LogIn l= new LogIn();
-        }
-
+    public static void main(String[] args) {
+        new Login();
     }
 }
