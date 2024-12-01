@@ -25,10 +25,7 @@ public class AccountPage extends JFrame {
 
         JPanel slideBarPanel = new JPanel(new GridLayout(3,1));
         
-        //accountIcon = new ImageIcon("C:\\Users\\Amer_\\Downloads\\Class_DB Digram - Frame 2.jpg");
-        // Resize the image
-        //Image scaledImage = accountIcon.getImage().getScaledInstance(100, 100, Image.SCALE_AREA_AVERAGING);
-        //accountIcon = new ImageIcon(scaledImage);
+        
 
         accountLabel = new JButton("Account");
         accountLabel.setSize(100,100);
@@ -71,7 +68,7 @@ public class AccountPage extends JFrame {
         contentpanel.add(phone);
         contentpanel.add(phoneText);
 
-        //JPanel contentPanel = new JPanel(new BorderLayout());
+
 
 
         mainPanel.add(slideBarPanel, BorderLayout.WEST);
