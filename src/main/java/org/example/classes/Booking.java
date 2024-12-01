@@ -14,11 +14,7 @@ public class Booking {
         this.bookingDate = bookingDate;
         this.returnDate = returnDate;
     }
-
-    /**
-     * Use booking id to find booking in the DB and set CarReturned=true
-     * @return true: if retruning is successful
-     */
+    //test
     public boolean returnCar(){
 
         return false;
