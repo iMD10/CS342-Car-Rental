@@ -85,6 +85,33 @@ public class BookingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to Returned");
         }
-
     }
+    public List<Booking> getAllBookings(){
+        List<Booking> bookings = new ArrayList<>();
+        String query = "select * from booking";
+        try {
+
+            ResultSet resSet = DbHandler.executeQuery(query);
+            while (resSet != null && resSet.next()) {
+                booking = new Booking(resSet.getInt("id"),
+                        resSet.getInt("user_id"),
+                        resSet.getInt("vehicle_id"),
+                        resSet.getString("status"),
+                        resSet.getTimestamp("booked_at"),
+                        resSet.getTimestamp("returned_at"),
+                        resSet.getTimestamp("start_date"),
+                        resSet.getTimestamp("end_date")
+                );
+                bookings.add(booking);
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ee) {
+            ErrorHandler.showError(ee+"Error retrieving all bookings ");
+        }
+        return bookings;
+    }
+
 }
