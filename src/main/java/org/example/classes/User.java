@@ -2,32 +2,62 @@ package org.example.classes;
 
 public class User {
     private int id;
-    private String fName, lName, email,password ;
-    private String  phoneNumber = null; // phone number is optional, so its null if user dont want to add his phone
+    private String name, email,password ;
+    private String  phone ;
+    private boolean isAdmin;
+    // phone number is optional, so its null if user dont want to add his phone
 
-    public User(int id, String fName, String lName, String email, String password) {
+    public User(int id, String name, String email,  String phone, String password, boolean isAdmin) {
         this.id = id;
-        this.fName = fName;
-        this.lName = lName;
+        this.name = name;
         this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.isAdmin = isAdmin;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    /** Takes user object 'userInfo' and load his info into user DB
-     */
-    public void signIn(User userInfo){
-
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    /** Takes user email and password, checks if they match in user db.
-     *  return true if match, false otherwise
-     * */
-    public boolean login(String email, String password){
-
-
-
-        // wrong email or password
-        return false;
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
 }
