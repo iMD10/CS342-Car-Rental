@@ -6,7 +6,10 @@ import java.awt.*;
 
 public class MyBookings extends JFrame {
 
-    public MyBookings() {
+    private final CustomerDashboard dashboard;
+
+    public MyBookings(CustomerDashboard dashboard) {
+        this.dashboard = dashboard;
         setTitle("My Bookings");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -43,6 +46,10 @@ public class MyBookings extends JFrame {
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
         JButton backButton = new JButton("Back to Dashboard");
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            dashboard.setVisible(true);
+        });
         actionButtonPanel.add(cancelButton);
         actionButtonPanel.add(backButton);
 
@@ -51,9 +58,5 @@ public class MyBookings extends JFrame {
         add(actionButtonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new MyBookings();
     }
 }

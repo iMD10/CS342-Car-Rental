@@ -1,4 +1,5 @@
 package org.example.view;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -36,16 +37,29 @@ public class CustomerDashboard extends JFrame {
 
         // Bottom panel for logout button
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton logoutButton = new JButton("Logout");
-        bottomPanel.add(logoutButton);
+        JButton ExitButton = new JButton("Exit");
+        ExitButton.addActionListener((e -> System.exit(0)));
+        bottomPanel.add(ExitButton);
 
         add(centerPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        // Action listeners for navigation
+        browseVehicleButton.addActionListener(e -> showFrame(new BrowseVehicles(this)));
+        myBookingsButton.addActionListener(e -> showFrame(new MyBookings(this)));
+        viewInvoicesButton.addActionListener(e -> showFrame(new Invoices(this)));
+        agreementsButton.addActionListener(e -> showFrame(new Agreements(this)));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(CustomerDashboard::new);
+    private void showFrame(JFrame frame) {
+        this.setVisible(false);
+        frame.setVisible(true);
+    }
+
+public static void main(String[] args) {
+
+    new CustomerDashboard();
     }
 }

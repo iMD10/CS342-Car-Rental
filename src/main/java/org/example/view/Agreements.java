@@ -1,13 +1,15 @@
 package org.example.view;
 
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Agreements extends JFrame {
 
-    public Agreements() {
+    private final CustomerDashboard dashboard;
+
+    public Agreements(CustomerDashboard dashboard) {
+        this.dashboard = dashboard;
         setTitle("Manage Agreements");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -44,6 +46,10 @@ public class Agreements extends JFrame {
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton printButton = new JButton("Print");
         JButton backButton = new JButton("Back to Dashboard");
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            dashboard.setVisible(true);
+        });
         actionButtonPanel.add(printButton);
         actionButtonPanel.add(backButton);
 
@@ -52,9 +58,5 @@ public class Agreements extends JFrame {
         add(actionButtonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new Agreements();
     }
 }

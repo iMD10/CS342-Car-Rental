@@ -6,7 +6,10 @@ import java.awt.*;
 
 public class BrowseVehicles extends JFrame {
 
-    public BrowseVehicles() {
+    private final CustomerDashboard dashboard;
+
+    public BrowseVehicles(CustomerDashboard dashboard) {
+        this.dashboard = dashboard;
         setTitle("Manage Vehicles");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -15,15 +18,15 @@ public class BrowseVehicles extends JFrame {
 
         // Top panel for date selection
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JLabel NameLabel = new JLabel("Name:");
-        JTextField NameField = new JTextField("Accord", 10);
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField("Accord", 10);
         JLabel fromLabel = new JLabel("From:");
         JTextField fromDateField = new JTextField("01/01/2024", 10);
         JLabel toLabel = new JLabel("To:");
         JTextField toDateField = new JTextField("04/01/2024", 10);
         JButton searchButton = new JButton("Search");
-        topPanel.add(NameLabel);
-        topPanel.add(NameField);
+        topPanel.add(nameLabel);
+        topPanel.add(nameField);
         topPanel.add(fromLabel);
         topPanel.add(fromDateField);
         topPanel.add(toLabel);
@@ -33,7 +36,7 @@ public class BrowseVehicles extends JFrame {
         // Center panel for table
         String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
         Object[][] data = {
-                {"ACCORD", "MIdSidan", "$500", "Black", "2021", false},
+                {"ACCORD", "MidSedan", "$500", "Black", "2021", false},
                 {"MaxCruize", "SUV", "$200", "White", "2020", false},
                 {"Fortuner", "SUV", "$220", "White", "2020", false}
         };
@@ -58,9 +61,11 @@ public class BrowseVehicles extends JFrame {
 
         // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton BookButton = new JButton("Book Now");
         JButton backButton = new JButton("Back to Dashboard");
-        bottomPanel.add(BookButton);
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            dashboard.setVisible(true);
+        });
         bottomPanel.add(backButton);
 
         // Add panels to the frame
@@ -69,9 +74,5 @@ public class BrowseVehicles extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new BrowseVehicles();
     }
 }
