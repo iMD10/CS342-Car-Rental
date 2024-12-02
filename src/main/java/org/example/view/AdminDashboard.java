@@ -12,6 +12,9 @@ public class AdminDashboard extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+//        Image icon = new ImageIcon(this.getClass().getResource("/carrental.png")).getImage();
+//        this.setIconImage(icon);
+
         // Center panel for action buttons
         JPanel centerPanel = new JPanel(new GridLayout(3, 1, 50, 50));
         JButton manageVehicleButton = new JButton("Manage Vehicles");

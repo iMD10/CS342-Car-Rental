@@ -46,6 +46,16 @@ public class MyBookings extends JFrame {
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
         JButton backButton = new JButton("Back to Dashboard");
+
+        cancelButton.addActionListener(e -> {
+                    int response = JOptionPane.showConfirmDialog(null, "Are you sure your reservation has been cancelled?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Your booking has been cancelled", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                        this.setVisible(false);
+                        dashboard.setVisible(true);
+                    }
+                });
+
         backButton.addActionListener(e -> {
             this.setVisible(false);
             dashboard.setVisible(true);
@@ -60,3 +70,4 @@ public class MyBookings extends JFrame {
         setVisible(true);
     }
 }
+
