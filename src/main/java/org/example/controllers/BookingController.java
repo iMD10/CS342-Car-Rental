@@ -26,7 +26,7 @@ public class BookingController {
     public Boolean CarIsBusy(int vehicleId,Timestamp start_date, Timestamp end_date){
 
         try{
-            String query = "SELECT COUNT(*) AS count FROM Bookings WHERE vehicle_id = ? AND (start_date <= ? AND end_date >= ?)";
+            String query = "SELECT COUNT(*) AS count FROM booking WHERE vehicle_id = ? AND (start_date <= ? AND end_date >= ?)";
             ResultSet resSet = DbHandler.executeQuery(query,vehicleId,end_date,start_date);
             if(resSet.next()){
                 ErrorHandler.showError("This Booking is already exist");

@@ -38,7 +38,7 @@ public class UserController {
     public User registerCustomer(String email,String fname, String lname,String phone, String password) {
         try{
             db = new DatabaseHandler();
-            String query = "select * from users where email = ?";
+            String query = "select * from user where email = ?";
             ResultSet rs = db.executeQuery(query, email);
             if (rs == null || !rs.next())
                 throw new RuntimeException("Email already in use");
