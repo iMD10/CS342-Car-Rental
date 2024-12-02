@@ -3,6 +3,9 @@ package org.example.views;
 import javax.swing.*;
 import java.awt.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class Login extends JFrame {
 
     private JLabel title, emailLabel, passwordLabel, GoLabel;
@@ -61,7 +64,17 @@ public class Login extends JFrame {
 
         // Make frame visible
         this.setVisible(true);
-    }
+
+        // Add action listener to the button
+        signUpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open SignUp form and close current form
+                new Signup().setVisible(true);
+                dispose();
+            }
+    });
+}
 
     private JPanel createPaddedPanel(JLabel label, JTextField field) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -81,6 +94,7 @@ public class Login extends JFrame {
         paddedPanel.add(button);
         return paddedPanel;
     }
+    
 
     public static void main(String[] args) {
         new Login();

@@ -39,6 +39,15 @@ public class Signup extends JFrame {
 
 
         setVisible(true);
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open SignUp form and close current form
+                new Login().setVisible(true);
+                dispose();
+            }
+    });
     }
 
 
