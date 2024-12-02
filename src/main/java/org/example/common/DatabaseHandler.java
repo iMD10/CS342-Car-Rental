@@ -34,7 +34,7 @@ public class DatabaseHandler {
             setParameters(ps, params);
             return ps.executeUpdate();
         } catch (SQLException e) {
-            ErrorHandler.handleExcepetion(e, "Failed to update the database, Please try again.");
+            ErrorHandler.handleException(e, "Failed to update the database, Please try again.");
             return -1;
         }
     }
@@ -46,7 +46,7 @@ public class DatabaseHandler {
     }
     public void closeConnection() {
         try {
-            if(connection != null) !connection.isClosed() {
+            if(connection != null && !connection.isClosed()) {
                 connection.close();
             }
         } catch (SQLException e) {
