@@ -9,15 +9,30 @@ import java.sql.SQLException;
 
 public class UserController {
     private DatabaseHandler db;
+
     public User loginUser(String email, String password) {
         try {
-            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+            String query = "SELECT * FROM user WHERE email = ? AND password = ?";
             db = new DatabaseHandler();
-            db.executeQuery(query, email, password);
+            ResultSet rs = db.executeQuery(query, email, password);
+            if(rs.next() && rs != null) {
+                return new User(
+                  rs.getInt("id"),
+                  rs.getString("name"),
+                  rs.getString("email"),
+                  rs.getString("password"),
+                  rs.getString("phone"),
+                  rs.getBoolean("is_admin")
+                );
+            } else {
+                throw new RuntimeException("Email or password is incorrect");
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+           ErrorHandler.handleException(e,e.getMessage());
+        } catch (RuntimeException e) {
+            ErrorHandler.handleException(e,e.getMessage());
         }
-
+        return  null;
     }
 
     public User registerCustomer(String email,String fname, String lname,String phone, String password) {
@@ -46,5 +61,6 @@ public class UserController {
         return null;
 
     }
+
 
 }
