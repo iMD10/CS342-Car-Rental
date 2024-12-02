@@ -3,11 +3,11 @@ package org.example.classes;
 public class Vehicle {
     private int id,milage,size,modelYear;
     private String serialNumber;
-    private String  name,color,plate,shifter,kpl;
+    private String  name,color,plate,company,type;
     private double price;
 
 
-    public Vehicle(int id, int milage, int size, int modelYear, String serialNumber, String name, String color, String plate, String shifter, String kpl, double price) {
+    public Vehicle(int id, int milage, int size, int modelYear, String serialNumber, String name, String color, String plate, double price, String company, String type) {
         this.id = id;
         this.milage = milage;
         this.size = size;
@@ -16,9 +16,9 @@ public class Vehicle {
         this.name = name;
         this.color = color;
         this.plate = plate;
-        this.shifter = shifter;
-        this.kpl = kpl;
         this.price = price;
+        this.company = company;
+        this.type = type;
 
     }
 
@@ -34,20 +34,20 @@ public class Vehicle {
         this.price = price;
     }
 
-    public String getKpl() {
-        return kpl;
+    public String getCompany() {
+        return company;
     }
 
-    public void setKpl(String kpl) {
-        this.kpl = kpl;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
-    public String getShifter() {
-        return shifter;
+    public String getType() {
+        return type;
     }
 
-    public void setShifter(String shifter) {
-        this.shifter = shifter;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getPlate() {
