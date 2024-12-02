@@ -32,11 +32,15 @@ public class DatabaseHandler {
         try {
             PreparedStatement ps = connection.prepareStatement(query);
             setParameters(ps, params);
-            return ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to update the database, Please try again.");
-            return -1;
         }
+        return -1;
     }
 
     private void setParameters(PreparedStatement ps, Object... params) throws SQLException {
