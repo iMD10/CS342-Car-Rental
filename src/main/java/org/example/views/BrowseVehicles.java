@@ -165,6 +165,8 @@ public class BrowseVehicles extends JFrame {
 
         pageTitle.setCharacterAttributes(attributes, true);
         pageTitle.setText("Browse Vehicles");
+        pageTitle.setEditable(false);
+
 
         searchLabel = new JLabel("Search: ");
         searchLabel.setSize(100, 30);
