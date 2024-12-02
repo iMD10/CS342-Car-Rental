@@ -7,8 +7,8 @@ public class User {
     private boolean isAdmin;
     // phone number is optional, so its null if user dont want to add his phone
 
-    public User( String name, String email,  String phone, String password, boolean isAdmin) {
-        this.id = -1;
+    public User(int id, String name, String email,  String phone, String password, boolean isAdmin) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
