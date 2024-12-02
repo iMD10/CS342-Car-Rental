@@ -66,4 +66,25 @@ public class BookingController {
       }
         return bookings;
     }
+    public void editBookingStatusToCanceld(int bookingId){
+
+        String query = "UPDATE booking SET status = ? WHERE id = ?";
+        try{
+            DbHandler.executeUpdate(query,"CANCELD",bookingId);
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,"Error updating booking status to canceled");
+
+        }
+
+    }
+    public void editBookingStatusToReturned(int bookingId){
+
+        String query = "UPDATE booking SET status = ? WHERE id = ?";
+        try{
+            DbHandler.executeUpdate(query,"RETURNED",bookingId);
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,"Error updating booking status to Returned");
+        }
+
+    }
 }
