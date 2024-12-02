@@ -9,4 +9,7 @@ public class ErrorHandler {
     public static void handleException(Exception ex,String ermsg){
         showError(ermsg);
     }
+    public static void handleWarning(String wmsg){
+        JOptionPane.showMessageDialog(null, wmsg,"WARNING",JOptionPane.WARNING_MESSAGE);
+    }
 }
