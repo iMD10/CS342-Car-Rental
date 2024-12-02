@@ -1,11 +1,15 @@
 package org.example.view;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ManageBookings extends JFrame {
 
-    public ManageBookings() {
+    private final AdminDashboard dashboard;
+
+    public ManageBookings(AdminDashboard dashboard) {
+        this.dashboard = dashboard;
         setTitle("Manage Bookings");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -48,23 +52,25 @@ public class ManageBookings extends JFrame {
         JScrollPane tableScrollPane = new JScrollPane(bookingTable);
 
         // Bottom panel for action buttons
-        JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
         JButton markReturnedButton = new JButton("Mark as Returned");
         JButton backButton = new JButton("Back to Dashboard");
-        actionButtonPanel.add(cancelButton);
-        actionButtonPanel.add(markReturnedButton);
-        actionButtonPanel.add(backButton);
+        bottomPanel.add(cancelButton);
+        bottomPanel.add(markReturnedButton);
+        bottomPanel.add(backButton);
 
         // Add panels to the frame
         add(topPanel, BorderLayout.NORTH);
         add(tableScrollPane, BorderLayout.CENTER);
-        add(actionButtonPanel, BorderLayout.SOUTH);
+        add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
 
-    public static void main(String[] args) {
-        new ManageBookings();
+        // Action listener for "Back to Dashboard" button
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            dashboard.setVisible(true);
+        });
     }
 }

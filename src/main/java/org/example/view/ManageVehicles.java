@@ -1,15 +1,15 @@
-
 package org.example.view;
 
-import org.example.views.Signup;
-
 import javax.swing.*;
-        import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ManageVehicles extends JFrame {
 
-    public ManageVehicles() {
+    private final AdminDashboard dashboard;
+
+    public ManageVehicles(AdminDashboard dashboard) {
+        this.dashboard = dashboard;
         setTitle("Manage Vehicles");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -26,7 +26,6 @@ public class ManageVehicles extends JFrame {
         topPanel.add(fromDateField);
         topPanel.add(toLabel);
         topPanel.add(toDateField);
-
 
         // Center panel for table
         String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
@@ -56,13 +55,11 @@ public class ManageVehicles extends JFrame {
 
         // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton addButton = new JButton("Add");
-        JButton editButton = new JButton("Edit");
-        JButton deleteButton = new JButton("Delete");
         JButton backButton = new JButton("Back to Dashboard");
-        bottomPanel.add(addButton);
-        bottomPanel.add(editButton);
-        bottomPanel.add(deleteButton);
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            dashboard.setVisible(true);
+        });
         bottomPanel.add(backButton);
 
         // Add panels to the frame
@@ -71,9 +68,5 @@ public class ManageVehicles extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new ManageVehicles();
     }
 }
