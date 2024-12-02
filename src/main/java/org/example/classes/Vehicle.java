@@ -1,77 +1,33 @@
 package org.example.classes;
 
 public class Vehicle {
-    private int id,milage,size,modelYear;
+    private int id, carModelId;
     private String serialNumber;
-    private String  name,color,plate,company,type;
-    private double price;
+    private String color;
+    private CarModel carModel;
 
 
-    public Vehicle(int id, int milage, int size, int modelYear, String serialNumber, String name, String color, String plate, double price, String company, String type) {
+    public Vehicle(int id, int carModelId, int modelYear, String serialNumber, String name, String color, String company, String type, double price) {
         this.id = id;
-        this.milage = milage;
-        this.size = size;
-        this.modelYear = modelYear;
         this.serialNumber = serialNumber;
-        this.name = name;
         this.color = color;
-        this.plate = plate;
-        this.price = price;
-        this.company = company;
-        this.type = type;
-
+        this.carModel =  new CarModel(carModelId,modelYear, name, company, type, price);
     }
 
     public int getId() {
         return id;
     }
 
-    public double getPrice() {
-        return price;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public int getCarModelId() {
+        return carModelId;
     }
 
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getPlate() {
-        return plate;
-    }
-
-    public void setPlate(String plate) {
-        this.plate = plate;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setCarModelId(int carModelId) {
+        this.carModelId = carModelId;
     }
 
     public String getSerialNumber() {
@@ -82,27 +38,19 @@ public class Vehicle {
         this.serialNumber = serialNumber;
     }
 
-    public int getModelYear() {
-        return modelYear;
+    public String getColor() {
+        return color;
     }
 
-    public void setModelYear(int modelYear) {
-        this.modelYear = modelYear;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public int getSize() {
-        return size;
+    public CarModel getCarModel() {
+        return carModel;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public int getMilage() {
-        return milage;
-    }
-
-    public void setMilage(int milage) {
-        this.milage = milage;
+    public void setCarModel(CarModel carModel) {
+        this.carModel = carModel;
     }
 }
