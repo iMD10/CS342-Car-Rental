@@ -48,7 +48,7 @@ public class Signup extends JFrame {
         JLabel problemLabel = new JLabel("Having a problem? Contact Us");
         JLabel forgetLabel = new JLabel("Forgot your password? Click here");
 
-        JPanel loginFieldsPanel = new JPanel(new GridLayout(6, 1, 5, 5));
+        JPanel loginFieldsPanel = new JPanel(new GridLayout(6, 1, 50, 50));
         loginFieldsPanel.add(emailLabel);
         loginFieldsPanel.add(emailTextField);
         loginFieldsPanel.add(passwordLabel);
