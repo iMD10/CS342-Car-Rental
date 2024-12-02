@@ -1,0 +1,6 @@
+to use look and feel Flatlaf
+
+first import this
+    import com.formdev.flatlaf.*;
+add following code to your main method before you create any Swing component
+    FlatLightLaf.setup();
