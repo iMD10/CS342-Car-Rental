@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class VehicleController {
+public class VehicleController {// Add Vehicle, update Vehicle needs to be done
     private DatabaseHandler db;
 
     private List<Vehicle> getVehicles(ResultSet rs) throws  Exception {
