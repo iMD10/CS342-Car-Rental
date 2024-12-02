@@ -5,14 +5,14 @@ import java.awt.*;
 
 public class Login extends JFrame {
 
-    private JLabel title, emailLabel, passwordLabel, problemLabel, forgetLabel;
+    private JLabel title, emailLabel, passwordLabel, GoLabel;
     private JButton loginButton, signUpButton;
     private JTextField emailTextField;
     private JPasswordField passwordField;
 
     public Login() {
         
-        this.setTitle("LogIn");
+        this.setTitle("Log In");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
@@ -31,8 +31,7 @@ public class Login extends JFrame {
         title = new JLabel("Log in Page");
         emailLabel = new JLabel("Email:       ");
         passwordLabel = new JLabel("Password:");
-        problemLabel = new JLabel("Having a problem? Contact Us");
-        forgetLabel = new JLabel("Forgot your password? Click here");
+        GoLabel = new JLabel("Go to");
         loginButton = new JButton("Log In");
         signUpButton = new JButton("Sign Up");
         emailTextField = new JTextField(20);
@@ -44,18 +43,14 @@ public class Login extends JFrame {
         loginPanel.add(createPaddedPanelLabel(title));
         loginPanel.add(createPaddedPanel(emailLabel,emailTextField));
         loginPanel.add(createPaddedPanel(passwordLabel, passwordField));
-        loginPanel.add(createPaddedPanelLabel(forgetLabel));
-
-        JPanel logButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        logButtonPanel.add(loginButton);
-
-        loginPanel.add(logButtonPanel);
+        loginPanel.add(createPaddedPanelButton(loginButton));
 
 
         // Panel for footer
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footerPanel.add(GoLabel);
         footerPanel.add(signUpButton);
-        footerPanel.add(problemLabel);
+        ;
 
 
         mainPanel.add(loginPanel,BorderLayout.CENTER);
@@ -78,6 +73,12 @@ public class Login extends JFrame {
     private JPanel createPaddedPanelLabel(JLabel label) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
+        return paddedPanel;
+    }
+
+    private JPanel createPaddedPanelButton(JButton button) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        paddedPanel.add(button);
         return paddedPanel;
     }
 

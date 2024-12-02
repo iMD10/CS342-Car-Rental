@@ -5,130 +5,95 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Signup extends JFrame {
-    private CardLayout cardLayout;
-    private JPanel mainPanel;
 
     public Signup() {
-        setTitle("Car Rental Application");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 300);
-        setLocationRelativeTo(null);
+        
+        this.setTitle("Log In");
+        this.setLocation(250, 250);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(400, 400);
 
-        cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        int W = screenSize.width;
+        int H = screenSize.height;
+        this.setBounds(W/4, H/4, W/2, H/2);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(2,1));
 
         // Create login and signup panels
-        JPanel loginPanel = createLoginPanel();
         JPanel signupPanel = createSignupPanel();
 
-        // Add panels to the main panel with card layout
-        mainPanel.add(loginPanel, "Login");
-        mainPanel.add(signupPanel, "Signup");
+        JButton loginButton = new JButton("Log In");
+        JLabel GoLabel = new JLabel("Go to");
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footerPanel.add(GoLabel);
+        footerPanel.add(loginButton);
+        ;
 
+        // Add panels to the main panel with card layout
+        mainPanel.add(signupPanel, BorderLayout.CENTER);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
         // Add main panel to the frame
         add(mainPanel);
 
-        // Show login panel by default
-        cardLayout.show(mainPanel, "Login");
 
         setVisible(true);
     }
 
-    private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
 
-        // Your existing login panel code
-        JLabel emailLabel = new JLabel("Email:");
-        JTextField emailTextField = new JTextField(20);
-        JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField(20);
-        JButton loginButton1 = new JButton("Log In");
-        JButton loginButton2 = new JButton("Log In");
-        JButton signUpButton = new JButton("Sign Up");
-        JLabel problemLabel = new JLabel("Having a problem? Contact Us");
-        JLabel forgetLabel = new JLabel("Forgot your password? Click here");
-
-        JPanel loginFieldsPanel = new JPanel(new GridLayout(6, 1, 50, 50));
-        loginFieldsPanel.add(emailLabel);
-        loginFieldsPanel.add(emailTextField);
-        loginFieldsPanel.add(passwordLabel);
-        loginFieldsPanel.add(passwordField);
-        loginFieldsPanel.add(loginButton1);
-        loginFieldsPanel.add(forgetLabel);
-
-        JPanel sidePanel = new JPanel(new GridLayout(4, 1));
-        sidePanel.add(signUpButton);
-        sidePanel.add(loginButton2);
-        sidePanel.add(problemLabel);
-
-        panel.add(loginFieldsPanel, BorderLayout.EAST);
-        panel.add(sidePanel, BorderLayout.WEST);
-
-        signUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Signup");
-            }
-        });
-
-        return panel;
-    }
 
     private JPanel createSignupPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
 
         // Your existing signup panel code
-        JLabel nidLabel = new JLabel("National ID:");
-        JTextField nidTextField = new JTextField(20);
-        JLabel fnLabel = new JLabel("First Name:");
+        JLabel title = new JLabel("Sign Up Page");
+        JLabel fnLabel = new JLabel("First Name:               ");
         JTextField fnTextField = new JTextField(20);
-        JLabel lnLabel = new JLabel("Last Name:");
+        JLabel lnLabel = new JLabel("Last Name:                ");
         JTextField lnTextField = new JTextField(20);
         JLabel phoneLabel = new JLabel("Phone Number 966+:");
         JTextField phoneTextField = new JTextField(20);
-        JLabel emailLabel = new JLabel("Email:");
+        JLabel emailLabel = new JLabel("Email:                        ");
         JTextField emailTextField = new JTextField(20);
-        JLabel passwordLabel = new JLabel("Password:");
+        JLabel passwordLabel = new JLabel("Password:                 ");
         JPasswordField passwordField = new JPasswordField(20);
         JButton signupButton = new JButton("Sign Up");
-        JButton loginButton = new JButton("Log In");
-        JLabel problemLabel = new JLabel("Having a problem? Contact Us");
-        JLabel forgetLabel = new JLabel("Forgot your password? Click here");
 
-        JPanel signupFieldsPanel = new JPanel(new GridLayout(8, 1, 5, 5));
-        signupFieldsPanel.add(nidLabel);
-        signupFieldsPanel.add(nidTextField);
-        signupFieldsPanel.add(fnLabel);
-        signupFieldsPanel.add(fnTextField);
-        signupFieldsPanel.add(lnLabel);
-        signupFieldsPanel.add(lnTextField);
-        signupFieldsPanel.add(phoneLabel);
-        signupFieldsPanel.add(phoneTextField);
-        signupFieldsPanel.add(emailLabel);
-        signupFieldsPanel.add(emailTextField);
-        signupFieldsPanel.add(passwordLabel);
-        signupFieldsPanel.add(passwordField);
-        signupFieldsPanel.add(signupButton);
-        signupFieldsPanel.add(forgetLabel);
 
-        JPanel sidePanel = new JPanel(new GridLayout(4, 1));
-        sidePanel.add(signupButton);
-        sidePanel.add(loginButton);
-        sidePanel.add(problemLabel);
 
-        panel.add(signupFieldsPanel, BorderLayout.EAST);
-        panel.add(sidePanel, BorderLayout.WEST);
+        JPanel signupFieldsPanel = new JPanel(new GridLayout(9, 1, 5, 5));
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Login");
-            }
+        signupFieldsPanel.add(createPaddedPanelLabel(title));
+        signupFieldsPanel.add(createPaddedPanel(fnLabel,fnTextField));
+        signupFieldsPanel.add(createPaddedPanel(lnLabel, lnTextField));
+        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField));
+        signupFieldsPanel.add(createPaddedPanel(emailLabel, emailTextField));
+        signupFieldsPanel.add(createPaddedPanel(passwordLabel, passwordField));
+        signupFieldsPanel.add(createPaddedPanelButton(signupButton));
 
-        });
-        this.pack();
-        return panel;
 
+        return signupFieldsPanel;
+
+    }
+
+    private JPanel createPaddedPanel(JLabel label, JTextField field) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        paddedPanel.add(label);
+        paddedPanel.add(field);
+        return paddedPanel;
+    }   
+
+    private JPanel createPaddedPanelLabel(JLabel label) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        paddedPanel.add(label);
+        return paddedPanel;
+    }
+
+
+    private JPanel createPaddedPanelButton(JButton button) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        paddedPanel.add(button);
+        return paddedPanel;
     }
 
     public static void main(String[] args) {
