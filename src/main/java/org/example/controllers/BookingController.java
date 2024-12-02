@@ -1,12 +1,11 @@
 package org.example.controllers;
 import org.example.classes.Booking;
 import org.example.common.*;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-
+import java.util.List;
+import java.util.ArrayList;
 public class BookingController {
     private DatabaseHandler DbHandler = new DatabaseHandler();;
     private Booking booking;
@@ -25,10 +24,9 @@ public class BookingController {
     }
     }
     public Boolean CarIsBusy(int vehicleId,Timestamp start_date, Timestamp end_date){
-        String query = "SELECT COUNT(*) AS count FROM Bookings \" +\n" +
-                "                   \"WHERE vehicle_id = ? \" +\n" +
-                "                   \"AND (start_date <= ? AND end_date >= ?)";
+
         try{
+            String query = "SELECT COUNT(*) AS count FROM Bookings WHERE vehicle_id = ? AND (start_date <= ? AND end_date >= ?)";
             ResultSet resSet = DbHandler.executeQuery(query,vehicleId,end_date,start_date);
             if(resSet.next()){
                 ErrorHandler.showError("This Booking is already exist");
@@ -40,5 +38,32 @@ public class BookingController {
             e.printStackTrace();
         }
         return false;
+    }
+    public List<Booking> getAllBookingsByUserid(int userId){
+        List<Booking> bookings = new ArrayList<>();
+        String query = "select * from booking where user_id = ?";
+        try {
+
+        ResultSet resSet = DbHandler.executeQuery(query,userId);
+        while (resSet != null && resSet.next()) {
+            booking = new Booking(resSet.getInt("id"),
+                    resSet.getInt("user_id"),
+                    resSet.getInt("vehicle_id"),
+                    resSet.getString("status"),
+                    resSet.getTimestamp("booked_at"),
+                    resSet.getTimestamp("returned_at"),
+                    resSet.getTimestamp("start_date"),
+                    resSet.getTimestamp("end_date")
+                   );
+            bookings.add(booking);
+        }
+
+      }
+      catch (SQLException e) {
+            e.printStackTrace();
+      } catch (Exception ee) {
+          ErrorHandler.showError(ee.getMessage()+"Error retrieving bookings for user ID: " + userId);
+      }
+        return bookings;
     }
 }
