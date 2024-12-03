@@ -1,5 +1,5 @@
 package org.example.view;
-
+import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -75,6 +75,7 @@ public class AdminDashboard extends JFrame {
     }
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         new AdminDashboard();
     }
 }

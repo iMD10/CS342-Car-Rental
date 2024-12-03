@@ -1,7 +1,6 @@
 package org.example.view;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class MyBookings extends JFrame {
@@ -24,7 +23,7 @@ public class MyBookings extends JFrame {
                 {"3", "Fortuner", "01/02/2024", "07/02/2024", false}
         };
 
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+        JTable bookingsTable = new JTable(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 if (columnIndex == 4) {
@@ -39,7 +38,6 @@ public class MyBookings extends JFrame {
             }
         };
 
-        JTable bookingsTable = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(bookingsTable);
 
         // Bottom panel for action buttons
@@ -48,18 +46,24 @@ public class MyBookings extends JFrame {
         JButton backButton = new JButton("Back to Dashboard");
 
         cancelButton.addActionListener(e -> {
-                    int response = JOptionPane.showConfirmDialog(null, "Are you sure your reservation has been cancelled?", "Confirmation", JOptionPane.YES_NO_OPTION);
-                    if (response == JOptionPane.YES_OPTION) {
-                        JOptionPane.showMessageDialog(null, "Your booking has been cancelled", "Notification", JOptionPane.INFORMATION_MESSAGE);
-                        this.setVisible(false);
-                        dashboard.setVisible(true);
-                    }
-                });
+            int selectedRow = bookingsTable.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "No booking selected. Please select a booking to cancel.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the selected booking?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Your booking has been cancelled", "Notification", JOptionPane.INFORMATION_MESSAGE);
+                    this.setVisible(false);
+                    dashboard.setVisible(true);
+                }
+            }
+        });
 
         backButton.addActionListener(e -> {
             this.setVisible(false);
             dashboard.setVisible(true);
         });
+
         actionButtonPanel.add(cancelButton);
         actionButtonPanel.add(backButton);
 
@@ -70,4 +74,3 @@ public class MyBookings extends JFrame {
         setVisible(true);
     }
 }
-

@@ -9,6 +9,7 @@ public class ManageVehicles extends JFrame {
     private final AdminDashboard dashboard;
 
     public ManageVehicles(AdminDashboard dashboard) {
+
         this.dashboard = dashboard;
         setTitle("Manage Vehicles");
         setSize(600, 400);
