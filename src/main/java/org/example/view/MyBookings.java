@@ -3,16 +3,12 @@ package org.example.view;
 import javax.swing.*;
 import java.awt.*;
 
-public class MyBookings extends JFrame {
+public class MyBookings extends JPanel {
 
-    private final CustomerDashboard dashboard;
+    private final MainFrame mainFrame;
 
-    public MyBookings(CustomerDashboard dashboard) {
-        this.dashboard = dashboard;
-        setTitle("My Bookings");
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public MyBookings(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 
         // Center panel for table
@@ -43,7 +39,6 @@ public class MyBookings extends JFrame {
         // Bottom panel for action buttons
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
-        JButton backButton = new JButton("Back to Dashboard");
 
         cancelButton.addActionListener(e -> {
             int selectedRow = bookingsTable.getSelectedRow();
@@ -52,25 +47,15 @@ public class MyBookings extends JFrame {
             } else {
                 int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the selected booking?", "Confirmation", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
-                    JOptionPane.showMessageDialog(null, "Your booking has been cancelled", "Notification", JOptionPane.INFORMATION_MESSAGE);
-                    this.setVisible(false);
-                    dashboard.setVisible(true);
+                    // Cancellation logic here
                 }
             }
         });
 
-        backButton.addActionListener(e -> {
-            this.setVisible(false);
-            dashboard.setVisible(true);
-        });
-
         actionButtonPanel.add(cancelButton);
-        actionButtonPanel.add(backButton);
 
         // Add panels to the frame
         add(tableScrollPane, BorderLayout.CENTER);
         add(actionButtonPanel, BorderLayout.SOUTH);
-
-        setVisible(true);
     }
 }
