@@ -1,5 +1,6 @@
 package org.example.views;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -42,7 +43,7 @@ public class BrowseVehicles extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());      // GLOBAL panel
         JPanel contentPanel = new JPanel(new BorderLayout());   // main content (the Right)
 
-        JPanel sideBarPanel = createSideBarPanel();             // the left navigation bar
+        JPanel sideBarPanel = new Components().createSideBarPanel();             // the left navigation bar
         JPanel contentHead = createHead();
 
         mainPanel.add(sideBarPanel, BorderLayout.WEST);
@@ -81,8 +82,6 @@ public class BrowseVehicles extends JFrame {
 
 
             ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
-//            Image scaledImage = carImageSource.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
-//            carImageSource = new ImageIcon(scaledImage);
             JLabel carImage = new JLabel(carImageSource);
 
             JLabel carName = new JLabel("Car Name " + id, JLabel.CENTER);
@@ -96,60 +95,8 @@ public class BrowseVehicles extends JFrame {
         }
     }
 
-    /**
-     * Create sideBar with buttons
-     *
-     * @return JPanel object of the side bar
-     */
-    private JPanel createSideBarPanel() {
-        // Create the sidebar panel with BoxLayout
-        JPanel sideBarPanel = new JPanel();
-        sideBarPanel.setLayout(new BoxLayout(sideBarPanel, BoxLayout.Y_AXIS)); // Vertical stacking
 
-        // Add glue at the top for automatic spacing
-        sideBarPanel.add(Box.createVerticalGlue());
 
-        // Create the sidebar buttons using the helper method
-        accountSideButton = createSideBarButton("res\\personIcon.png", "Account");
-        browseSideButton = createSideBarButton("res\\searchIcon.png", "Browse");
-        historySideButton = createSideBarButton("res\\bookingIcon.png", "History");
-
-        // Add buttons with automatic spacing
-        sideBarPanel.add(accountSideButton);
-        sideBarPanel.add(Box.createVerticalGlue()); // Add glue to create flexible space
-        sideBarPanel.add(browseSideButton);
-        sideBarPanel.add(Box.createVerticalGlue()); // Add glue to create flexible space
-        sideBarPanel.add(historySideButton);
-
-        // Add glue at the bottom for automatic spacing
-        sideBarPanel.add(Box.createVerticalGlue());
-        return sideBarPanel;
-    }
-
-    /**
-     * Create sideBar button
-     *
-     * @return JPanel object of the button
-     */
-    private JPanel createSideBarButton(String imageIconPath, String buttonName) {
-        carImage = new ImageIcon(imageIconPath);
-        // Resize the image
-//        Image scaledImage = carImage.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-//        carImage = new ImageIcon(scaledImage);
-        accIcon = new JLabel(carImage);
-
-        buttonText = new JLabel(buttonName);
-        buttonText.setSize(100, 100);
-
-        JPanel accBtnPan = new JPanel();
-        accBtnPan.setLayout(new BoxLayout(accBtnPan, BoxLayout.Y_AXIS)); // Stack components vertically
-
-        // Add icon and text to the panel
-        accBtnPan.add(accIcon);
-        accBtnPan.add(buttonText);
-
-        return accBtnPan;
-    }
 
     private JPanel createHead() {
         JPanel contentHead = new JPanel(new BorderLayout());
@@ -179,7 +126,7 @@ public class BrowseVehicles extends JFrame {
         titleAndSearchPanel.add(searchLabel);
         titleAndSearchPanel.add(searchTf);
 
-        contentHead.add(titleAndSearchPanel, BorderLayout.PAGE_START);
+        contentHead.add(titleAndSearchPanel, BorderLayout.NORTH);
 
 
         // - - - - - book date
@@ -236,7 +183,7 @@ public class BrowseVehicles extends JFrame {
         bookDatePanel.add(endBookLabel);
         bookDatePanel.add(endDatePicker);
 
-        contentHead.add(bookDatePanel, BorderLayout.PAGE_END);
+        contentHead.add(bookDatePanel, BorderLayout.SOUTH);
         return contentHead;
     }
 
@@ -245,7 +192,7 @@ public class BrowseVehicles extends JFrame {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
             boolean isNotAfterEnd = ! date.isAfter(endingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
@@ -257,7 +204,7 @@ public class BrowseVehicles extends JFrame {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
 
             boolean isNotBeforeStart = ! date.isBefore(startingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
@@ -265,7 +212,7 @@ public class BrowseVehicles extends JFrame {
     }
 
     public static void main(String[] args) {
-
+        FlatLightLaf.setup();
         BrowseVehicles bv = new BrowseVehicles();
 
     }

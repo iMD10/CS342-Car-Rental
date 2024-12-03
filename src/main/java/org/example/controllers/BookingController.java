@@ -1,22 +1,25 @@
 package org.example.controllers;
 import org.example.classes.Booking;
+import org.example.classes.Invoice;
 import org.example.common.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 public class BookingController {
     private DatabaseHandler DbHandler = new DatabaseHandler();;
     private Booking booking;
-
+    private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
     try {
         if (CarIsBusy(vehicleId, start_date, end_date))
             return null;
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status) VALUES (?, ?, ?, ?, ?, 'active')";
-        DbHandler.executeUpdate(query, userId, vehicleId, System.currentTimeMillis(), start_date, end_date);
-
+        int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date);
+        booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date);
         return booking;
     }
     catch (SQLException e) {
@@ -25,9 +28,8 @@ public class BookingController {
     }
     public Boolean CarIsBusy(int vehicleId,Timestamp start_date, Timestamp end_date){
 
-        try{
             String query = "SELECT COUNT(*) AS count FROM booking WHERE vehicle_id = ? AND (start_date <= ? AND end_date >= ?)";
-            ResultSet resSet = DbHandler.executeQuery(query,vehicleId,end_date,start_date);
+        try( ResultSet resSet = DbHandler.executeQuery(query,vehicleId,end_date,start_date)){
             if(resSet.next()){
                 ErrorHandler.showError("This Booking is already exist");
                 return true;
@@ -35,18 +37,18 @@ public class BookingController {
 
         }
         catch (SQLException e){
-            e.printStackTrace();
+            ErrorHandler.handleException(e,e.getMessage());
         }
         return false;
     }
     public List<Booking> getAllBookingsByUserid(int userId){
         List<Booking> bookings = new ArrayList<>();
         String query = "select * from booking where user_id = ?";
-        try {
+        try(ResultSet resSet = DbHandler.executeQuery(query,userId)) {
 
-        ResultSet resSet = DbHandler.executeQuery(query,userId);
+
         while (resSet != null && resSet.next()) {
-            booking = new Booking(resSet.getInt("id"),
+            bookings.add( new Booking(resSet.getInt("id"),
                     resSet.getInt("user_id"),
                     resSet.getInt("vehicle_id"),
                     resSet.getString("status"),
@@ -54,19 +56,19 @@ public class BookingController {
                     resSet.getTimestamp("returned_at"),
                     resSet.getTimestamp("start_date"),
                     resSet.getTimestamp("end_date")
-                   );
-            bookings.add(booking);
+                   ));
+
         }
 
       }
       catch (SQLException e) {
-            e.printStackTrace();
+            ErrorHandler.handleException(e,e.getMessage());
       } catch (Exception ee) {
           ErrorHandler.showError(ee.getMessage()+"Error retrieving bookings for user ID: " + userId);
       }
         return bookings;
     }
-    public void editBookingStatusToCanceld(int bookingId){
+    public void editBookingStatusToCanceled(int bookingId){
 
         String query = "UPDATE booking SET status = ? WHERE id = ?";
         try{
@@ -79,9 +81,30 @@ public class BookingController {
     }
     public void editBookingStatusToReturned(int bookingId){
 
-        String query = "UPDATE booking SET status = ? WHERE id = ?";
-        try{
+        String query = "SELECT * from booking WHERE id = ?";
+        try(ResultSet resSet = DbHandler.executeQuery(query,bookingId)){
+
+
+            if(!resSet.next()){
+                ErrorHandler.handleWarning("This Booking Doesn't exist");
+                return;
+            }
+            Timestamp End_date =  resSet.getTimestamp("end_date");
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            long differenceInMillis = now.getTime() - End_date.getTime();
+            long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
+            double cost = resSet.getDouble("cost");
+            double lateFees = cost*differenceInDays;
+
+            query = "UPDATE booking SET status = ? WHERE id = ?";
             DbHandler.executeUpdate(query,"RETURNED",bookingId);
+            query = "UPDATE booking SET returned_at = ? WHERE id = ?";
+            DbHandler.executeUpdate(query,now,bookingId);
+
+            InvoiceController invoiceController = new InvoiceController();
+            invoice = invoiceController.createInvoice(bookingId,lateFees,cost+lateFees,now);
+
+
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to Returned");
         }
@@ -89,11 +112,36 @@ public class BookingController {
     public List<Booking> getAllBookings(){
         List<Booking> bookings = new ArrayList<>();
         String query = "select * from booking";
-        try {
-
-            ResultSet resSet = DbHandler.executeQuery(query);
+        try( ResultSet resSet = DbHandler.executeQuery(query)) {
             while (resSet != null && resSet.next()) {
-                booking = new Booking(resSet.getInt("id"),
+                bookings.add( new Booking(
+                        resSet.getInt("id"),
+                        resSet.getInt("user_id"),
+                        resSet.getInt("vehicle_id"),
+                        resSet.getString("status"),
+                        resSet.getTimestamp("booked_at"),
+                        resSet.getTimestamp("returned_at"),
+                        resSet.getTimestamp("start_date"),
+                        resSet.getTimestamp("end_date")
+                ));
+
+            }
+
+        }
+        catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
+        } catch (Exception ee) {
+            ErrorHandler.showError(ee+"Error retrieving all bookings ");
+        }
+        return bookings;
+    }
+
+    public Booking getBookingByBookingId(int bookingId) {
+        String query = "select * from booking where id = ?";
+        try(ResultSet resSet = DbHandler.executeQuery(query,bookingId)) {
+            if(resSet.next()){
+               return new Booking(
+                        resSet.getInt("id"),
                         resSet.getInt("user_id"),
                         resSet.getInt("vehicle_id"),
                         resSet.getString("status"),
@@ -102,16 +150,13 @@ public class BookingController {
                         resSet.getTimestamp("start_date"),
                         resSet.getTimestamp("end_date")
                 );
-                bookings.add(booking);
+            } else {
+                throw new RuntimeException("Booking does not exist");
             }
-
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception ee) {
-            ErrorHandler.showError(ee+"Error retrieving all bookings ");
-        }
-        return bookings;
+        return null;
     }
 
 }

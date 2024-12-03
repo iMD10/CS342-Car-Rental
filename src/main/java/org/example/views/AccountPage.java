@@ -1,89 +1,53 @@
 package org.example.views;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.optionalusertools.DateVetoPolicy;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.time.LocalDate;
 
 public class AccountPage extends JFrame {
 
-    private JButton accountLabel, browseLabel, historyLabel;
-    private JLabel contentTitle, name, email, phone, nameText, emailText, phoneText, space;
-    // private ImageIcon accountIcon;
+    private JLabel titleLabel, fNameLabel, lNameLabel, emailLabel, phoneLabel;
+    private JTextField titleTf, flNameTf, lNameTf, emailTf, phoneTf;
+    private JPanel mainPanel;
 
-    public AccountPage(){
-        this.setSize(700,500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Account Page");
+    AccountPage() {
 
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W/4, H/4, W/2, H/2);
+        this.setBounds((W) / 4, (H) / 4, W / 2, H / 2);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-
-        JPanel slideBarPanel = new JPanel(new GridLayout(3,1));
-        
-        
-
-        accountLabel = new JButton("Account");
-        accountLabel.setSize(100,100);
-
-        browseLabel = new JButton("Browse");
-        browseLabel.setSize(100,100);
-
-        historyLabel = new JButton("History");
-        historyLabel.setSize(100,100);
+        mainPanel = new JPanel(new BorderLayout());
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        titleLabel = new JLabel("Account Page");
+        fNameLabel = new JLabel("First Name");
+        lNameLabel = new JLabel("Last Name");
+        emailLabel = new JLabel("Email");
 
 
+        mainPanel.add(new Components().createSideBarPanel(), BorderLayout.WEST);
 
-
-        slideBarPanel.add(accountLabel);
-        slideBarPanel.add(browseLabel);
-        slideBarPanel.add(historyLabel);
-
-        
-        // Second Panel
-        JPanel contentpanel = new JPanel(new GridLayout(14,1));
-        contentTitle = new JLabel("Account Info");
-
-        
-        name = new JLabel("Fullname:");
-        nameText = new JLabel("Customer1345525, ibn Customer1345524"); // Needs to be changed using User data
-        
-        email = new JLabel("Email:");
-        emailText = new JLabel("Customer1345525@mail.com"); // Needs to be changed using User data
-
-        phone = new JLabel("Phone Number:");
-        phoneText = new JLabel("05123456789"); // Needs to be changed using User data
-        space = new JLabel(" ");
-
-        contentpanel.add(contentTitle);
-        contentpanel.add(space);
-        contentpanel.add(name);
-        contentpanel.add(nameText);
-        contentpanel.add(email);
-        contentpanel.add(emailText);
-        contentpanel.add(phone);
-        contentpanel.add(phoneText);
-
-
-
-
-        mainPanel.add(slideBarPanel, BorderLayout.WEST);
-        mainPanel.add(contentpanel, BorderLayout.CENTER);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
 
         this.add(mainPanel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 
     }
 
     public static void main(String[] args) {
-
-        AccountPage acp = new AccountPage();
-
+        new AccountPage();
     }
-
 }
