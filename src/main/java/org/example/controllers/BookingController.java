@@ -1,15 +1,18 @@
 package org.example.controllers;
 import org.example.classes.Booking;
+import org.example.classes.Invoice;
 import org.example.common.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
+import org.example.controllers.InvoiceController;
+import java.util.concurrent.TimeUnit;
 public class BookingController {
     private DatabaseHandler DbHandler = new DatabaseHandler();;
     private Booking booking;
-
+    private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
     try {
         if (CarIsBusy(vehicleId, start_date, end_date))
@@ -80,9 +83,29 @@ public class BookingController {
     }
     public void editBookingStatusToReturned(int bookingId){
 
-        String query = "UPDATE booking SET status = ? WHERE id = ?";
+        String query = "SELECT * from booking WHERE id = ?";
         try{
+
+            ResultSet resSet = DbHandler.executeQuery(query,bookingId);
+            if(!resSet.next()){
+                ErrorHandler.handleWarning("This Booking Doesn't exist");
+                return;
+            }
+            Timestamp End_date =  resSet.getTimestamp("end_date");
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            long differenceInMillis = now.getTime() - End_date.getTime();
+            long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
+            double cost = resSet.getDouble("cost");
+            double lateFees = cost*differenceInDays;
+
+            query = "UPDATE booking SET status = ? WHERE id = ?";
             DbHandler.executeUpdate(query,"RETURNED",bookingId);
+            query = "UPDATE booking SET returned_at = ? WHERE id = ?";
+            DbHandler.executeUpdate(query,now,bookingId);
+
+            InvoiceController invoiceController = new InvoiceController();
+            invoice = invoiceController.createInvoice(bookingId,lateFees,cost+lateFees,now);
+
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to Returned");
