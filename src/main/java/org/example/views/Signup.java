@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.formdev.flatlaf.*;
 import org.example.controllers.UserController;
-import org.example.classes.User;
 import org.example.common.Validation;
 
 public class Signup extends JFrame {
@@ -130,7 +129,7 @@ public class Signup extends JFrame {
                     passwordField.setText("");
                     return;
                 }
-                
+
                 UserController uc = new UserController();
                 uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
 
