@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserController {
-    private DatabaseHandler db;
+    private DatabaseHandler db = new DatabaseHandler();
 
     public User loginUser(String email, String password) {
-        String query = "SELECT * FROM user WHERE email = ? AND password = ?";
+        String query = "SELECT * FROM user12 WHERE email = ? AND password = ?";
         db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(query, email, password)){
 
@@ -35,31 +35,36 @@ public class UserController {
         return  null;
     }
 
-    public User registerCustomer(String email,String fname, String lname,String phone, String password) {
-        String query = "select * from user where email = ?";
-        db = new DatabaseHandler();
-        try(ResultSet rs = db.executeQuery(query, email)){
+    public User registerCustomer(String email, String fname, String lname, String phone, String password) {
+        //Don't change users to user because we changed it in db!!!!
+        String checkQuery = "SELECT * FROM users WHERE email = ?;";
+        String insertQuery = "INSERT INTO users (email, name, phone, password, is_admin) VALUES (?, ?, ?, ?, false)";
 
-            if (rs == null || !rs.next())
+        try (ResultSet rs = db.executeQuery(checkQuery, email)) {
+            // Check if email already exists
+            if (rs != null && rs.next()) {
                 throw new RuntimeException("Email already in use");
-
-            String name = fname +" "+ lname;
-
-            String cQuery = "insert into user (email, name, phone, password, is_admin) values (?,?,?,?, false)";
-            int rows = db.executeUpdate(cQuery, email, name, phone, password);
-            if(rows > 0) {
-                return new User(rows,name, email, phone, password, false);
-            } else {
-                throw new RuntimeException("Error inserting user");
             }
 
-        } catch (RuntimeException e) {
-            ErrorHandler.handleException(e, "Email already in use");
-        } catch (SQLException e) {
-            ErrorHandler.handleException(e, e.getMessage());
-        }
-        return null;
+            // Combine first and last name
+            String name = fname + " " + lname;
 
+            // Insert the new user and get the generated ID
+            int userId = db.executeUpdate(insertQuery, email, name, phone, password);
+
+            // If successful, return the User object
+            if (userId >= 0) {
+                return new User(userId, name, email, phone, password, false);
+            } else {
+                throw new RuntimeException("Failed to insert new user into the database.");
+            }
+        } catch (RuntimeException e) {
+            ErrorHandler.handleException(e, "A runtime error occurred: " + e.getMessage());
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, "A database error occurred: " + e.getMessage());
+        }
+
+        return null; // Return null if registration fails
     }
 
     public List<User> getAllUsers() {
