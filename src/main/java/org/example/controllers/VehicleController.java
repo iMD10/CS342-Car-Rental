@@ -123,6 +123,30 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
         return null;
     }
 
+    public Vehicle getVehicleByVehicleId(int vehicleId) {
+        db = new DatabaseHandler();
+        String query = "SELECT * FROM vehicle JOIN car_model on car_model_id = car_model.id WHERE vehicle.id = ?;";
+        try (ResultSet rs = db.executeQuery(query, vehicleId)) {
+            if (rs.next()) {
+                return new Vehicle(
+                        rs.getInt("vehicle.id"),
+                        rs.getInt("car_model_id"),
+                        rs.getInt("model_year"),
+                        rs.getString("serial_number"),
+                        rs.getString("name"),
+                        rs.getString("color"),
+                        rs.getString("company"),
+                        rs.getString("type"),
+                        rs.getDouble("price")
+
+                );
+            }
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
+        }
+        return null;
+    }
+
 
 
 }

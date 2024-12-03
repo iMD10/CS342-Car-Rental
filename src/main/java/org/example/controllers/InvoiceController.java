@@ -27,8 +27,7 @@ public class InvoiceController {
     public List<Invoice> getAllInvoices() {
         List<Invoice> invoices = new ArrayList<>();
         String query = "SELECT * FROM invoice";
-        try {
-            ResultSet resSet = dbHandler.executeQuery(query);
+        try (ResultSet resSet = dbHandler.executeQuery(query)){
             while (resSet != null && resSet.next()) {
                 invoice = new Invoice(
                         resSet.getInt("id"),

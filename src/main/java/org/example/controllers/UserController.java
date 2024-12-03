@@ -45,7 +45,7 @@ public class UserController {
 
             String name = fname +" "+ lname;
 
-            String cQuery = "insert into user where (email, name, phone, password, is_admin) values (?,?,?,?, false)";
+            String cQuery = "insert into user (email, name, phone, password, is_admin) values (?,?,?,?, false)";
             int rows = db.executeUpdate(cQuery, email, name, phone, password);
             if(rows > 0) {
                 return new User(rows,name, email, phone, password, false);
