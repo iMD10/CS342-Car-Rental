@@ -1,5 +1,5 @@
 package org.example.views;
-
+import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -97,6 +97,7 @@ public class Login extends JFrame {
     
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         new Login();
     }
 }

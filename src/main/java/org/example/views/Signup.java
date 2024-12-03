@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import com.formdev.flatlaf.*;
 public class Signup extends JFrame {
 
     public Signup() {
@@ -64,7 +64,7 @@ public class Signup extends JFrame {
         JTextField phoneTextField = new JTextField(20);
         JLabel emailLabel = new JLabel("Email:                        ");
         JTextField emailTextField = new JTextField(20);
-        JLabel passwordLabel = new JLabel("Password:                 ");
+        JLabel passwordLabel = new JLabel("Password:                  ");
         JPasswordField passwordField = new JPasswordField(20);
         JButton signupButton = new JButton("Sign Up");
 
@@ -106,6 +106,7 @@ public class Signup extends JFrame {
     }
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         new Signup();
     }
 }
