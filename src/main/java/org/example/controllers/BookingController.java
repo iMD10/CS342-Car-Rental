@@ -14,9 +14,10 @@ public class BookingController {
     try {
         if (CarIsBusy(vehicleId, start_date, end_date))
             return null;
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status) VALUES (?, ?, ?, ?, ?, 'active')";
-        DbHandler.executeUpdate(query, userId, vehicleId, System.currentTimeMillis(), start_date, end_date);
-
+        int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date);
+        booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date);
         return booking;
     }
     catch (SQLException e) {
@@ -82,6 +83,7 @@ public class BookingController {
         String query = "UPDATE booking SET status = ? WHERE id = ?";
         try{
             DbHandler.executeUpdate(query,"RETURNED",bookingId);
+
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to Returned");
         }
