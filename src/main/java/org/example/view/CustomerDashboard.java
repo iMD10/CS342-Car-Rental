@@ -11,12 +11,13 @@ public class CustomerDashboard extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        this.setResizable(false);
 
         // Top panel for logo and title
         JPanel topPanel = new JPanel(new BorderLayout());
 
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\R.png"); // Update with your logo path
+        ImageIcon logoIcon = new ImageIcon("res/sampleCar.png"); // Update with your logo path
         Image scaledImage = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Adjust width and height
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);

@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.formdev.flatlaf.*;
+import org.example.controllers.UserController;
+
 public class Signup extends JFrame {
 
     public Signup() {
         
-        this.setTitle("Log In");
+        this.setTitle("Sign up");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
@@ -47,7 +49,8 @@ public class Signup extends JFrame {
                 new Login().setVisible(true);
                 dispose();
             }
-    });
+        });
+
     }
 
 
@@ -80,6 +83,12 @@ public class Signup extends JFrame {
         signupFieldsPanel.add(createPaddedPanel(passwordLabel, passwordField));
         signupFieldsPanel.add(createPaddedPanelButton(signupButton));
 
+        signupButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                UserController u = new UserController();
+                u.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+            }
+        });
 
         return signupFieldsPanel;
 
