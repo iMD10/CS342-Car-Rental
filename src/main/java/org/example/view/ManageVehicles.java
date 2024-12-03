@@ -4,17 +4,18 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class ManageVehicles extends JFrame {
+public class ManageVehicles extends JPanel  {
 
-    private final AdminDashboard dashboard;
+   private final AdminDashboard dashboard;
+
 
     public ManageVehicles(AdminDashboard dashboard) {
 
-        this.dashboard = dashboard;
-        setTitle("Manage Vehicles");
+        this.dashboard=dashboard;
+//         setTitle("Manage Vehicles");
         setSize(600, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Top panel for date selection

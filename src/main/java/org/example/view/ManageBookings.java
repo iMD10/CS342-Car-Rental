@@ -4,16 +4,17 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class ManageBookings extends JFrame {
+public class ManageBookings extends JPanel  {
 
-    private final AdminDashboard dashboard;
+   private final AdminDashboard dashboard;
+
 
     public ManageBookings(AdminDashboard dashboard) {
-        this.dashboard = dashboard;
-        setTitle("Manage Bookings");
+        this.dashboard=dashboard;
+//        setTitle("Manage Bookings");
         setSize(700, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Top panel for search by ID
