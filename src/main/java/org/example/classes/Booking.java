@@ -5,8 +5,9 @@ public class Booking {
     private int id, userId, vehicleId;
     private String status;
     private Timestamp bookedAt,returnedAt, start_date, end_date;
+    private double cost;
 
-    public Booking(int id, int userId, int vehicleId, String status, Timestamp bookedAt, Timestamp returnedAt, Timestamp start_date, Timestamp end_date) {
+    public Booking(int id, int userId, int vehicleId, String status, Timestamp bookedAt, Timestamp returnedAt, Timestamp start_date, Timestamp end_date, double cost) {
         this.id = id;
         this.userId = userId;
         this.vehicleId = vehicleId;
@@ -15,6 +16,7 @@ public class Booking {
         this.returnedAt = returnedAt;
         this.start_date = start_date;
         this.end_date = end_date;
+        this.cost = cost;
     }
 
     public int getId() {

@@ -1,6 +1,7 @@
 package org.example.controllers;
 import org.example.classes.Booking;
 import org.example.classes.Invoice;
+import org.example.classes.Vehicle;
 import org.example.common.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,9 +18,17 @@ public class BookingController {
         if (CarIsBusy(vehicleId, start_date, end_date))
             return null;
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status) VALUES (?, ?, ?, ?, ?, 'active')";
-        int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date);
-        booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date);
+
+        // Calculating cost
+        VehicleController vehicleController = new VehicleController();
+        Vehicle vehicle = vehicleController.getVehicleByVehicleId(vehicleId);
+        long differenceInMillis = start_date.getTime() - end_date.getTime();
+        long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
+        double cost = vehicle.getCarModel().getPrice() * differenceInDays;
+
+        String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status, cost) VALUES (?, ?, ?, ?, ?, 'active', ?)";
+        int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
+        booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date, cost);
         return booking;
     }
     catch (SQLException e) {
@@ -55,7 +64,8 @@ public class BookingController {
                     resSet.getTimestamp("booked_at"),
                     resSet.getTimestamp("returned_at"),
                     resSet.getTimestamp("start_date"),
-                    resSet.getTimestamp("end_date")
+                    resSet.getTimestamp("end_date"),
+                    resSet.getDouble("cost")
                    ));
 
         }
@@ -111,7 +121,7 @@ public class BookingController {
     }
     public List<Booking> getAllBookings(){
         List<Booking> bookings = new ArrayList<>();
-        String query = "select * from booking";
+        String query = "select * from booking;";
         try( ResultSet resSet = DbHandler.executeQuery(query)) {
             while (resSet != null && resSet.next()) {
                 bookings.add( new Booking(
@@ -122,7 +132,8 @@ public class BookingController {
                         resSet.getTimestamp("booked_at"),
                         resSet.getTimestamp("returned_at"),
                         resSet.getTimestamp("start_date"),
-                        resSet.getTimestamp("end_date")
+                        resSet.getTimestamp("end_date"),
+                        resSet.getDouble("cost")
                 ));
 
             }
@@ -148,7 +159,8 @@ public class BookingController {
                         resSet.getTimestamp("booked_at"),
                         resSet.getTimestamp("returned_at"),
                         resSet.getTimestamp("start_date"),
-                        resSet.getTimestamp("end_date")
+                        resSet.getTimestamp("end_date"),
+                       resSet.getDouble("cost")
                 );
             } else {
                 throw new RuntimeException("Booking does not exist");
