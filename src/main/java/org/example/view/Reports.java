@@ -3,16 +3,16 @@ package org.example.view;
 import javax.swing.*;
 import java.awt.*;
 
-public class Reports extends JFrame {
+public class Reports extends JPanel  {
 
     private final AdminDashboard dashboard;
 
     public Reports(AdminDashboard dashboard) {
         this.dashboard = dashboard;
-        setTitle("Reports");
+        //setTitle("Reports");
         setSize(600, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      //  setLocationRelativeTo(null);
+       // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Example content panel
@@ -32,6 +32,6 @@ public class Reports extends JFrame {
         add(contentPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        setVisible(true);
+       // setVisible(true);
     }
 }
