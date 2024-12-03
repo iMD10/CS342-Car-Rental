@@ -36,7 +36,7 @@ public class Login extends JFrame {
         // Initialize components
         title = new JLabel("Log in Page");
         emailLabel = new JLabel("Email:       ");
-        passwordLabel = new JLabel("Password:");
+        passwordLabel = new JLabel("Password: ");
         GoLabel = new JLabel("Go to");
         loginButton = new JButton("Log In");
         signUpButton = new JButton("Sign Up");
