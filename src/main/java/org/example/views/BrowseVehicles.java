@@ -1,11 +1,8 @@
 package org.example.views;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
-import com.github.lgooddatepicker.optionalusertools.DateVetoPolicy;
-import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import org.example.views.Components;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -15,12 +12,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 
+public class BrowseVehicles extends JPanel {
 
-public class BrowseVehicles extends JFrame {
+    private CardLayout cardLayout;
+    private JPanel cardPanel;
+
 
     private LocalDate startingDate = LocalDate.now();
     private LocalDate endingDate = LocalDate.now().plusDays(30);
-
 
     private JPanel accountSideButton, browseSideButton, historySideButton;
     private JLabel buttonText, searchLabel, startBookLabel, endBookLabel;
@@ -30,26 +29,15 @@ public class BrowseVehicles extends JFrame {
     private JLabel accIcon;
     private DatePicker startDatePicker, endDatePicker;
 
-
     public BrowseVehicles() {
-
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+        this.setLayout(new BorderLayout()); // Set layout for the main panel
 
 
-        JPanel mainPanel = new JPanel(new BorderLayout());      // GLOBAL panel
-        JPanel contentPanel = new JPanel(new BorderLayout());   // main content (the Right)
+        JPanel vehiclesPanel = new JPanel(new BorderLayout());
 
-        JPanel sideBarPanel = new Components().createSideBarPanel();             // the left navigation bar
         JPanel contentHead = createHead();
 
-        mainPanel.add(sideBarPanel, BorderLayout.WEST);
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
-
-        contentPanel.add(contentHead, BorderLayout.NORTH);
+        vehiclesPanel.add(contentHead, BorderLayout.NORTH);
 
         // Create the main panel with a GridLayout (dynamic rows, 3 columns)
         JPanel gridList = new JPanel();
@@ -63,49 +51,44 @@ public class BrowseVehicles extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        vehiclesPanel.add(scrollPane, BorderLayout.CENTER);
 
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+        cardPanel.add(vehiclesPanel, "BrowseVehicles1");
+        cardPanel.add(new CarDetails(cardPanel, cardLayout), "CarDetails");
 
-        this.add(mainPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
+        add(cardPanel, BorderLayout.CENTER);
+//        cardLayout.show(cardPanel, "BrowseVehicles");
 
     }
 
     private void loadCars(JPanel gridList) {
-        // Here, load car details from DB, loop over each car and display as element
-
-        int totalElements = 25; // We can control maximum number of cars to display
+        int totalElements = 25; // Maximum number of cars to display
 
         for (int id = 1; id <= totalElements; id++) {
             JPanel elementPanel = new JPanel(new BorderLayout());
-
 
             ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
             JLabel carImage = new JLabel(carImageSource);
 
             JLabel carName = new JLabel("Car Name " + id, JLabel.CENTER);
 
-
             elementPanel.add(carImage, BorderLayout.CENTER);
             elementPanel.add(carName, BorderLayout.PAGE_END);
-            elementPanel.addMouseListener(new MouseAction("element id =" + id)); // Pass car ID to the actionListener, ID is important to show more details about car and book it in the booking screen
+            elementPanel.addMouseListener(new MouseAction("CarDetails",id)); // Handle click
             gridList.add(elementPanel);
-
         }
     }
-
-
-
 
     private JPanel createHead() {
         JPanel contentHead = new JPanel(new BorderLayout());
 
-
         JPanel titleAndSearchPanel = new JPanel();
         titleAndSearchPanel.setLayout(new BoxLayout(titleAndSearchPanel, BoxLayout.X_AXIS));
         pageTitle = new JTextPane();
-        // Create styled text
+
+        // Styled text
         SimpleAttributeSet attributes = new SimpleAttributeSet();
         StyleConstants.setBold(attributes, true);
         StyleConstants.setFontSize(attributes, 25);
@@ -114,13 +97,9 @@ public class BrowseVehicles extends JFrame {
         pageTitle.setText("Browse Vehicles");
         pageTitle.setEditable(false);
 
-
         searchLabel = new JLabel("Search: ");
-        searchLabel.setSize(100, 30);
-
         searchTf = new JTextField(20);
-        searchTf.setMinimumSize(new Dimension(100, 30));
-        searchTf.setMaximumSize(new Dimension(100, 30));
+
         titleAndSearchPanel.add(pageTitle);
         titleAndSearchPanel.add(Box.createHorizontalGlue());
         titleAndSearchPanel.add(searchLabel);
@@ -128,54 +107,26 @@ public class BrowseVehicles extends JFrame {
 
         contentHead.add(titleAndSearchPanel, BorderLayout.NORTH);
 
-
-        // - - - - - book date
+        // Booking date panel
         JPanel bookDatePanel = new JPanel();
         bookDatePanel.setLayout(new BoxLayout(bookDatePanel, BoxLayout.X_AXIS));
 
-
         startBookLabel = new JLabel("Booking start:");
-        startBookLabel.setMinimumSize(new Dimension(100, 30));
-        startBookLabel.setMaximumSize(new Dimension(100, 30));
         endBookLabel = new JLabel("Booking end:");
-        endBookLabel.setMinimumSize(new Dimension(100, 30));
-        endBookLabel.setMaximumSize(new Dimension(100, 30));
-
 
         DatePickerSettings startDateFormat = new DatePickerSettings();
         startDateFormat.setFormatForDatesCommonEra("dd/MM/yyyy");
         startDateFormat.setAllowEmptyDates(false);
-        startDateFormat.setAllowKeyboardEditing(false);
-        startDateFormat.setEnableYearMenu(false);
 
         DatePickerSettings endDateFormat = startDateFormat.copySettings();
 
         startDatePicker = new DatePicker(startDateFormat);
-        startDatePicker.setMinimumSize(new Dimension(100, 30));
-        startDatePicker.setMaximumSize(new Dimension(100, 30));
         startDatePicker.setDate(startingDate);
-        startDatePicker.addDateChangeListener(new DateChangeListener() {
-            @Override
-            public void dateChanged(DateChangeEvent dateChangeEvent) {
-                startingDate = dateChangeEvent.getNewDate();
-
-            }
-        });
-        startDateFormat.setVetoPolicy(new StartingDatesVetoPolicy()); // user can only choose from today to 30 days ahead
-
+        startDatePicker.addDateChangeListener(event -> startingDate = event.getNewDate());
 
         endDatePicker = new DatePicker(endDateFormat);
-        endDatePicker.setMinimumSize(new Dimension(100, 30));
-        endDatePicker.setMaximumSize(new Dimension(100, 30));
         endDatePicker.setDate(endingDate);
-        endDatePicker.addDateChangeListener(new DateChangeListener() {
-            @Override
-            public void dateChanged(DateChangeEvent dateChangeEvent) {
-                endingDate = dateChangeEvent.getNewDate();
-            }
-        });
-        endDateFormat.setVetoPolicy(new EndingDatesVetoPolicy());  // user can only choose from today to 30 days ahead
-
+        endDatePicker.addDateChangeListener(event -> endingDate = event.getNewDate());
 
         bookDatePanel.add(Box.createHorizontalGlue());
         bookDatePanel.add(startBookLabel);
@@ -187,66 +138,38 @@ public class BrowseVehicles extends JFrame {
         return contentHead;
     }
 
-    // Custom veto policy to disallow past dates
-    private class StartingDatesVetoPolicy implements DateVetoPolicy {
-        @Override
-        public boolean isDateAllowed(LocalDate date) {
-            LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
-            // Allow only dates from today to 30 days in the future
-            boolean isNotAfterEnd = ! date.isAfter(endingDate);
-            return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
-        }
-    }
-
-    // Custom veto policy to disallow 30+ days
-    private class EndingDatesVetoPolicy implements DateVetoPolicy {
-        @Override
-        public boolean isDateAllowed(LocalDate date) {
-            LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
-
-            boolean isNotBeforeStart = ! date.isBefore(startingDate);
-            return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
-        }
-    }
-
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        BrowseVehicles bv = new BrowseVehicles();
-
-    }
-
     private class MouseAction implements MouseListener {
-        private String elementId;
+        private String destination;
 
-        MouseAction(String id) {
-            elementId = id;
+        MouseAction(String destination, int id) {
+            this.destination = destination;
+            System.out.println(id+"");
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println(elementId);
+            cardLayout.show(cardPanel, destination);
         }
 
         @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
+        public void mousePressed(MouseEvent e) {}
 
         @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
+        public void mouseReleased(MouseEvent e) {}
 
         @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
+        public void mouseEntered(MouseEvent e) {}
 
         @Override
-        public void mouseExited(MouseEvent e) {
+        public void mouseExited(MouseEvent e) {}
+    }
 
-        }
+    public static void main(String[] args) {
+        // Test the panel in a standalone JFrame
+        JFrame frame = new JFrame("Browse Vehicles Test");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.add(new BrowseVehicles());
+        frame.setVisible(true);
     }
 }

@@ -6,22 +6,18 @@ import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class CarDetails extends JFrame {
+public class CarDetails extends JPanel {
 
 //    private JLabel carPriceLabel, carModel;
     private JTextPane carName;
     private JLabel carImage;
     private JButton bookBtn;
 
-    CarDetails() {
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+    CarDetails(JPanel cardPanel, CardLayout cardLayout) {
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel contentPanel = new JPanel(new BorderLayout());
 
 
@@ -51,6 +47,12 @@ public class CarDetails extends JFrame {
         bookBtn.setBackground(Color.BLUE);
         bookBtn.setForeground(Color.WHITE);
         bookBtn.setFont(new Font("SansSerif", Font.BOLD, 20));
+        bookBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardPanel, "BrowseVehicles1");
+            }
+        });
 
         JPanel btnPanel = new JPanel(new GridLayout(1,1));
         btnPanel.add(bookBtn);
@@ -65,10 +67,10 @@ public class CarDetails extends JFrame {
         underImagePanel.add(nameAndBookPanel);
 
 
-        underImagePanel.add(new Components().createLabelRow("1,000"+ " SAR per day",true));
-        underImagePanel.add(new Components().createLabelRow("car model",false));
-        underImagePanel.add(new Components().createLabelRow("car size",false));
-        underImagePanel.add(new Components().createLabelRow("serial number",false));
+        underImagePanel.add(Components.createLabelRow("1,000"+ " SAR per day",true));
+        underImagePanel.add(Components.createLabelRow("car model",false));
+        underImagePanel.add(Components.createLabelRow("car size",false));
+        underImagePanel.add(Components.createLabelRow("serial number",false));
         underImagePanel.add(Box.createVerticalGlue());
 
         contentPanel.add(carImage, BorderLayout.NORTH);
@@ -82,12 +84,9 @@ public class CarDetails extends JFrame {
         contentPanel.add(paddingPanel, BorderLayout.CENTER);
 
 
-        mainPanel.add(new Components().createSideBarPanel(), BorderLayout.WEST);
 
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
-
-        this.add(mainPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
+        this.add(contentPanel);
         this.setVisible(true);
 
     }
@@ -97,7 +96,7 @@ public class CarDetails extends JFrame {
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
-        new CarDetails();
+//        new CarDetails();
 
     }
 

@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Components {
-    private JPanel accountSideButton, browseSideButton, historySideButton;
 
 
     /**
@@ -12,8 +11,10 @@ public class Components {
      *
      * @return JPanel object of the side bar
      */
-    public JPanel createSideBarPanel() {
+    public static JPanel createSideBarPanel() {
         // Create the sidebar panel with BoxLayout
+        JPanel accountSideButton, browseSideButton, historySideButton;
+
         JPanel sideBarPanel = new JPanel();
         sideBarPanel.setLayout(new BoxLayout(sideBarPanel, BoxLayout.Y_AXIS)); // Vertical stacking
 
@@ -42,7 +43,7 @@ public class Components {
      *
      * @return JPanel object of the button
      */
-    private JPanel createSideBarButton(String imageIconPath, String buttonName) {
+    private static JPanel createSideBarButton(String imageIconPath, String buttonName) {
         ImageIcon carImage = new ImageIcon(imageIconPath);
         // Resize the image
 //        Image scaledImage = carImage.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);

@@ -3,7 +3,7 @@ package org.example.views;
 import javax.swing.*;
 import java.awt.*;
 
-public class AccountPage extends JFrame {
+public class AccountPage extends JPanel {
 
     private JLabel titleLabel, fNameLabel, lNameLabel, emailLabel, phoneLabel;
     private JLabel saveChangesLabel;
@@ -11,12 +11,7 @@ public class AccountPage extends JFrame {
     private JPanel mainPanel;
 
     AccountPage() {
-
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds((W) / 4, (H) / 4, W / 2, H / 2);
+        this.setLayout(new BorderLayout()); // Set layout for the main panel
 
         mainPanel = new JPanel(new BorderLayout());
         JPanel contentPanel = new JPanel();
@@ -24,20 +19,21 @@ public class AccountPage extends JFrame {
         titleLabel = new JLabel("Account Page");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
 
+        Font labelsFont = new Font("SansSerif", Font.PLAIN, 15);
         fNameLabel = new JLabel("First Name");
-        fNameLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        fNameLabel.setFont(labelsFont);
         fNameLabel.setPreferredSize(new Dimension(300,30));
 
         lNameLabel = new JLabel("Last Name");
-        lNameLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        lNameLabel.setFont(labelsFont);
         lNameLabel.setMaximumSize(new Dimension(300, 30));
 
         emailLabel = new JLabel("Email");
-        emailLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        emailLabel.setFont(labelsFont);
         emailLabel.setMaximumSize(new Dimension(300, 30));
 
         phoneLabel = new JLabel("Phone Number");
-        phoneLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        phoneLabel.setFont(labelsFont);
         phoneLabel.setMaximumSize(new Dimension(300, 30));
 
         saveChangesLabel = new JLabel("<html><u>Save Changes</u></html>");
@@ -89,7 +85,7 @@ public class AccountPage extends JFrame {
         contentPanel.add(Box.createVerticalGlue());
 
 
-        mainPanel.add(new Components().createSideBarPanel(), BorderLayout.WEST);
+//        mainPanel.add(Components.createSideBarPanel(), BorderLayout.WEST);
 
         JPanel paddingPanel = new JPanel();
         paddingPanel.setLayout(new BoxLayout(paddingPanel, BoxLayout.X_AXIS));
@@ -101,8 +97,6 @@ public class AccountPage extends JFrame {
 
 
         this.add(mainPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
 
     }
 
@@ -110,12 +104,8 @@ public class AccountPage extends JFrame {
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-//        labelPanel.add(Box.createRigidArea(new Dimension(100,2)));
         labelPanel.add(label);
-//        labelPanel.add(Box.createHorizontalGlue());
-//        labelPanel.add(Box.createHorizontalGlue());
-//        labelPanel.add(Box.createHorizontalGlue());
-//        labelPanel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+
 
         return labelPanel;
     }
