@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 public class AgreementController {
-    private DatabaseHandler db;
+    private DatabaseHandler db = new DatabaseHandler();
 
     public Agreement createAgreement(int bookingId, Timestamp issuedAt ) {
         db = new DatabaseHandler();
@@ -45,6 +45,45 @@ public class AgreementController {
             return new Agreement(rs,bookingId, terms, issuedAt);
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+        }
+        return null;
+    }
+    public List<Agreement> getAllAgreements() {
+        String query = "SELECT * FROM agreement";
+        try (ResultSet rs = db.executeQuery(query)){
+            List<Agreement> agreements = new ArrayList<>();
+            while(rs.next()){
+                agreements.add(new Agreement(rs.getInt("id"),rs.getInt("booking_id"),rs.getString("terms"),rs.getTimestamp("issued_at")));
+            }
+            return agreements;
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,"Couldn't get all agreements");
+        }
+        return null;
+    }
+    public List<Agreement> getAgreementsByUserId(int userId) {
+        String query = "SELECT * FROM agreement JOIN booking on booking_id = booking.id WHERE user_id=?;";
+        try (ResultSet rs = db.executeQuery(query, userId)){
+            List<Agreement> agreements = new ArrayList<>();
+            while(rs.next()){
+                agreements.add(new Agreement(rs.getInt("id"),rs.getInt("booking_id"),rs.getString("terms"),rs.getTimestamp("issued_at")));
+            }
+            return agreements;
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,"Couldn't get customer agreements");
+        }
+        return null;
+    }
+    public Agreement getAgreementById(int id) {
+        String query = "SELECT * FROM agreement WHERE id=?;";
+        try (ResultSet rs = db.executeQuery(query, id)){
+
+            if(rs.next()){
+                return new Agreement(id,rs.getInt("booking_id"),rs.getString("terms"),rs.getTimestamp("issued_at"));
+            }
+
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,"Couldn't get agreement");
         }
         return null;
     }
