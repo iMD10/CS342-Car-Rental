@@ -21,7 +21,7 @@ public class MainFrame extends JFrame {
 
         // Adjust the logo size and background color
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\R.png");
+        ImageIcon logoIcon = new ImageIcon("res\\R.png");
         Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
@@ -31,7 +31,6 @@ public class MainFrame extends JFrame {
         logoPanel.setPreferredSize(new Dimension(85, 85));
         logoPanel.add(logoLabel, BorderLayout.CENTER);
         topBar.add(logoPanel);
-
 
         Dimension buttonSize = new Dimension(100, 85);
         JButton homeButton = new JButton("Home");
@@ -76,7 +75,7 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-    private void switchPanel(String panelName) {
+    public void switchPanel(String panelName) {
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, panelName);
     }
