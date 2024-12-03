@@ -47,5 +47,26 @@ public class InvoiceController {
         return invoices;
     }
 
+    public List<Invoice> getAllInvoicesByUserId(int userId) {
+        dbHandler = new DatabaseHandler();
+        String query = "SELECT * FROM invoice WHERE user_id = ?";
+        try(ResultSet rs = dbHandler.executeQuery(query,userId)) {
+            List<Invoice> invoices = new ArrayList<>();
+            while(rs.next()) {
+                invoices.add( new Invoice(
+                        rs.getInt("id"),
+                        rs.getInt("booking_id"),
+                        rs.getDouble("late_fees"),
+                        rs.getDouble("total_price"),
+                        rs.getTimestamp("issued_at")
+                ));
+            }
+            return invoices;
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, "Error retrieving all invoices");
+        }
+        return null;
+    }
+
 
 }

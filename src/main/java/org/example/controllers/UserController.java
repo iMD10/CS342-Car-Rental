@@ -6,15 +6,17 @@ import org.example.common.ErrorHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserController {
     private DatabaseHandler db;
 
     public User loginUser(String email, String password) {
-        try {
-            String query = "SELECT * FROM user WHERE email = ? AND password = ?";
-            db = new DatabaseHandler();
-            ResultSet rs = db.executeQuery(query, email, password);
+        String query = "SELECT * FROM user WHERE email = ? AND password = ?";
+        db = new DatabaseHandler();
+        try (ResultSet rs = db.executeQuery(query, email, password)){
+
             if(rs.next() && rs != null) {
                 return new User(
                   rs.getInt("id"),
@@ -27,19 +29,17 @@ public class UserController {
             } else {
                 throw new RuntimeException("Email or password is incorrect");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | RuntimeException e) {
            ErrorHandler.handleException(e,e.getMessage());
-        } catch (RuntimeException e) {
-            ErrorHandler.handleException(e,e.getMessage());
         }
         return  null;
     }
 
     public User registerCustomer(String email,String fname, String lname,String phone, String password) {
-        try{
-            db = new DatabaseHandler();
-            String query = "select * from user where email = ?";
-            ResultSet rs = db.executeQuery(query, email);
+        String query = "select * from user where email = ?";
+        db = new DatabaseHandler();
+        try(ResultSet rs = db.executeQuery(query, email)){
+
             if (rs == null || !rs.next())
                 throw new RuntimeException("Email already in use");
 
@@ -60,6 +60,29 @@ public class UserController {
         }
         return null;
 
+    }
+
+    public List<User> getAllUsers() {
+            db = new DatabaseHandler();
+            String query = "select * from user";
+        try(ResultSet rs = db.executeQuery(query)){
+            List<User> users = new ArrayList<>();
+            while(rs.next()) {
+                users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("password"),
+                        rs.getBoolean("is_admin")
+                ));
+            }
+            return users;
+
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, e.getMessage());
+        }
+        return null;
     }
 
 
