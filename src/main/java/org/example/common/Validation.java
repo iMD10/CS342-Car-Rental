@@ -2,7 +2,7 @@ package org.example.common;
 
 public class Validation {
     public boolean checkEmail(String email) {
-        return email.contains("@");
+        return email != null && email.trim().contains("@");
     }
     public boolean checkPassword(String password) {
         return password.length() >= 6;

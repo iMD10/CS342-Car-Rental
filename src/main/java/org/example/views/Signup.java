@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.formdev.flatlaf.*;
 import org.example.controllers.UserController;
+import org.example.classes.User;
+import org.example.common.Validation;
 
 public class Signup extends JFrame {
 
@@ -63,7 +65,7 @@ public class Signup extends JFrame {
         JTextField fnTextField = new JTextField(20);
         JLabel lnLabel = new JLabel("Last Name:                ");
         JTextField lnTextField = new JTextField(20);
-        JLabel phoneLabel = new JLabel("Phone Number 966+:");
+        JLabel phoneLabel = new JLabel("Phone Number:         ");
         JTextField phoneTextField = new JTextField(20);
         JLabel emailLabel = new JLabel("Email:                        ");
         JTextField emailTextField = new JTextField(20);
@@ -76,17 +78,62 @@ public class Signup extends JFrame {
         JPanel signupFieldsPanel = new JPanel(new GridLayout(9, 1, 5, 5));
 
         signupFieldsPanel.add(createPaddedPanelLabel(title));
-        signupFieldsPanel.add(createPaddedPanel(fnLabel,fnTextField));
-        signupFieldsPanel.add(createPaddedPanel(lnLabel, lnTextField));
-        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField));
-        signupFieldsPanel.add(createPaddedPanel(emailLabel, emailTextField));
-        signupFieldsPanel.add(createPaddedPanel(passwordLabel, passwordField));
+        JLabel fnamemsg = new JLabel("");
+        signupFieldsPanel.add(createPaddedPanel(fnLabel,fnTextField, fnamemsg));
+        JLabel lnamemsg = new JLabel("");
+        signupFieldsPanel.add(createPaddedPanel(lnLabel, lnTextField, lnamemsg));
+        JLabel phonemsg = new JLabel("");
+        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField,phonemsg));
+        JLabel emailmsg = new JLabel("");
+        signupFieldsPanel.add(createPaddedPanel(emailLabel, emailTextField, emailmsg));
+        JLabel passwordmsg = new JLabel("");
+        signupFieldsPanel.add(createPaddedPanel(passwordLabel, passwordField, passwordmsg));
         signupFieldsPanel.add(createPaddedPanelButton(signupButton));
 
         signupButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                UserController u = new UserController();
-                u.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+
+                Validation v = new Validation();
+
+                fnamemsg.setText("");
+                lnamemsg.setText("");
+                phonemsg.setText("");
+                emailmsg.setText("");
+                passwordmsg.setText("");
+
+                if (!v.checkName(fnTextField.getText())){ // if it is False
+                    fnamemsg.setText("Must only contain alphabetic characters or numbers!");
+                    fnTextField.setText("");
+                    return;
+                }
+
+                if (!v.checkName(lnTextField.getText())){ // if it is False
+                    lnamemsg.setText("Must only contain alphabetic characters or numbers!");
+                    lnTextField.setText("");
+                    return;
+                }
+
+                if (!v.checkPhone(phoneTextField.getText())){ // if it is False
+                    phonemsg.setText("Must be 10 numbers!");
+                    phoneTextField.setText("");
+                    return;
+                }
+
+                if (!v.checkEmail(emailTextField.getText())){ // if it is False
+                    emailmsg.setText("Must contain '@'!");
+                    emailTextField.setText("");
+                    return;
+                }
+
+                if (!v.checkPassword(passwordField.getText())){ // if it is False
+                    passwordmsg.setText("Must be more than 6 Characters!");
+                    passwordField.setText("");
+                    return;
+                }
+                
+                UserController uc = new UserController();
+                uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+
             }
         });
 
@@ -94,10 +141,11 @@ public class Signup extends JFrame {
 
     }
 
-    private JPanel createPaddedPanel(JLabel label, JTextField field) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paddedPanel.add(label);
         paddedPanel.add(field);
+        paddedPanel.add(msg);
         return paddedPanel;
     }   
 
