@@ -4,16 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class Invoices extends JFrame {
+public class Invoices extends JPanel {
 
-    private final CustomerDashboard dashboard;
+    private final MainFrame mainFrame;
 
-    public Invoices(CustomerDashboard dashboard) {
-        this.dashboard = dashboard;
-        setTitle("Invoices");
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Invoices(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 
         // Center panel for table
@@ -46,17 +42,11 @@ public class Invoices extends JFrame {
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton printButton = new JButton("Print");
         JButton backButton = new JButton("Back to Dashboard");
-        backButton.addActionListener(e -> {
-            this.setVisible(false);
-            dashboard.setVisible(true);
-        });
+
         actionButtonPanel.add(printButton);
-        actionButtonPanel.add(backButton);
 
         // Add panels to the frame
         add(tableScrollPane, BorderLayout.CENTER);
         add(actionButtonPanel, BorderLayout.SOUTH);
-
-        setVisible(true);
     }
 }

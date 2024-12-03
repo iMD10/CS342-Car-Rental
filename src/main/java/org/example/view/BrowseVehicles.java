@@ -2,21 +2,19 @@ package org.example.view;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
-
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.time.LocalDate;
 
-public class BrowseVehicles extends JFrame {
-    private String carsCategory[] = {"Camry", "Accord", "Sonata", "Yaris", "Accent", "Azera"};
-    private final CustomerDashboard dashboard;
+public class BrowseVehicles extends JPanel {
 
-    public BrowseVehicles(CustomerDashboard dashboard) {
-        this.dashboard = dashboard;
-        setTitle("Browse Vehicles");
-        setSize(600, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private String[] carsCategory = {"Camry", "Accord", "Sonata", "Yaris", "Accent", "Azera"};
+    private final MainFrame mainFrame;
+
+    public BrowseVehicles(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 
         // Top panel for date selection
@@ -60,18 +58,21 @@ public class BrowseVehicles extends JFrame {
         topPanel.add(toDatePicker);
         topPanel.add(searchButton);
 
-        // Center panel for table
-        String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
+        // Center panel for table with images
+        String[] columnNames = {"Photo", "Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
         Object[][] data = {
-                {"ACCORD", "MidSedan", "$500", "Black", "2021", false},
-                {"MaxCruize", "SUV", "$200", "White", "2020", false},
-                {"Fortuner", "SUV", "$220", "White", "2020", false}
+                {new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\Accord.png"), "ACCORD", "MidSedan", "$500", "Black", "2021", false},
+                {new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\MaxCruize.png"), "MaxCruize", "SUV", "$200", "White", "2020", false},
+                {new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\Fortuner.jpg"), "Fortuner", "SUV", "$220", "White", "2020", false}
         };
 
-        JTable vehicleTable = new JTable(data, columnNames) {
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 5) {
+                if (columnIndex == 0) {
+                    return ImageIcon.class;
+                }
+                if (columnIndex == 6) {
                     return Boolean.class;
                 }
                 return String.class;
@@ -79,17 +80,32 @@ public class BrowseVehicles extends JFrame {
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5;
+                return column == 6;
             }
         };
 
-        vehicleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Ensure single row selection
+        JTable vehicleTable = new JTable(tableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                if (component instanceof JLabel && column == 0) {
+                    JLabel label = (JLabel) component;
+                    ImageIcon icon = (ImageIcon) getValueAt(row, column);
+                    if (icon != null) {
+                        Image image = icon.getImage().getScaledInstance(100, 50, Image.SCALE_SMOOTH);
+                        label.setIcon(new ImageIcon(image));
+                    }
+                }
+                return component;
+            }
+        };
+
+        vehicleTable.setRowHeight(60); // Adjust row height to fit images
 
         JScrollPane tableScrollPane = new JScrollPane(vehicleTable);
 
         // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton backButton = new JButton("Back to Dashboard");
         JButton bookButton = new JButton("Book Now");
         bookButton.addActionListener(e -> {
             int selectedRow = vehicleTable.getSelectedRow();
@@ -98,25 +114,16 @@ public class BrowseVehicles extends JFrame {
             } else {
                 int response = JOptionPane.showConfirmDialog(null, "Do you want to proceed?", "Confirmation", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.YES_OPTION) {
-                    this.setVisible(false);
-                    Invoices pells = new Invoices(dashboard);
+                    // Booking logic here
                 }
             }
         });
 
-        backButton.addActionListener(e -> {
-            this.setVisible(false);
-            dashboard.setVisible(true);
-        });
-
-        bottomPanel.add(backButton);
         bottomPanel.add(bookButton);
 
         // Add panels to the frame
         add(topPanel, BorderLayout.NORTH);
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
-
-        setVisible(true);
     }
 }

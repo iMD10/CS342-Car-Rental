@@ -1,4 +1,4 @@
-package org.example.view;
+/*package org.example.view;
 import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
@@ -85,3 +85,4 @@ public class CustomerDashboard extends JFrame {
         new CustomerDashboard();
     }
 }
+*/
