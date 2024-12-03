@@ -12,36 +12,56 @@ public class CustomerDashboard extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // Top panel for logo and title
+        JPanel topPanel = new JPanel(new BorderLayout());
+
+        JLabel logoLabel = new JLabel();
+        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\R.png"); // Update with your logo path
+        Image scaledImage = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Adjust width and height
+        logoIcon = new ImageIcon(scaledImage);
+        logoLabel.setIcon(logoIcon);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        topPanel.add(logoLabel, BorderLayout.NORTH);
+
+        JLabel titleLabel = new JLabel("Welcome To Blu");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        topPanel.add(titleLabel, BorderLayout.SOUTH);
+
         // Center panel for action buttons with padding
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(20, 20, 20, 20); // Add padding between buttons
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
+        JPanel centerPanelContainer = new JPanel(new BorderLayout());
+        centerPanelContainer.setBorder(BorderFactory.createEmptyBorder(20, 200, 20, 200));
 
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1, 30, 20));
         JButton browseVehicleButton = new JButton("Browse Vehicles");
-        gbc.gridy = 0;
-        centerPanel.add(browseVehicleButton, gbc);
-
+        browseVehicleButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
+        browseVehicleButton.setForeground(Color.WHITE);
         JButton myBookingsButton = new JButton("My Bookings");
-        gbc.gridy = 1;
-        centerPanel.add(myBookingsButton, gbc);
-
+        myBookingsButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
+        myBookingsButton.setForeground(Color.WHITE);
         JButton viewInvoicesButton = new JButton("View Invoices");
-        gbc.gridy = 2;
-        centerPanel.add(viewInvoicesButton, gbc);
-
+        viewInvoicesButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
+        viewInvoicesButton.setForeground(Color.WHITE);
         JButton agreementsButton = new JButton("Agreements");
-        gbc.gridy = 3;
-        centerPanel.add(agreementsButton, gbc);
+        agreementsButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
+        agreementsButton.setForeground(Color.WHITE);
+        centerPanel.add(browseVehicleButton);
+        centerPanel.add(myBookingsButton);
+        centerPanel.add(viewInvoicesButton);
+        centerPanel.add(agreementsButton);
 
-        // Bottom panel for logout button
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton ExitButton = new JButton("Exit");
-        ExitButton.addActionListener((e -> System.exit(0)));
-        bottomPanel.add(ExitButton);
+        centerPanelContainer.add(centerPanel, BorderLayout.CENTER);
 
-        add(centerPanel, BorderLayout.CENTER);
+        // Bottom panel for exit button
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBackground(Color.LIGHT_GRAY);
+        exitButton.setForeground(Color.BLACK);
+        bottomPanel.add(exitButton);
+
+        // Adding panels to the frame
+        add(topPanel, BorderLayout.NORTH);
+        add(centerPanelContainer, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
@@ -51,6 +71,7 @@ public class CustomerDashboard extends JFrame {
         myBookingsButton.addActionListener(e -> showFrame(new MyBookings(this)));
         viewInvoicesButton.addActionListener(e -> showFrame(new Invoices(this)));
         agreementsButton.addActionListener(e -> showFrame(new Agreements(this)));
+        exitButton.addActionListener(e -> System.exit(0));
     }
 
     private void showFrame(JFrame frame) {
@@ -58,8 +79,7 @@ public class CustomerDashboard extends JFrame {
         frame.setVisible(true);
     }
 
-public static void main(String[] args) {
-
-    new CustomerDashboard();
+    public static void main(String[] args) {
+        new CustomerDashboard();
     }
 }
