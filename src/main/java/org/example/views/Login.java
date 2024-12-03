@@ -3,6 +3,9 @@ import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
 
+import org.example.controllers.UserController;
+import org.example.common.Validation;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,8 +47,10 @@ public class Login extends JFrame {
         JPanel loginPanel = new JPanel(new GridLayout(5, 1, 2, 2));
 
         loginPanel.add(createPaddedPanelLabel(title));
-        loginPanel.add(createPaddedPanel(emailLabel,emailTextField));
-        loginPanel.add(createPaddedPanel(passwordLabel, passwordField));
+        JLabel emailmsg = new JLabel("");
+        loginPanel.add(createPaddedPanel(emailLabel,emailTextField, emailmsg));
+        JLabel passwordmsg = new JLabel("");
+        loginPanel.add(createPaddedPanel(passwordLabel, passwordField, passwordmsg));
         loginPanel.add(createPaddedPanelButton(loginButton));
 
 
@@ -74,14 +79,42 @@ public class Login extends JFrame {
                 dispose();
             }
     });
+
+    loginButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+
+            Validation v = new Validation();
+
+
+            emailmsg.setText("");
+            passwordmsg.setText("");
+
+            if (!v.checkEmail(emailTextField.getText())){ // if it is False
+                emailmsg.setText("Email is incorrect!");
+                emailTextField.setText("");
+                return;
+            }
+
+            if (!v.checkPassword(passwordField.getText())){ // if it is False
+                passwordmsg.setText("Password is incorrect!");
+                passwordField.setText("");
+                return;
+            }
+
+            UserController uc = new UserController();
+            uc.loginUser(emailTextField.getText(), passwordField.getText());
+
+        }
+    });
 }
 
-    private JPanel createPaddedPanel(JLabel label, JTextField field) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paddedPanel.add(label);
         paddedPanel.add(field);
+        paddedPanel.add(msg);
         return paddedPanel;
-    }
+    }  
 
     private JPanel createPaddedPanelLabel(JLabel label) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
