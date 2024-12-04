@@ -24,7 +24,6 @@ public class MyBookings extends JPanel {
         // Center panel for table
         String[] columnNames = {"ID", "Car", "Start Date", "End Date","Status"};
         List<Booking> allBookings = bookingController.getAllBookingsByUserid(loggedUser.getId());
-        System.out.println(allBookings.size());
         Object[][] data = new Object[allBookings.size()][columnNames.length];
         for(int i = 0 ; i < allBookings.size();i++){
 
@@ -41,6 +40,11 @@ public class MyBookings extends JPanel {
         // Bottom panel for action buttons
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
+        JButton refreshButton = new JButton("Refresh");
+
+        refreshButton.addActionListener(e -> {
+            this.revalidate();
+        });
 
         cancelButton.addActionListener(e -> {
             JTable table = (JTable) tableScrollPane.getViewport().getView();
@@ -66,6 +70,7 @@ public class MyBookings extends JPanel {
         });
 
         actionButtonPanel.add(cancelButton);
+        actionButtonPanel.add(refreshButton);
 
         // Add panels to the frame
         add(tableScrollPane, BorderLayout.CENTER);

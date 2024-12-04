@@ -37,13 +37,14 @@ public class BookingController {
             ErrorHandler.handleException(e,e.getMessage());
         }
         return null;
-        }
+    }
     public Boolean CarIsBusy(int vehicleId, Timestamp start_date, Timestamp end_date) {
         String query = """
         SELECT COUNT(*) AS count 
         FROM booking 
         WHERE vehicle_id = ? 
-          AND NOT (start_date > ? OR end_date < ?)
+          AND start_date <= ? 
+          AND end_date >= ?
     """;
 
         try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, end_date, start_date)) {
@@ -55,6 +56,7 @@ public class BookingController {
         }
         return false; // Car is not busy
     }
+
 
     public List<Booking> getAllBookingsByUserid(int userId){
         List<Booking> bookings = new ArrayList<>();
