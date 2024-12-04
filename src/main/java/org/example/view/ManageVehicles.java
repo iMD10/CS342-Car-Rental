@@ -4,6 +4,8 @@ import org.example.classes.Vehicle;
 import org.example.classes.CarModel;
 import org.example.controllers.VehicleController;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +17,7 @@ public class ManageVehicles extends JPanel {
     private final VehicleController vehicleController = new VehicleController();
     private JTable table;
     private Object[][] data;
-    private final String[] columnNames = {"ID", "Name", "Type", "Price-per-day", "Color", "Year", "Serial Number"};
+    private final String[] columnNames = {"Image", "ID", "Name", "Type", "Price-per-day", "Color", "Year", "Serial Number"};
 
     public ManageVehicles(AdminDashboard dashboard) {
         this.dashboard = dashboard;
@@ -24,16 +26,30 @@ public class ManageVehicles extends JPanel {
 
         // Create initial table data
         updateTableData();
-        table = new JTable(data, columnNames);
+        table = new JTable(new DefaultTableModel(data, columnNames));
+        table.setRowHeight(100); // Set row height to display images properly
+
+        // Set custom renderer for the Image column
+        table.getColumn("Image").setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel();
+                    label.setIcon((ImageIcon) value);
+                    return label;
+                } else {
+                    return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                }
+            }
+        });
+
         JScrollPane tableScrollPane = new JScrollPane(table);
 
         // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton addButton = new JButton("Add Vehicle");
 
-
         bottomPanel.add(addButton);
-        
 
         // Add panels to the frame
         add(tableScrollPane, BorderLayout.CENTER);
@@ -46,8 +62,6 @@ public class ManageVehicles extends JPanel {
                 openAddVehicleDialog();
             }
         });
-
-
     }
 
     private void updateTableData() {
@@ -55,16 +69,19 @@ public class ManageVehicles extends JPanel {
         data = new Object[allVehicles.size()][columnNames.length];
         for (int i = 0; i < allVehicles.size(); i++) {
             Vehicle vehicle = allVehicles.get(i);
-            data[i][0] = vehicle.getId();
-            data[i][1] = vehicle.getCarModel().getName();
-            data[i][2] = vehicle.getCarModel().getType();
-            data[i][3] = vehicle.getCarModel().getPrice();
-            data[i][4] = vehicle.getColor();
-            data[i][5] = vehicle.getCarModel().getModelYear();
-            data[i][6] = vehicle.getSerialNumber();
+            String path = "res/" + vehicle.getCarModel().getName() + ".png";
+            ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+            data[i][0] = imageIcon;
+            data[i][1] = vehicle.getId();
+            data[i][2] = vehicle.getCarModel().getName();
+            data[i][3] = vehicle.getCarModel().getType();
+            data[i][4] = vehicle.getCarModel().getPrice();
+            data[i][5] = vehicle.getColor();
+            data[i][6] = vehicle.getCarModel().getModelYear();
+            data[i][7] = vehicle.getSerialNumber();
         }
         if (table != null) {
-            table.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
+            table.setModel(new DefaultTableModel(data, columnNames));
         }
     }
 
@@ -105,7 +122,7 @@ public class ManageVehicles extends JPanel {
                 } else {
                     int carModelId = carModels.get(carModelIndex).getId();
                     int vehicleId = vehicleController.addVehicle(carModelId, serialNumber, color);
-                        updateTableData();
+                    updateTableData();
                     if (vehicleId != -1) {
                         dialog.dispose();
                     } else {

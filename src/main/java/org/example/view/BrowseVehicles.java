@@ -8,6 +8,7 @@ import org.example.classes.Vehicle;
 import org.example.controllers.VehicleController;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.Timestamp;
@@ -53,23 +54,36 @@ public class BrowseVehicles extends JPanel {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"id","Name", "Type", "Price-per-day", "Color", "Year"};
+        String[] columnNames = {"Image", "ID", "Name", "Type", "Price-per-day", "Color", "Year"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
-                    case 0 -> int.class;
+                    case 0 -> ImageIcon.class;
+                    case 1 -> int.class;
                     default -> String.class;
                 };
             }
+
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-
         };
 
         JTable vehicleTable = new JTable(tableModel);
-        vehicleTable.setRowHeight(60);
+        vehicleTable.setRowHeight(100);
+        vehicleTable.getColumn("Image").setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel();
+                    label.setIcon((ImageIcon) value);
+                    return label;
+                } else {
+                    return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                }
+            }
+        });
         JScrollPane tableScrollPane = new JScrollPane(vehicleTable);
 
         // Search button action listener
@@ -83,12 +97,11 @@ public class BrowseVehicles extends JPanel {
             } else if (fromDate.isAfter(toDate)) {
                 JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (fromDate.isEqual(toDate)) {
-                JOptionPane.showMessageDialog(this, "Can't book same day ,Please selcet two different Dates.", "Error", JOptionPane.ERROR_MESSAGE);
-
+                JOptionPane.showMessageDialog(this, "Can't book same day, please select two different dates.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 // Fetch available vehicles and update table
-                Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());;
-                Timestamp tostamp =Timestamp.valueOf(toDate.atStartOfDay());;
+                Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
+                Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
                 List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
                 updateTable(tableModel, vehicles);
             }
@@ -103,10 +116,10 @@ public class BrowseVehicles extends JPanel {
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "No vehicle selected. Please select a vehicle to book.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                Vehicle selectedVehicle =  vehicleController.getVehicleByVehicleId((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
+                Vehicle selectedVehicle = vehicleController.getVehicleByVehicleId((int) tableModel.getValueAt(selectedRow, 1)); // Assuming Vehicle is stored in table model
                 // Pass selectedVehicle to booking logic (e.g., open RentalAgreement)
                 setVisible(false);
-                RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser ,fromDatePicker.getDate(), toDatePicker.getDate(),true);
+                RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser, fromDatePicker.getDate(), toDatePicker.getDate(), true);
             }
         });
 
@@ -116,34 +129,31 @@ public class BrowseVehicles extends JPanel {
         add(topPanel, BorderLayout.NORTH);
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
-
-
     }
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
         tableModel.setRowCount(0); // Clear existing rows
         for (Vehicle vehicle : vehicles) {
-//            ImageIcon icon = new ImageIcon(vehicle.getImagePath());
-//            Image image = icon.getImage().getScaledInstance(100, 50, Image.SCALE_SMOOTH);
-//            icon = new ImageIcon(image);
+            String path = "res/" + vehicle.getCarModel().getName() + ".png";
+            ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
 
             tableModel.addRow(new Object[]{
+                    imageIcon,
                     vehicle.getId(),
                     vehicle.getCarModel().getName(),
                     vehicle.getCarModel().getType(),
                     vehicle.getCarModel().getPrice(),
                     vehicle.getColor(),
-                    vehicle.getCarModel().getModelYear()// Unselected checkbox
+                    vehicle.getCarModel().getModelYear()
             });
-
         }
     }
 
     private String[] getVehicleTypes() {
         // Fetch vehicle types dynamically from the controller
-        List<CarModel> carModels= vehicleController.getCarModels();
+        List<CarModel> carModels = vehicleController.getCarModels();
         List<String> types = new ArrayList<>(carModels.size());
-        for(CarModel cars :carModels) {
+        for (CarModel cars : carModels) {
             types.add(cars.getType());
         }
         return types.toArray(new String[0]);

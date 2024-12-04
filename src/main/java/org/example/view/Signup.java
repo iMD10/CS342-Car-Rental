@@ -1,4 +1,5 @@
 package org.example.view;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,11 +22,10 @@ public class Signup extends JFrame {
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W/4, H/4, W/2, H/2);
+        this.setBounds(W / 4, H / 4, W / 2, H / 2);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(2,1));
+        JPanel mainPanel = new JPanel(new BorderLayout(2, 1));
 
-        // Create login and signup panels
         JPanel signupPanel = createSignupPanel();
 
         JButton loginButton = new JButton("Log In");
@@ -34,31 +34,25 @@ public class Signup extends JFrame {
         footerPanel.add(GoLabel);
         footerPanel.add(loginButton);
 
-        // Add panels to the main panel with card layout
         mainPanel.add(signupPanel, BorderLayout.CENTER);
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
-        // Add main panel to the frame
         add(mainPanel);
-
 
         setVisible(true);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open SignUp form and close current form
                 new Login().setVisible(true);
                 dispose();
             }
         });
-
     }
 
-
-
     private JPanel createSignupPanel() {
+        JLabel welcomeLabel = new JLabel("Welcome to Blu");
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
-        // Your existing signup panel code
         JLabel title = new JLabel("Sign Up Page");
         JLabel fnLabel = new JLabel("First Name:               ");
         JTextField fnTextField = new JTextField(20);
@@ -72,12 +66,10 @@ public class Signup extends JFrame {
         JPasswordField passwordField = new JPasswordField(20);
         JButton signupButton = new JButton("Sign Up");
 
-
-
-        JPanel signupFieldsPanel = new JPanel(new GridLayout(10, 1, 5, 5));
+        JPanel signupFieldsPanel = new JPanel(new GridLayout(10, 1, 3, 3));
         JLabel logoLabel = new JLabel();
         ImageIcon logoIcon = new ImageIcon("res\\R.png");
-        Image scaledImage = logoIcon.getImage().getScaledInstance(90, 33, Image.SCALE_SMOOTH);
+        Image scaledImage = logoIcon.getImage().getScaledInstance(90, 35, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
         JPanel logoPanel = new JPanel();
@@ -85,13 +77,14 @@ public class Signup extends JFrame {
         logoPanel.add(logoLabel, BorderLayout.CENTER);
 
         signupFieldsPanel.add(logoPanel);
+        signupFieldsPanel.add(createPaddedPanelLabel(welcomeLabel)); // Add Welcome Label
         signupFieldsPanel.add(createPaddedPanelLabel(title));
         JLabel fnamemsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(fnLabel,fnTextField, fnamemsg));
+        signupFieldsPanel.add(createPaddedPanel(fnLabel, fnTextField, fnamemsg));
         JLabel lnamemsg = new JLabel("");
         signupFieldsPanel.add(createPaddedPanel(lnLabel, lnTextField, lnamemsg));
         JLabel phonemsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField,phonemsg));
+        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField, phonemsg));
         JLabel emailmsg = new JLabel("");
         signupFieldsPanel.add(createPaddedPanel(emailLabel, emailTextField, emailmsg));
         JLabel passwordmsg = new JLabel("");
@@ -109,46 +102,44 @@ public class Signup extends JFrame {
                 emailmsg.setText("");
                 passwordmsg.setText("");
 
-                if (!v.checkName(fnTextField.getText())){ // if it is False
+                if (!v.checkName(fnTextField.getText())) { // if it is False
                     fnamemsg.setText("Must only contain alphabetic characters or numbers!");
                     fnTextField.setText("");
                     return;
                 }
 
-                if (!v.checkName(lnTextField.getText())){ // if it is False
+                if (!v.checkName(lnTextField.getText())) { // if it is False
                     lnamemsg.setText("Must only contain alphabetic characters or numbers!");
                     lnTextField.setText("");
                     return;
                 }
 
-                if (!v.checkPhone(phoneTextField.getText())){ // if it is False
+                if (!v.checkPhone(phoneTextField.getText())) { // if it is False
                     phonemsg.setText("Must be 10 numbers!");
                     phoneTextField.setText("");
                     return;
                 }
 
-                if (!v.checkEmail(emailTextField.getText())){ // if it is False
+                if (!v.checkEmail(emailTextField.getText())) { // if it is False
                     emailmsg.setText("Must contain '@'!");
                     emailTextField.setText("");
                     return;
                 }
 
-                if (!v.checkPassword(passwordField.getText())){ // if it is False
+                if (!v.checkPassword(passwordField.getText())) { // if it is False
                     passwordmsg.setText("Must be more than 6 Characters!");
                     passwordField.setText("");
                     return;
                 }
 
-
                 UserController uc = new UserController();
-                User loggedCustomer = uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+                User loggedCustomer = uc.registerCustomer(emailTextField.getText(), fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(), passwordField.getText());
                 dispose();
                 MainFrame mf = new MainFrame(loggedCustomer);
             }
         });
 
         return signupFieldsPanel;
-
     }
 
     private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
@@ -157,14 +148,13 @@ public class Signup extends JFrame {
         paddedPanel.add(field);
         paddedPanel.add(msg);
         return paddedPanel;
-    }   
+    }
 
     private JPanel createPaddedPanelLabel(JLabel label) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         return paddedPanel;
     }
-
 
     private JPanel createPaddedPanelButton(JButton button) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
