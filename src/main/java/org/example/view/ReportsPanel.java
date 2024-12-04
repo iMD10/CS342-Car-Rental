@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.controllers.ReportingController;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class ReportsPanel extends JPanel {
@@ -10,72 +11,68 @@ public class ReportsPanel extends JPanel {
     private ReportingController reportingController = new ReportingController();
 
     public ReportsPanel() {
-        setLayout(new GridLayout(6, 1));
-
-        JPanel revenuePanel = createRevenuePanel();
-        JPanel bookingPanel = createBookingPanel();
-        JPanel customerPanel = createcustomerPanel();
-        JPanel ReturnedPanel = createReturnedPanel();
-        JPanel ActivePanel = createActivePanel();
-        JPanel eCancelledPanel = createCancelledPanel();
+        setLayout(new BorderLayout());
 
 
-        add(revenuePanel);
-        add(bookingPanel);
-        add(customerPanel);
-        add(ReturnedPanel);
-        add(ActivePanel);
-        add(eCancelledPanel);
+        // Center section: Report details
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridLayout(0, 1, 0, 10));
+
+        centerPanel.add(createRevenuePanel());
+        centerPanel.add(createBookingSummaryPanel());
+        centerPanel.add(createCustomerPanel());
+
+        add(centerPanel, BorderLayout.CENTER);
+
     }
 
     private JPanel createRevenuePanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
+        JPanel panel = new JPanel(new BorderLayout());
         double revenue = reportingController.getRevenue();
-            panel.add(new JLabel("Total Revenue:"+ revenue));
-            return panel;
+        JLabel revenueLabel = new JLabel("Total Revenue: $" + revenue);
+        revenueLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+        revenueLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(revenueLabel, BorderLayout.CENTER);
+        return panel;
     }
 
-    private JPanel createBookingPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        int TotalBookings = reportingController.getTotalBookings();
-        panel.add(new JLabel("Total Bookings:"+ TotalBookings));
+    private JPanel createBookingSummaryPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.setBorder(BorderFactory.createTitledBorder("Bookings Summary"));
+        Font borderFont = new Font("Arial", Font.PLAIN, 24);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Bookings Summary");
+        titledBorder.setTitleFont(borderFont);
+        panel.setBorder(titledBorder);
+        JLabel activeLabel = new JLabel("Active: " + reportingController.getTotalActive());
+        activeLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+        JLabel completedLabel = new JLabel("Completed: " + reportingController.getTotalBookings());
+        completedLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+        JLabel canceledLabel = new JLabel("Canceled: " + reportingController.getTotalCancelled());
+        canceledLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+        JLabel totalLabel = new JLabel("Total: " + reportingController.getTotalBookings());
+        totalLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+
+
+        activeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(activeLabel);
+        completedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(completedLabel);
+        canceledLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(canceledLabel);
+        totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(totalLabel);
 
         return panel;
     }
 
-    private JPanel createcustomerPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        int TotalCustomer = reportingController.getTotalCustomer();
-        panel.add(new JLabel("Total Customer:"+ TotalCustomer));
-
+    private JPanel createCustomerPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        int totalCustomers = reportingController.getTotalCustomer();
+        JLabel customerLabel = new JLabel("Total Customers: " + totalCustomers);
+        customerLabel.setFont(new Font("Arial",Font.PLAIN, 30));
+        customerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(customerLabel);
         return panel;
     }
-    private JPanel createActivePanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        int TotalActive = reportingController.getTotalActive();
-        panel.add(new JLabel("Total Active:"+ TotalActive));
 
-        return panel;
-    }
-    private JPanel createCancelledPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        int TotalCancelled = reportingController.getTotalCancelled();
-        panel.add(new JLabel("Total Cancelled:"+ TotalCancelled));
-
-        return panel;
-    }
-    private JPanel createReturnedPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
-        int TotalReturned = reportingController.getTotalReturned();
-        panel.add(new JLabel("Total Returned:"+ TotalReturned));
-
-        return panel;
-    }
 }
-
