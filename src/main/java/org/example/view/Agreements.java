@@ -1,5 +1,7 @@
 package org.example.view;
 
+import org.example.classes.User;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -8,7 +10,7 @@ public class Agreements extends JPanel {
 
     private final MainFrame mainFrame;
 
-    public Agreements(MainFrame mainFrame) {
+    public Agreements(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 

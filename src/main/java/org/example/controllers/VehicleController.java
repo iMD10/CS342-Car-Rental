@@ -125,11 +125,11 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
     public Vehicle getVehicleByVehicleId(int vehicleId) {
         db = new DatabaseHandler();
-        String query = "SELECT * FROM vehicle JOIN car_model on car_model_id = car_model.id WHERE vehicle.id = ?;";
+        String query = " SELECT vehicle.id as vehicle_id, car_model_id, model_year, serial_number, name, color, company, type, price FROM vehicle JOIN car_model on car_model_id = car_model.id WHERE vehicle.id = ?;";
         try (ResultSet rs = db.executeQuery(query, vehicleId)) {
             if (rs.next()) {
                 return new Vehicle(
-                        rs.getInt("vehicle.id"),
+                        rs.getInt("vehicle_id"),
                         rs.getInt("car_model_id"),
                         rs.getInt("model_year"),
                         rs.getString("serial_number"),

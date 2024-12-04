@@ -2,6 +2,8 @@ package org.example.view;
 
 import org.example.classes.*;
 
+import org.example.controllers.AgreementController;
+import org.example.controllers.BookingController;
 import org.example.controllers.UserController;
 import org.example.controllers.VehicleController;
 
@@ -10,6 +12,7 @@ import java.awt.*;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class RentalAgreement extends JFrame {
 
@@ -18,6 +21,7 @@ public class RentalAgreement extends JFrame {
 
         // Set layout and size of the frame
         setLayout(new BorderLayout());
+        setLocationRelativeTo(null);
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -27,10 +31,11 @@ public class RentalAgreement extends JFrame {
 
         // Getting Vehicle details
 
-        JLabel customerNameLabel = new JLabel("Customer Name: " + user.getName());
-        JLabel rentalDatesLabel = new JLabel("Rental Dates: " +start + " to " + end);
-        JLabel totalPriceLabel = new JLabel("Total Price: $" + vehicle.getCarModel().getPrice());
-        JLabel vehicleDetailsLabel = new JLabel("Vehicle: " + vehicle.getCarModel().getName());
+        long diffInDays = ChronoUnit.DAYS.between(start, end);
+        JLabel customerNameLabel = new JLabel(" Customer Name: " + user.getName());
+        JLabel rentalDatesLabel = new JLabel(" Rental Dates: " +start + " to " + end);
+        JLabel totalPriceLabel = new JLabel(" Total Price: $" + ( diffInDays * (vehicle.getCarModel().getPrice() )));
+        JLabel vehicleDetailsLabel = new JLabel(" Vehicle: " + vehicle.getCarModel().getName());
 
         detailsPanel.add(customerNameLabel);
         detailsPanel.add(rentalDatesLabel);
@@ -62,6 +67,7 @@ public class RentalAgreement extends JFrame {
 
         By booking a vehicle, you agree to these terms.
         """);
+        termsArea.setEditable(false);
         termsArea.setWrapStyleWord(true);
         termsArea.setLineWrap(true);
         termsArea.setEditable(false); // Read-only
@@ -84,8 +90,15 @@ public class RentalAgreement extends JFrame {
 
         // Button Action Listeners
         acceptButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Agreement accepted!");
+            BookingController bookingController = new BookingController();
+            Timestamp fromstamp = Timestamp.valueOf(start.atStartOfDay());;
+            Timestamp tostamp =Timestamp.valueOf(end.atStartOfDay());;
+            Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(),fromstamp,tostamp);
 
+            AgreementController agreementController = new AgreementController();
+
+            agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
+            JOptionPane.showMessageDialog(this, "Agreement accepted!");
             dispose(); // Close the frame
         });
 

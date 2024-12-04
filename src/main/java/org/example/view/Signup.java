@@ -1,9 +1,10 @@
-package org.example.views;
+package org.example.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.formdev.flatlaf.*;
+import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
 
@@ -130,9 +131,11 @@ public class Signup extends JFrame {
                     return;
                 }
 
-                UserController uc = new UserController();
-                uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
 
+                UserController uc = new UserController();
+                User loggedCustomer = uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+                dispose();
+                MainFrame mf = new MainFrame(loggedCustomer);
             }
         });
 

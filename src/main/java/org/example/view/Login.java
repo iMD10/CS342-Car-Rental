@@ -1,8 +1,9 @@
-package org.example.views;
+package org.example.view;
 import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
 
+import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
 
@@ -102,8 +103,13 @@ public class Login extends JFrame {
             }
 
             UserController uc = new UserController();
-            uc.loginUser(emailTextField.getText(), passwordField.getText());
-
+            User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
+            if (loggedUser.isAdmin()){
+                AdminDashboard ad = new AdminDashboard();
+            }
+            else {
+                MainFrame mf = new MainFrame(loggedUser);
+            }
         }
     });
 }

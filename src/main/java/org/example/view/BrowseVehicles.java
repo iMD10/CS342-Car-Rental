@@ -20,7 +20,7 @@ public class BrowseVehicles extends JPanel {
     private final MainFrame mainFrame;
     private final VehicleController vehicleController;
 
-    public BrowseVehicles(MainFrame mainFrame) {
+    public BrowseVehicles(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
         this.vehicleController = new VehicleController(); // Initialize controller
         setLayout(new BorderLayout());
@@ -53,21 +53,19 @@ public class BrowseVehicles extends JPanel {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year"};
+        String[] columnNames = {"id","Name", "Type", "Price-per-day", "Color", "Year"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
-                    case 0 -> ImageIcon.class;
-                    case 6 -> Boolean.class;
+                    case 0 -> int.class;
                     default -> String.class;
                 };
             }
-
-            @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 6; // Only allow checkbox editing
+                return false;
             }
+
         };
 
         JTable vehicleTable = new JTable(tableModel);
@@ -102,7 +100,7 @@ public class BrowseVehicles extends JPanel {
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "No vehicle selected. Please select a vehicle to book.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                Vehicle selectedVehicle = (Vehicle) tableModel.getValueAt(selectedRow, 0); // Assuming Vehicle is stored in table model
+                Vehicle selectedVehicle =  vehicleController.getVehicleByVehicleId((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
                 // Pass selectedVehicle to booking logic (e.g., open RentalAgreement)
                 setVisible(false);
                 RentalAgreement ra = new RentalAgreement(selectedVehicle, new User(1,"a","a","a","a",false) ,fromDatePicker.getDate(), toDatePicker.getDate());
@@ -115,6 +113,8 @@ public class BrowseVehicles extends JPanel {
         add(topPanel, BorderLayout.NORTH);
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+
+
     }
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
@@ -125,12 +125,14 @@ public class BrowseVehicles extends JPanel {
 //            icon = new ImageIcon(image);
 
             tableModel.addRow(new Object[]{
+                    vehicle.getId(),
                     vehicle.getCarModel().getName(),
                     vehicle.getCarModel().getType(),
                     vehicle.getCarModel().getPrice(),
                     vehicle.getColor(),
                     vehicle.getCarModel().getModelYear()// Unselected checkbox
             });
+
         }
     }
 

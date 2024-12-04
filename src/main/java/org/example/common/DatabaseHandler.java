@@ -32,7 +32,7 @@ public class DatabaseHandler {
             if (rowsAffected > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getInt(1); // Return the generated key
+                        return rs.getInt("id"); // Return the generated key
                     }
                 }
             }

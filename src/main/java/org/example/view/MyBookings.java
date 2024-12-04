@@ -1,5 +1,7 @@
 package org.example.view;
 
+import org.example.classes.User;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,7 +9,7 @@ public class MyBookings extends JPanel {
 
     private final MainFrame mainFrame;
 
-    public MyBookings(MainFrame mainFrame) {
+    public MyBookings(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 

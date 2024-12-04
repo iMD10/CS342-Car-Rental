@@ -13,7 +13,7 @@ public class UserController {
     private DatabaseHandler db = new DatabaseHandler();
 
     public User loginUser(String email, String password) {
-        String query = "SELECT * FROM user12 WHERE email = ? AND password = ?";
+        String query = "SELECT * FROM users WHERE email = ? AND password = ?";
         db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(query, email, password)){
 
@@ -69,7 +69,7 @@ public class UserController {
 
     public List<User> getAllUsers() {
             db = new DatabaseHandler();
-            String query = "select * from user";
+            String query = "select * from users";
         try(ResultSet rs = db.executeQuery(query)){
             List<User> users = new ArrayList<>();
             while(rs.next()) {
