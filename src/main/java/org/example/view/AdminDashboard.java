@@ -3,12 +3,13 @@ package org.example.view;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import java.awt.*;
+import org.example.classes.User;
 
 public class AdminDashboard extends JFrame {
 
     private JPanel contentPanel;
 
-    public AdminDashboard() {
+    public AdminDashboard(User loggedUser) {
         setTitle("Admin Dashboard");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -68,8 +69,4 @@ public class AdminDashboard extends JFrame {
         cl.show(contentPanel, panelName);
     }
 
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        new AdminDashboard();
-    }
 }

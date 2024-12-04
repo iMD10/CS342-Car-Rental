@@ -106,7 +106,7 @@ public class Login extends JFrame {
             User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
             dispose();
             if (loggedUser.isAdmin()){
-                AdminDashboard ad = new AdminDashboard();
+                AdminDashboard ad = new AdminDashboard(loggedUser);
             }
             else {
 
