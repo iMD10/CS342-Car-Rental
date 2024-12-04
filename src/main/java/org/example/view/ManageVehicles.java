@@ -1,6 +1,7 @@
 package org.example.view;
 
 import org.example.classes.Vehicle;
+import org.example.common.TableCreator;
 import org.example.controllers.VehicleController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -35,23 +36,7 @@ public class ManageVehicles extends JPanel  {
             data[i][4] = vehicle.getCarModel().getModelYear();
 
         }
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 5) {
-                    return Boolean.class;
-                }
-                return String.class;
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        JTable vehicleTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(vehicleTable);
+        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false});
 
         // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
