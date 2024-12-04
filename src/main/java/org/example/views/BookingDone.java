@@ -1,43 +1,43 @@
 package org.example.views;
 
+import org.example.classes.Vehicle;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class BookingDone extends JFrame {
-
-    private JLabel carImage, doneLabel, printAgreementLabel;
-
-    BookingDone(){
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+public class BookingDone extends JPanel {
 
 
+    public BookingDone(Vehicle selectedCar) {
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
-        // A blue line border, 3 pixels thick
-        // mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        doneLabel = new JLabel("Booking Done!");
+        // "Booking Done!" label setup
+        JLabel doneLabel = new JLabel("Booking Done!");
         doneLabel.setFont(new Font("SansSerif", Font.BOLD, 35));
+
+        // Car image setup
         ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
         Image scaledImage = carImageSource.getImage().getScaledInstance(350, 175, Image.SCALE_SMOOTH);
         carImageSource = new ImageIcon(scaledImage);
-        carImage = new JLabel(carImageSource);
+        JLabel carImage = new JLabel(carImageSource);
 
-        printAgreementLabel = new JLabel("<html><u>Print Agreement?</u></html>");
+        // Print agreement label setup
+        JLabel printAgreementLabel = new JLabel("<html><u>Print Agreement?</u></html>");
         printAgreementLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         printAgreementLabel.setForeground(Color.BLUE);
 
+        // Layout for the different panels
         JPanel donePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         donePanel.add(doneLabel);
+
         JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         imagePanel.add(carImage);
+
         JPanel agreementPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         agreementPanel.add(printAgreementLabel);
 
+        // Add components to the main panel
         mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(donePanel);
@@ -46,13 +46,16 @@ public class BookingDone extends JFrame {
         mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(Box.createVerticalGlue());
 
+        // Add the main panel to this JPanel
+        this.setLayout(new BorderLayout());
         this.add(mainPanel, BorderLayout.CENTER);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        new BookingDone();
-    }
-
+    // If this JPanel is to be used in a JFrame, you can add this panel like so:
+    // JFrame frame = new JFrame("Booking Done");
+    // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // frame.setSize(800, 600); // Set an appropriate size
+    // frame.add(new BookingDone());
+    // frame.setVisible(true);
 }
+

@@ -1,5 +1,7 @@
 package org.example.views;
 
+import org.example.classes.User;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +12,7 @@ public class AccountPage extends JPanel {
     private JTextField titleTf, fNameTf, lNameTf, emailTf, phoneTf;
     private JPanel mainPanel;
 
-    AccountPage() {
+    AccountPage(User loggedUser) {
         this.setLayout(new BorderLayout()); // Set layout for the main panel
 
         mainPanel = new JPanel(new BorderLayout());
@@ -110,7 +112,7 @@ public class AccountPage extends JPanel {
         return labelPanel;
     }
 
-    public static void main(String[] args) {
-        new AccountPage();
-    }
+//    public static void main(String[] args) {
+//        new AccountPage(loggedUser);
+//    }
 }
