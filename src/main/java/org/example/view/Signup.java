@@ -11,7 +11,7 @@ import org.example.common.Validation;
 public class Signup extends JFrame {
 
     public Signup() {
-        
+        this.setResizable(false);
         this.setTitle("Sign up");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -160,7 +160,7 @@ public class Signup extends JFrame {
     }   
 
     private JPanel createPaddedPanelLabel(JLabel label) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         return paddedPanel;
     }
