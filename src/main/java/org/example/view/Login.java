@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
 
-    private JLabel title, emailLabel, passwordLabel, GoLabel;
+    private JLabel welcome, title, emailLabel, passwordLabel, GoLabel;
     private JButton loginButton, signUpButton;
     private JTextField emailTextField;
     private JPasswordField passwordField;
@@ -35,6 +35,8 @@ public class Login extends JFrame {
         //JPanel slideBarPanel = new JPanel(new GridLayout(3,1));
 
         // Initialize components
+        welcome = new JLabel("Welcom to Blu");
+        welcome.setFont(new Font("Arial", Font.BOLD, 20));
         title = new JLabel("Log in Page");
         emailLabel = new JLabel("Email:       ");
         passwordLabel = new JLabel("Password: ");
@@ -45,8 +47,17 @@ public class Login extends JFrame {
         passwordField = new JPasswordField(20);
 
         // Panel for login fields
-        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 2, 2));
-
+        JPanel loginPanel = new JPanel(new GridLayout(6, 1, 1, 1));
+        JLabel logoLabel = new JLabel();
+        ImageIcon logoIcon = new ImageIcon("res\\R.png");
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 60, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(scaledImage);
+        logoLabel.setIcon(logoIcon);
+        JPanel logoPanel = new JPanel();
+        logoPanel.setPreferredSize(new Dimension(100, 85));
+        logoPanel.add(logoLabel, BorderLayout.CENTER);
+        loginPanel.add(logoPanel);
+        loginPanel.add(createPaddedPanelLabel(welcome));
         loginPanel.add(createPaddedPanelLabel(title));
         JLabel emailmsg = new JLabel("");
         loginPanel.add(createPaddedPanel(emailLabel,emailTextField, emailmsg));
