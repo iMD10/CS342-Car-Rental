@@ -33,7 +33,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer ID", "Car ID", "Start Date", "End Date", "Status", "Selected"};
+        String[] columnNames = {"ID", "Customer ID", "Car ID", "Start Date", "End Date", "Status"};
         List<Booking> allBookings = bookingController.getAllBookings();
 
         Object[][] data = new Object[allBookings.size()][columnNames.length];
@@ -45,12 +45,11 @@ public class ManageBookings extends JPanel  {
             data[i][3] = allBookings.get(i).getStart_date();
             data[i][4] = allBookings.get(i).getEnd_date();
             data[i][5] = allBookings.get(i).getStatus();
-            data[i][6] = false;
         }
 
 
 
-        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false, true});
+        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false});
 
 
         // Bottom panel for action buttons
