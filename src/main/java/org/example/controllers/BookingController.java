@@ -22,13 +22,13 @@ public class BookingController {
             // Calculating cost
             VehicleController vehicleController = new VehicleController();
             Vehicle vehicle = vehicleController.getVehicleByVehicleId(vehicleId);
-            long differenceInMillis = start_date.getTime() - end_date.getTime();
+            long differenceInMillis = end_date.getTime() - start_date.getTime();
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
             double cost = vehicle.getCarModel().getPrice() * differenceInDays;
             String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status, cost) VALUES (?, ?, ?, ?, ?, 'active', ?)";
             int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
             System.out.println(id);
-            booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date, cost);
+            booking = new Booking(id, userId, vehicleId,"ACTIVE", now,null ,start_date, end_date, cost);
             return booking;
         }
         catch (SQLException e) {

@@ -91,7 +91,23 @@ public class ManageBookings extends JPanel  {
         table.getModel().setValueAt("CANCELD", selectedRows[0], 5);
 
         });
-
+        markReturnedButton.addActionListener(e->{
+            JTable table = (JTable) tableScrollPane.getViewport().getView();
+            int[] selectedRows = table.getSelectedRows();
+            if(selectedRows.length > 1){
+                ErrorHandler.handleWarning("Can't select more than one row, please select one");
+                return;
+            }
+            else if(selectedRows.length == 0){
+                ErrorHandler.handleWarning("No row selected, please select one");
+                return;
+            } else if (table.getValueAt(selectedRows[0], 5).equals("RETURNED") ) {
+                ErrorHandler.handleWarning("this booking is already RETURNED");
+                return;
+            }
+            bookingController.editBookingStatusToReturned((Integer) table.getValueAt(selectedRows[0],0));
+            table.getModel().setValueAt("RETURNED", selectedRows[0], 5);
+        });
 
 
     }
