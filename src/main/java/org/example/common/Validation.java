@@ -5,7 +5,7 @@ public class Validation {
         return email != null && email.trim().contains("@");
     }
     public boolean checkPassword(String password) {
-        return password.length() >= 6;
+        return (password.length() >= 6 && password.matches("^[a-zA-Z0-9_-]+$"));
     }
     public boolean checkName(String name) {
         return name.matches("^[a-zA-Z0-9_-]+$");

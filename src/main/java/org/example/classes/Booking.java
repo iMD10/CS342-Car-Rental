@@ -78,4 +78,16 @@ public class Booking {
     public void setEnd_date(Timestamp end_date) {
         this.end_date = end_date;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
 }

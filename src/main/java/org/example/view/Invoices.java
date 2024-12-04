@@ -13,11 +13,11 @@ public class Invoices extends JPanel {
         setLayout(new BorderLayout());
 
         // Center panel for table
-        String[] columnNames = {"ID", "Name", "Start Date", "End Date", "Late Fees", "Total Price", "Selected"};
+        String[] columnNames = {"ID", "Car", "Start Date", "End Date", "Late Fees", "Total Price"};
         Object[][] data = {
-                {"1", "John Doe", "01/01/2024", "03/01/2024", "$20", "$520", false},
-                {"2", "Jane Smith", "02/01/2024", "05/01/2024", "$15", "$415", false},
-                {"3", "Robert Brown", "01/02/2024", "07/02/2024", "$10", "$610", false}
+                {"1", "Max Cruise", "01/01/2024", "03/01/2024", "$20", "$520"},
+                {"2", "Max Cruise", "02/01/2024", "05/01/2024", "$15", "$415"},
+                {"3", "Max Cruise", "01/02/2024", "07/02/2024", "$10", "$610"}
         };
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {

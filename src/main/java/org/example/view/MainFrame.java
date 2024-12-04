@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
         topBar.add(logoPanel);
 
         Dimension buttonSize = new Dimension(100, 85);
-        JButton homeButton = new JButton("Home");
+        JButton homeButton = new JButton("Book");
         JButton myBookingsButton = new JButton("My Bookings");
         JButton invoicesButton = new JButton("Invoices");
         JButton agreementsButton = new JButton("Agreements");

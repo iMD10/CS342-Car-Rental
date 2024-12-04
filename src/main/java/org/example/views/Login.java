@@ -109,7 +109,7 @@ public class Login extends JFrame {
 }
 
     private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         paddedPanel.add(field);
         paddedPanel.add(msg);
