@@ -7,13 +7,17 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class UserWindowFrame extends JFrame {
+public class UserUIWindow extends JFrame {
 
+    public  static final String BROWSE_PANEL = "BrowseVehicles";
+    public  static final String CAR_DETAILS_PANEL = "CarDetails";
+    public  static final String ACCOUNT_PANEL = "AccountPage";
+    public  static final String HISTORY_PANEL = "BookingHistory";
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
 
-    UserWindowFrame(){
+    UserUIWindow(){
 
 
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -24,9 +28,9 @@ public class UserWindowFrame extends JFrame {
 
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
-        cardPanel.add(new BrowseVehicles(), "BrowseVehicles");
-        cardPanel.add(new AccountPage(), "AccountPage");
-        cardPanel.add(new BookingHistory(), "BookingHistory");
+        cardPanel.add(new BrowseVehicles(), BROWSE_PANEL);
+        cardPanel.add(new AccountPage(), ACCOUNT_PANEL);
+        cardPanel.add(new BookingHistory(), HISTORY_PANEL);
 //        cardPanel.add(new CarDetails(), "CarDetails");
 
 //        JPanel mainPanel = new JPanel(new BorderLayout());      // GLOBAL panel
@@ -58,11 +62,11 @@ public class UserWindowFrame extends JFrame {
 
         // Create the sidebar buttons using the helper method
         accountSideButton = createSideBarButton("res\\personIcon.png", "Account");
-        accountSideButton.addMouseListener(new MouseAction("AccountPage"));
+        accountSideButton.addMouseListener(new MouseAction(ACCOUNT_PANEL));
         browseSideButton = createSideBarButton("res\\searchIcon.png", "Browse");
-        browseSideButton.addMouseListener(new MouseAction("BrowseVehicles"));
+        browseSideButton.addMouseListener(new MouseAction(BROWSE_PANEL));
         historySideButton = createSideBarButton("res\\bookingIcon.png", "History");
-        historySideButton.addMouseListener(new MouseAction("BookingHistory"));
+        historySideButton.addMouseListener(new MouseAction(HISTORY_PANEL));
 
         // Add buttons with automatic spacing
         sideBarPanel.add(accountSideButton);
@@ -125,7 +129,7 @@ public class UserWindowFrame extends JFrame {
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
-        new UserWindowFrame();
+        new UserUIWindow();
     }
 
 }
