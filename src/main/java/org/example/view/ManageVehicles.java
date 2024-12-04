@@ -1,13 +1,16 @@
 package org.example.view;
 
+import org.example.classes.Vehicle;
+import org.example.controllers.VehicleController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class ManageVehicles extends JPanel  {
 
    private final AdminDashboard dashboard;
-
+   private final VehicleController vehicleController = new VehicleController();
 
     public ManageVehicles(AdminDashboard dashboard) {
 
@@ -31,12 +34,18 @@ public class ManageVehicles extends JPanel  {
 
         // Center panel for table
         String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
-        Object[][] data = {
-                {"ACCORD", "MIdSidan", "$500", "Black", "2021", false},
-                {"MaxCruize", "SUV", "$200", "White", "2020", false},
-                {"Fortuner", "SUV", "$220", "White", "2020", false}
-        };
+        List<Vehicle> allVehicles = vehicleController.getAllVehicles();
 
+        Object[][] data = new Object[allVehicles.size()][6];
+        for (int i = 0; i < allVehicles.size(); i++) {
+            Vehicle vehicle = allVehicles.get(i);
+            data[i][0] = vehicle.getCarModel().getName();
+            data[i][1] = vehicle.getCarModel().getType();
+            data[i][2] = vehicle.getCarModel().getPrice();
+            data[i][3] = vehicle.getColor();
+            data[i][4] = vehicle.getCarModel().getModelYear();
+            data[i][5] = false;
+        }
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
@@ -48,7 +57,7 @@ public class ManageVehicles extends JPanel  {
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5;
+                return false;
             }
         };
 
