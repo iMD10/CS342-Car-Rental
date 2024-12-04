@@ -33,7 +33,6 @@ public class Signup extends JFrame {
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         footerPanel.add(GoLabel);
         footerPanel.add(loginButton);
-        ;
 
         // Add panels to the main panel with card layout
         mainPanel.add(signupPanel, BorderLayout.CENTER);
@@ -161,7 +160,7 @@ public class Signup extends JFrame {
     }   
 
     private JPanel createPaddedPanelLabel(JLabel label) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paddedPanel.add(label);
         return paddedPanel;
     }
