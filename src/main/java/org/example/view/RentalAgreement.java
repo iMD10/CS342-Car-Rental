@@ -94,7 +94,9 @@ public class RentalAgreement extends JFrame {
             Timestamp fromstamp = Timestamp.valueOf(start.atStartOfDay());;
             Timestamp tostamp =Timestamp.valueOf(end.atStartOfDay());;
             Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(),fromstamp,tostamp);
-
+            if(booking == null) {
+                return;
+            }
             AgreementController agreementController = new AgreementController();
 
             agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));

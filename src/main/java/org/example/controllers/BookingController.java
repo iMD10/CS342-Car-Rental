@@ -108,10 +108,14 @@ public class BookingController {
             Timestamp End_date =  resSet.getTimestamp("end_date");
             Timestamp now = new Timestamp(System.currentTimeMillis());
             long differenceInMillis = now.getTime() - End_date.getTime();
+
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
             double cost = resSet.getDouble("cost");
-            double lateFees = cost*differenceInDays;
-
+            double lateFees;
+            if(differenceInMillis < 0 ){
+                lateFees = 0;
+            }
+            else lateFees = cost*differenceInDays;
             query = "UPDATE booking SET status = ? WHERE id = ?";
             DbHandler.executeUpdate(query,"RETURNED",bookingId);
             query = "UPDATE booking SET returned_at = ? WHERE id = ?";

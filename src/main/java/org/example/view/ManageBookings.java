@@ -87,7 +87,7 @@ public class ManageBookings extends JPanel  {
             ErrorHandler.handleWarning("this booking is already cancelled");
             return;
         }
-            bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
+        bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
         table.getModel().setValueAt("CANCELD", selectedRows[0], 5);
 
         });

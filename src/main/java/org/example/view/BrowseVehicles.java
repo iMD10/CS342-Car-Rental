@@ -106,7 +106,7 @@ public class BrowseVehicles extends JPanel {
                 Vehicle selectedVehicle =  vehicleController.getVehicleByVehicleId((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
                 // Pass selectedVehicle to booking logic (e.g., open RentalAgreement)
                 setVisible(false);
-                RentalAgreement ra = new RentalAgreement(selectedVehicle, new User(1,"a","a","a","a",false) ,fromDatePicker.getDate(), toDatePicker.getDate());
+                RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser ,fromDatePicker.getDate(), toDatePicker.getDate());
             }
         });
 
