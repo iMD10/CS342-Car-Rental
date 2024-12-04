@@ -39,6 +39,7 @@ public class MainFrame extends JFrame {
         JButton myBookingsButton = new JButton("My Bookings");
         JButton invoicesButton = new JButton("Invoices");
         JButton agreementsButton = new JButton("Agreements");
+        JButton logoutButton = new JButton("Logout");
 
         homeButton.setBackground(new Color(0, 172, 237));
         homeButton.setForeground(Color.WHITE);
@@ -52,11 +53,16 @@ public class MainFrame extends JFrame {
         agreementsButton.setBackground(new Color(0, 172, 237));
         agreementsButton.setForeground(Color.WHITE);
         agreementsButton.setPreferredSize(buttonSize);
+        logoutButton.setBackground(new Color(161, 1, 1));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setPreferredSize(buttonSize);
+
 
         topBar.add(homeButton);
         topBar.add(myBookingsButton);
         topBar.add(invoicesButton);
         topBar.add(agreementsButton);
+        topBar.add(logoutButton);
 
         add(topBar, BorderLayout.NORTH);
 
@@ -67,13 +73,17 @@ public class MainFrame extends JFrame {
         contentPanel.add(new Invoices(this,loggedUser), "Invoices");
         contentPanel.add(new Agreements(this,loggedUser), "Agreements");
 
+
         add(contentPanel, BorderLayout.CENTER);
 
         homeButton.addActionListener(e -> switchPanel("Browse Vehicles"));
         myBookingsButton.addActionListener(e -> switchPanel("My Bookings"));
         invoicesButton.addActionListener(e -> switchPanel("Invoices"));
         agreementsButton.addActionListener(e -> switchPanel("Agreements"));
-
+        logoutButton.addActionListener(e->{
+            dispose();
+            Login login = new Login();
+        });
         setVisible(true);
     }
 

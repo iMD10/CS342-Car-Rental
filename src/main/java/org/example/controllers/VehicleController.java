@@ -38,7 +38,7 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
     public List<Vehicle> getAllVehicles() {
             db = new DatabaseHandler();
-            String query = "SELECT vehicle.id as vehicle_id, car_model_id, serial_number, color, name, model_year, price, company, type FROM vehicle NATURAL JOIN car_model";
+            String query = "SELECT vehicle.id as vehicle_id, car_model_id, serial_number, color, name, model_year, price, company, type FROM vehicle JOIN car_model on car_model_id = car_model.id";
         try (ResultSet rs = db.executeQuery(query)){
 
             return getVehicles(rs);

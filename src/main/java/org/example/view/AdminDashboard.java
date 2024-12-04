@@ -36,14 +36,22 @@ public class AdminDashboard extends JFrame {
         JButton vehiclesButton = new JButton("Manage Vehicles");
         JButton bookingsButton = new JButton("Manage Bookings");
         JButton reportsButton = new JButton("Reports");
+        JButton customersButton = new JButton("Customers");
+        JButton logoutButton = new JButton("Logout");
 
-        JButton[] buttons = {vehiclesButton, bookingsButton, reportsButton};
+        JButton[] buttons = {vehiclesButton, bookingsButton, reportsButton, customersButton };
         for (JButton button : buttons) {
             button.setBackground(new Color(0, 172, 237));
             button.setForeground(Color.WHITE);
             button.setPreferredSize(buttonSize);
             topBar.add(button);
         }
+
+        logoutButton.setBackground(new Color(161, 1, 1));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setPreferredSize(buttonSize);
+        topBar.add(logoutButton);
+
 
         add(topBar, BorderLayout.NORTH);
 
@@ -59,6 +67,13 @@ public class AdminDashboard extends JFrame {
         vehiclesButton.addActionListener(e -> switchPanel("Manage Vehicles"));
         bookingsButton.addActionListener(e -> switchPanel("Manage Bookings"));
         reportsButton.addActionListener(e -> switchPanel("Reports"));
+
+        logoutButton.addActionListener(e ->{
+            dispose();
+            Login login = new Login();
+        });
+
+
 
         setVisible(true);
     }

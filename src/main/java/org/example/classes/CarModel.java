@@ -15,7 +15,7 @@ public class CarModel {
     }
 
    public String getDetails() {
-        return name + " " + company + " " + type + " " + price + " " + modelYear;
+        return name + "|" + company + "|" + type + "|" + price + "|" + modelYear;
    }
     public int getId() {
         return id;
