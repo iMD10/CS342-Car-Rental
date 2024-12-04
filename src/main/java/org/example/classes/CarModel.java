@@ -14,6 +14,9 @@ public class CarModel {
         this.price = price;
     }
 
+   public String getDetails() {
+        return name + " " + company + " " + type + " " + price + " " + modelYear;
+   }
     public int getId() {
         return id;
     }

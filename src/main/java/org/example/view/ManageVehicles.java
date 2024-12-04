@@ -76,7 +76,7 @@ public class ManageVehicles extends JPanel {
         dialog.setLocationRelativeTo(null);
 
         JLabel carModelLabel = new JLabel("Car Model:");
-        JComboBox<String> carModelComboBox = new JComboBox<>(carModels.stream().map(CarModel::getName).toArray(String[]::new));
+        JComboBox<String> carModelComboBox = new JComboBox<>(carModels.stream().map(CarModel::getDetails).toArray(String[]::new));
         JLabel serialNumberLabel = new JLabel("Serial Number:");
         JTextField serialNumberField = new JTextField();
         JLabel colorLabel = new JLabel("Color:");
