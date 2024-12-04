@@ -4,7 +4,7 @@ import org.example.classes.Booking;
 import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.common.TableCreator;
-
+import org.example.controllers.UserController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class ManageBookings extends JPanel  {
 
    private final AdminDashboard dashboard;
    private final BookingController bookingController= new BookingController();
-
+   private final UserController userController= new UserController();
     public ManageBookings(AdminDashboard dashboard) {
         this.dashboard=dashboard;
 //        setTitle("Manage Bookings");
@@ -33,7 +33,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer ID", "Car ID", "Start Date", "End Date", "Status"};
+        String[] columnNames = {"ID", "Customer ID","Customer Name", "Car ID", "Start Date", "End Date", "Status"};
         List<Booking> allBookings = bookingController.getAllBookings();
 
         Object[][] data = new Object[allBookings.size()][columnNames.length];
@@ -41,10 +41,11 @@ public class ManageBookings extends JPanel  {
 
             data[i][0] = allBookings.get(i).getId();
             data[i][1] = allBookings.get(i).getUserId();
-            data[i][2] = allBookings.get(i).getVehicleId();
-            data[i][3] = allBookings.get(i).getStart_date();
-            data[i][4] = allBookings.get(i).getEnd_date();
-            data[i][5] = allBookings.get(i).getStatus();
+            data[i][2] = userController.getUserById(allBookings.get(i).getUserId()).getName();
+            data[i][3] = allBookings.get(i).getVehicleId();
+            data[i][4] = allBookings.get(i).getStart_date();
+            data[i][5] = allBookings.get(i).getEnd_date();
+            data[i][6] = allBookings.get(i).getStatus();
         }
 
 
