@@ -50,7 +50,7 @@ public class CarDetails extends JPanel {
         bookBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel, "BrowseVehicles1");
+                cardLayout.show(cardPanel, UserUIWindow.BROWSE_PANEL);
             }
         });
 
