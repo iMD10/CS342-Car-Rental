@@ -1,13 +1,18 @@
 package org.example.view;
 
+import org.example.classes.Booking;
+import org.example.controllers.BookingController;
+import org.example.common.TableCreator;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class ManageBookings extends JPanel  {
 
    private final AdminDashboard dashboard;
-
+   private final BookingController bookingController= new BookingController();
 
     public ManageBookings(AdminDashboard dashboard) {
         this.dashboard=dashboard;
@@ -27,30 +32,25 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer", "Car", "Start Date", "End Date", "Selected", "Status"};
-        Object[][] data = {
-                {"1", "ahmed", "ACCORD", "01/01/2024", "03/01/2024", false, "Canceled"},
-                {"2", "saleh", "MaxCruize", "02/01/2024", "05/01/2024", false, "Returned"},
-                {"2", "saleh", "MaxCruize", "02/01/2024", "05/01/2024", false, "Active"}
-        };
+        String[] columnNames = {"ID", "Customer ID", "Car ID", "Start Date", "End Date", "Status", "Selected"};
+        List<Booking> allBookings = bookingController.getAllBookings();
 
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 5) {
-                    return Boolean.class;
-                }
-                return String.class;
-            }
+        Object[][] data = new Object[allBookings.size()][columnNames.length];
+        for(int i = 0 ; i < allBookings.size();i++){
 
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 5;
-            }
-        };
+            data[i][0] = allBookings.get(i).getId();
+            data[i][1] = allBookings.get(i).getUserId();
+            data[i][2] = allBookings.get(i).getVehicleId();
+            data[i][3] = allBookings.get(i).getStart_date();
+            data[i][4] = allBookings.get(i).getEnd_date();
+            data[i][5] = allBookings.get(i).getStatus();
+            data[i][6] = false;
+        }
 
-        JTable bookingTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(bookingTable);
+
+
+        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false, true});
+
 
         // Bottom panel for action buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -73,5 +73,7 @@ public class ManageBookings extends JPanel  {
             this.setVisible(false);
             dashboard.setVisible(true);
         });
+
+
     }
 }

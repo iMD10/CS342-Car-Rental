@@ -83,24 +83,24 @@ public class Login extends JFrame {
 
     loginButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-
-            Validation v = new Validation();
-
-
-            emailmsg.setText("");
-            passwordmsg.setText("");
-
-            if (!v.checkEmail(emailTextField.getText())){ // if it is False
-                emailmsg.setText("Email is incorrect!");
-                emailTextField.setText("");
-                return;
-            }
-
-            if (!v.checkPassword(passwordField.getText())){ // if it is False
-                passwordmsg.setText("Password is incorrect!");
-                passwordField.setText("");
-                return;
-            }
+//          this commented for testing after that incomment it
+//            Validation v = new Validation();
+//
+//
+//            emailmsg.setText("");
+//            passwordmsg.setText("");
+//
+//            if (!v.checkEmail(emailTextField.getText())){ // if it is False
+//                emailmsg.setText("Email is incorrect!");
+//                emailTextField.setText("");
+//                return;
+//            }
+//
+//            if (!v.checkPassword(passwordField.getText())){ // if it is False
+//                passwordmsg.setText("Password is incorrect!");
+//                passwordField.setText("");
+//                return;
+//            }
 
             UserController uc = new UserController();
             User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
