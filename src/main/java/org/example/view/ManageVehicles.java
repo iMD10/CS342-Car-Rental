@@ -21,22 +21,11 @@ public class ManageVehicles extends JPanel  {
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel for date selection
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JLabel fromLabel = new JLabel("From:");
-        JTextField fromDateField = new JTextField("01/01/2024", 10);
-        JLabel toLabel = new JLabel("To:");
-        JTextField toDateField = new JTextField("04/01/2024", 10);
-        topPanel.add(fromLabel);
-        topPanel.add(fromDateField);
-        topPanel.add(toLabel);
-        topPanel.add(toDateField);
-
         // Center panel for table
-        String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year", "Selected"};
+        String[] columnNames = {"Name", "Type", "Price-per-day", "Color", "Year"};
         List<Vehicle> allVehicles = vehicleController.getAllVehicles();
 
-        Object[][] data = new Object[allVehicles.size()][6];
+        Object[][] data = new Object[allVehicles.size()][columnNames.length];
         for (int i = 0; i < allVehicles.size(); i++) {
             Vehicle vehicle = allVehicles.get(i);
             data[i][0] = vehicle.getCarModel().getName();
@@ -44,7 +33,7 @@ public class ManageVehicles extends JPanel  {
             data[i][2] = vehicle.getCarModel().getPrice();
             data[i][3] = vehicle.getColor();
             data[i][4] = vehicle.getCarModel().getModelYear();
-            data[i][5] = false;
+
         }
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
             @Override
@@ -74,7 +63,7 @@ public class ManageVehicles extends JPanel  {
         bottomPanel.add(backButton);
 
         // Add panels to the frame
-        add(topPanel, BorderLayout.NORTH);
+
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
