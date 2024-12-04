@@ -11,7 +11,7 @@ public class AdminDashboard extends JFrame {
 
     public AdminDashboard(User loggedUser) {
         setTitle("Admin Dashboard");
-        setSize(700, 500);
+        setSize(870, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
