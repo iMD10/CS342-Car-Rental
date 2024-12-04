@@ -1,9 +1,8 @@
 package org.example.view;
 
-import com.formdev.flatlaf.FlatLightLaf;
+import org.example.classes.User;
 import javax.swing.*;
 import java.awt.*;
-import org.example.classes.User;
 
 public class AdminDashboard extends JFrame {
 
@@ -11,7 +10,7 @@ public class AdminDashboard extends JFrame {
 
     public AdminDashboard(User loggedUser) {
         setTitle("Admin Dashboard");
-        setSize(700, 500);
+        setSize(870, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -20,9 +19,9 @@ public class AdminDashboard extends JFrame {
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         topBar.setBackground(new Color(0, 172, 237));
 
-        // Adjust the logo size and background color
+        // Add logo to the top bar
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("res\\R.png"); // Update with your logo path
+        ImageIcon logoIcon = new ImageIcon("res\\R.png");
         Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
@@ -52,7 +51,7 @@ public class AdminDashboard extends JFrame {
         contentPanel = new JPanel(new CardLayout());
         contentPanel.add(new ManageVehicles(this), "Manage Vehicles");
         contentPanel.add(new ManageBookings(this), "Manage Bookings");
-        contentPanel.add(new Reports(this), "Reports");
+        contentPanel.add(new ReportsPanel(), "Reports");
 
         add(contentPanel, BorderLayout.CENTER);
 
@@ -68,5 +67,4 @@ public class AdminDashboard extends JFrame {
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, panelName);
     }
-
 }

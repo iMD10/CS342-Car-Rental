@@ -104,7 +104,9 @@ public class Login extends JFrame {
 
             UserController uc = new UserController();
             User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
+            if(loggedUser == null) return;
             dispose();
+
             if (loggedUser.isAdmin()){
                 AdminDashboard ad = new AdminDashboard(loggedUser);
             }

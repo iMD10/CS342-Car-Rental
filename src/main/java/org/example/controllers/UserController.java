@@ -89,6 +89,27 @@ public class UserController {
         }
         return null;
     }
+    public User getUserById(int user_id) {
+        db = new DatabaseHandler();
+        String query = "select * from users where id = ?";
+        try(ResultSet rs = db.executeQuery(query,user_id)){
+            if(rs.next() && rs != null) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phone"),
+                        rs.getBoolean("is_admin")
+                );
+            }
+            else throw new SQLException("User not found");
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, e.getMessage());
+        }
+
+        return null;
+    }
 
 
 }

@@ -82,6 +82,9 @@ public class BrowseVehicles extends JPanel {
                 JOptionPane.showMessageDialog(this, "Please select both dates.", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (fromDate.isAfter(toDate)) {
                 JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (fromDate.isEqual(toDate)) {
+                JOptionPane.showMessageDialog(this, "Can't book same day ,Please selcet two different Dates.", "Error", JOptionPane.ERROR_MESSAGE);
+
             } else {
                 // Fetch available vehicles and update table
                 Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());;
@@ -103,7 +106,7 @@ public class BrowseVehicles extends JPanel {
                 Vehicle selectedVehicle =  vehicleController.getVehicleByVehicleId((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
                 // Pass selectedVehicle to booking logic (e.g., open RentalAgreement)
                 setVisible(false);
-                RentalAgreement ra = new RentalAgreement(selectedVehicle, new User(1,"a","a","a","a",false) ,fromDatePicker.getDate(), toDatePicker.getDate());
+                RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser ,fromDatePicker.getDate(), toDatePicker.getDate(),true);
             }
         });
 

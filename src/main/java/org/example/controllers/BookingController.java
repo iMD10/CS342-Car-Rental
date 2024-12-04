@@ -15,33 +15,36 @@ public class BookingController {
     private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
         try {
-            if (CarIsBusy(vehicleId, start_date, end_date))
+            if (CarIsBusy(vehicleId, start_date, end_date)) {
+                ErrorHandler.handleWarning("Car is Already Booked ");
                 return null;
+            }
             Timestamp now = new Timestamp(System.currentTimeMillis());
 
             // Calculating cost
             VehicleController vehicleController = new VehicleController();
             Vehicle vehicle = vehicleController.getVehicleByVehicleId(vehicleId);
-            long differenceInMillis = start_date.getTime() - end_date.getTime();
+            long differenceInMillis = end_date.getTime() - start_date.getTime();
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
             double cost = vehicle.getCarModel().getPrice() * differenceInDays;
             String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status, cost) VALUES (?, ?, ?, ?, ?, 'active', ?)";
             int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
             System.out.println(id);
-            booking = new Booking(id, userId, vehicleId,"active", now,null ,start_date, end_date, cost);
+            booking = new Booking(id, userId, vehicleId,"ACTIVE", now,null ,start_date, end_date, cost);
             return booking;
         }
         catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
         }
         return null;
-        }
+    }
     public Boolean CarIsBusy(int vehicleId, Timestamp start_date, Timestamp end_date) {
         String query = """
         SELECT COUNT(*) AS count 
         FROM booking 
         WHERE vehicle_id = ? 
-          AND NOT (start_date > ? OR end_date < ?)
+          AND start_date <= ? 
+          AND end_date >= ?
     """;
 
         try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, end_date, start_date)) {
@@ -53,6 +56,7 @@ public class BookingController {
         }
         return false; // Car is not busy
     }
+
 
     public List<Booking> getAllBookingsByUserid(int userId){
         List<Booking> bookings = new ArrayList<>();
@@ -106,10 +110,14 @@ public class BookingController {
             Timestamp End_date =  resSet.getTimestamp("end_date");
             Timestamp now = new Timestamp(System.currentTimeMillis());
             long differenceInMillis = now.getTime() - End_date.getTime();
+
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
             double cost = resSet.getDouble("cost");
-            double lateFees = cost*differenceInDays;
-
+            double lateFees;
+            if(differenceInMillis < 0 ){
+                lateFees = 0;
+            }
+            else lateFees = cost*differenceInDays;
             query = "UPDATE booking SET status = ? WHERE id = ?";
             DbHandler.executeUpdate(query,"RETURNED",bookingId);
             query = "UPDATE booking SET returned_at = ? WHERE id = ?";

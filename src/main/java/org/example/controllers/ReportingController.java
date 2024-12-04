@@ -42,7 +42,7 @@ public class ReportingController {
         return -1;
     }
     public int getTotalCancelled() {
-        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'cancelled';";
+        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'CANCELLED';";
         try(ResultSet rs = db.executeQuery(query)) {
             if (rs.next()){
                 return rs.getInt("total");
@@ -53,7 +53,7 @@ public class ReportingController {
         return -1;
     }
     public int getTotalReturned() {
-        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'returned';";
+        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'RETURNED';";
         try(ResultSet rs = db.executeQuery(query)) {
             if (rs.next()){
                 return rs.getInt("total");
@@ -64,7 +64,7 @@ public class ReportingController {
         return -1;
     }
     public int getTotalCustomer() {
-        String query = "SELECT COUNT(id) AS total FROM user WHERE is_admin = false;";
+        String query = "SELECT COUNT(id) AS total FROM users WHERE is_admin = false;";
         try(ResultSet rs = db.executeQuery(query)) {
             if (rs.next()){
                 return rs.getInt("total");

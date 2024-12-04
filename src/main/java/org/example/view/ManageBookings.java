@@ -1,9 +1,10 @@
 package org.example.view;
 
 import org.example.classes.Booking;
+import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.common.TableCreator;
-
+import org.example.controllers.UserController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class ManageBookings extends JPanel  {
 
    private final AdminDashboard dashboard;
    private final BookingController bookingController= new BookingController();
-
+   private final UserController userController= new UserController();
     public ManageBookings(AdminDashboard dashboard) {
         this.dashboard=dashboard;
 //        setTitle("Manage Bookings");
@@ -32,7 +33,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer ID", "Car ID", "Start Date", "End Date", "Status", "Selected"};
+        String[] columnNames = {"ID", "Customer ID","Customer Name", "Car ID", "Start Date", "End Date", "Status"};
         List<Booking> allBookings = bookingController.getAllBookings();
 
         Object[][] data = new Object[allBookings.size()][columnNames.length];
@@ -40,16 +41,16 @@ public class ManageBookings extends JPanel  {
 
             data[i][0] = allBookings.get(i).getId();
             data[i][1] = allBookings.get(i).getUserId();
-            data[i][2] = allBookings.get(i).getVehicleId();
-            data[i][3] = allBookings.get(i).getStart_date();
-            data[i][4] = allBookings.get(i).getEnd_date();
-            data[i][5] = allBookings.get(i).getStatus();
-            data[i][6] = false;
+            data[i][2] = userController.getUserById(allBookings.get(i).getUserId()).getName();
+            data[i][3] = allBookings.get(i).getVehicleId();
+            data[i][4] = allBookings.get(i).getStart_date();
+            data[i][5] = allBookings.get(i).getEnd_date();
+            data[i][6] = allBookings.get(i).getStatus();
         }
 
 
 
-        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false, true});
+        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false});
 
 
         // Bottom panel for action buttons
@@ -72,6 +73,41 @@ public class ManageBookings extends JPanel  {
         backButton.addActionListener(e -> {
             this.setVisible(false);
             dashboard.setVisible(true);
+        });
+        cancelButton.addActionListener(e -> {
+        JTable table = (JTable) tableScrollPane.getViewport().getView();
+        int[] selectedRows = table.getSelectedRows();
+        if(selectedRows.length > 1){
+            ErrorHandler.handleWarning("Can't select more than one row, please select one");
+            return;
+        }
+        else if(selectedRows.length == 0){
+            ErrorHandler.handleWarning("No row selected, please select one");
+            return;
+        } else if (table.getValueAt(selectedRows[0], 5).equals("CANCELD") ) {
+            ErrorHandler.handleWarning("this booking is already cancelled");
+            return;
+        }
+        bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
+        table.getModel().setValueAt("CANCELD", selectedRows[0], 5);
+
+        });
+        markReturnedButton.addActionListener(e->{
+            JTable table = (JTable) tableScrollPane.getViewport().getView();
+            int[] selectedRows = table.getSelectedRows();
+            if(selectedRows.length > 1){
+                ErrorHandler.handleWarning("Can't select more than one row, please select one");
+                return;
+            }
+            else if(selectedRows.length == 0){
+                ErrorHandler.handleWarning("No row selected, please select one");
+                return;
+            } else if (table.getValueAt(selectedRows[0], 5).equals("RETURNED") ) {
+                ErrorHandler.handleWarning("this booking is already RETURNED");
+                return;
+            }
+            bookingController.editBookingStatusToReturned((Integer) table.getValueAt(selectedRows[0],0));
+            table.getModel().setValueAt("RETURNED", selectedRows[0], 5);
         });
 
 

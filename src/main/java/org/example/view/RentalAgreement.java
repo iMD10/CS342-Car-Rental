@@ -16,13 +16,13 @@ import java.time.temporal.ChronoUnit;
 
 public class RentalAgreement extends JFrame {
 
-    public RentalAgreement( Vehicle vehicle, User user, LocalDate start, LocalDate end ) {
+    public RentalAgreement( Vehicle vehicle, User user, LocalDate start, LocalDate end,boolean is_confirm ) {
         super("Rental Agreement");
 
         // Set layout and size of the frame
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
-        setSize(600, 400);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Booking Details Panel
@@ -74,39 +74,52 @@ public class RentalAgreement extends JFrame {
         JScrollPane termsScrollPane = new JScrollPane(termsArea);
         termsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Buttons Panel
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout());
-        JButton acceptButton = new JButton("Accept");
-        JButton cancelButton = new JButton("Cancel");
 
-        buttonsPanel.add(acceptButton);
-        buttonsPanel.add(cancelButton);
 
-        // Add components to the frame
+        if (is_confirm) {
+            // Buttons Panel
+            JButton acceptButton = new JButton("Accept");
+            JButton cancelButton = new JButton("Cancel");
+
+            buttonsPanel.add(acceptButton);
+            buttonsPanel.add(cancelButton);
+
+            // Add components to the frame
+
+            // Button Action Listeners
+            acceptButton.addActionListener(e -> {
+                BookingController bookingController = new BookingController();
+                Timestamp fromstamp = Timestamp.valueOf(start.atStartOfDay());;
+                Timestamp tostamp =Timestamp.valueOf(end.atStartOfDay());;
+                Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(),fromstamp,tostamp);
+                if(booking == null) {
+                    return;
+                }
+                AgreementController agreementController = new AgreementController();
+
+                agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
+                JOptionPane.showMessageDialog(this, "Agreement accepted!");
+                dispose(); // Close the frame
+            });
+
+            cancelButton.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "Agreement canceled.");
+                dispose(); // Close the frame
+            });
+        } else {
+            JButton backButton = new JButton("Back");
+            backButton.addActionListener(e -> {
+                dispose();
+            });
+            buttonsPanel.add(backButton);
+        }
+
+
         add(detailsPanel, BorderLayout.NORTH);
         add(termsScrollPane, BorderLayout.CENTER);
         add(buttonsPanel, BorderLayout.SOUTH);
-
-        // Button Action Listeners
-        acceptButton.addActionListener(e -> {
-            BookingController bookingController = new BookingController();
-            Timestamp fromstamp = Timestamp.valueOf(start.atStartOfDay());;
-            Timestamp tostamp =Timestamp.valueOf(end.atStartOfDay());;
-            Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(),fromstamp,tostamp);
-
-            AgreementController agreementController = new AgreementController();
-
-            agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
-            JOptionPane.showMessageDialog(this, "Agreement accepted!");
-            dispose(); // Close the frame
-        });
-
-        cancelButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Agreement canceled.");
-            dispose(); // Close the frame
-        });
-
         setVisible(true);
     }
 }
