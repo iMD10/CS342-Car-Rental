@@ -1,6 +1,7 @@
 package org.example.view;
 
 import org.example.classes.Booking;
+import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.common.TableCreator;
 
@@ -73,6 +74,25 @@ public class ManageBookings extends JPanel  {
             this.setVisible(false);
             dashboard.setVisible(true);
         });
+        cancelButton.addActionListener(e -> {
+        JTable table = (JTable) tableScrollPane.getViewport().getView();
+        int[] selectedRows = table.getSelectedRows();
+        if(selectedRows.length > 1){
+            ErrorHandler.handleWarning("Can't select more than one row, please select one");
+            return;
+        }
+        else if(selectedRows.length == 0){
+            ErrorHandler.handleWarning("No row selected, please select one");
+            return;
+        } else if (table.getValueAt(selectedRows[0], 5).equals("CANCELD") ) {
+            ErrorHandler.handleWarning("this booking is already cancelled");
+            return;
+        }
+            bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
+        table.getModel().setValueAt("CANCELD", selectedRows[0], 5);
+
+        });
+
 
 
     }
