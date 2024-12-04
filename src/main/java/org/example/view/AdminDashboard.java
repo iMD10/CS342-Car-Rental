@@ -60,6 +60,7 @@ public class AdminDashboard extends JFrame {
         contentPanel.add(new ManageVehicles(this), "Manage Vehicles");
         contentPanel.add(new ManageBookings(this), "Manage Bookings");
         contentPanel.add(new ReportsPanel(), "Reports");
+        contentPanel.add(new CustomersInfo(this), "Customers");
 
         add(contentPanel, BorderLayout.CENTER);
 
@@ -67,6 +68,7 @@ public class AdminDashboard extends JFrame {
         vehiclesButton.addActionListener(e -> switchPanel("Manage Vehicles"));
         bookingsButton.addActionListener(e -> switchPanel("Manage Bookings"));
         reportsButton.addActionListener(e -> switchPanel("Reports"));
+        customersButton.addActionListener(e -> switchPanel("Customers"));
 
         logoutButton.addActionListener(e ->{
             dispose();
