@@ -84,12 +84,12 @@ public class ManageBookings extends JPanel  {
         else if(selectedRows.length == 0){
             ErrorHandler.handleWarning("No row selected, please select one");
             return;
-        } else if (table.getValueAt(selectedRows[0], 5).equals("CANCELD") ) {
+        } else if (table.getValueAt(selectedRows[0], 6).equals("CANCELD") ) {
             ErrorHandler.handleWarning("this booking is already cancelled");
             return;
         }
         bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
-        table.getModel().setValueAt("CANCELD", selectedRows[0], 5);
+        table.getModel().setValueAt("CANCELD", selectedRows[0], 6);
 
         });
         markReturnedButton.addActionListener(e->{
@@ -102,12 +102,12 @@ public class ManageBookings extends JPanel  {
             else if(selectedRows.length == 0){
                 ErrorHandler.handleWarning("No row selected, please select one");
                 return;
-            } else if (table.getValueAt(selectedRows[0], 5).equals("RETURNED") ) {
+            } else if (table.getValueAt(selectedRows[0], 6).equals("RETURNED") ) {
                 ErrorHandler.handleWarning("this booking is already RETURNED");
                 return;
             }
             bookingController.editBookingStatusToReturned((Integer) table.getValueAt(selectedRows[0],0));
-            table.getModel().setValueAt("RETURNED", selectedRows[0], 5);
+            table.getModel().setValueAt("RETURNED", selectedRows[0], 6);
         });
 
 

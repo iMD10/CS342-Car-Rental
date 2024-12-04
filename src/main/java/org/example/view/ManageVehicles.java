@@ -15,7 +15,7 @@ public class ManageVehicles extends JPanel {
     private final VehicleController vehicleController = new VehicleController();
     private JTable table;
     private Object[][] data;
-    private final String[] columnNames = {"ID", "Name", "Type", "Price-per-day", "Color", "Year"};
+    private final String[] columnNames = {"ID", "Name", "Type", "Price-per-day", "Color", "Year", "Serial Number"};
 
     public ManageVehicles(AdminDashboard dashboard) {
         this.dashboard = dashboard;
@@ -61,6 +61,7 @@ public class ManageVehicles extends JPanel {
             data[i][3] = vehicle.getCarModel().getPrice();
             data[i][4] = vehicle.getColor();
             data[i][5] = vehicle.getCarModel().getModelYear();
+            data[i][6] = vehicle.getSerialNumber();
         }
         if (table != null) {
             table.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
@@ -104,8 +105,8 @@ public class ManageVehicles extends JPanel {
                 } else {
                     int carModelId = carModels.get(carModelIndex).getId();
                     int vehicleId = vehicleController.addVehicle(carModelId, serialNumber, color);
-                    if (vehicleId != -1) {
                         updateTableData();
+                    if (vehicleId != -1) {
                         dialog.dispose();
                     } else {
                         JOptionPane.showMessageDialog(dialog, "Failed to add vehicle.", "Error", JOptionPane.ERROR_MESSAGE);

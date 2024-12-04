@@ -77,7 +77,7 @@ public class Signup extends JFrame {
         JPanel signupFieldsPanel = new JPanel(new GridLayout(10, 1, 5, 5));
         JLabel logoLabel = new JLabel();
         ImageIcon logoIcon = new ImageIcon("res\\R.png");
-        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 55, Image.SCALE_SMOOTH);
+        Image scaledImage = logoIcon.getImage().getScaledInstance(90, 33, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
         JPanel logoPanel = new JPanel();
