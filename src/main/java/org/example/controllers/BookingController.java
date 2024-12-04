@@ -47,7 +47,7 @@ public class BookingController {
           AND end_date >= ?
     """;
 
-        try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, end_date, start_date)) {
+        try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, start_date, end_date)) {
             if (resSet.next() && resSet.getInt("count") > 0) {
                 return true; // Car is busy
             }
