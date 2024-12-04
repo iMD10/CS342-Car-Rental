@@ -15,8 +15,10 @@ public class BookingController {
     private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
         try {
-            if (CarIsBusy(vehicleId, start_date, end_date))
+            if (CarIsBusy(vehicleId, start_date, end_date)) {
+                ErrorHandler.handleWarning("Car is Already Booked ");
                 return null;
+            }
             Timestamp now = new Timestamp(System.currentTimeMillis());
 
             // Calculating cost
