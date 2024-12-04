@@ -1,8 +1,9 @@
-package org.example.views;
+package org.example.view;
 import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
 
+import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
 
@@ -82,34 +83,45 @@ public class Login extends JFrame {
 
     loginButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-
-            Validation v = new Validation();
-
-
-            emailmsg.setText("");
-            passwordmsg.setText("");
-
-            if (!v.checkEmail(emailTextField.getText())){ // if it is False
-                emailmsg.setText("Email is incorrect!");
-                emailTextField.setText("");
-                return;
-            }
-
-            if (!v.checkPassword(passwordField.getText())){ // if it is False
-                passwordmsg.setText("Password is incorrect!");
-                passwordField.setText("");
-                return;
-            }
+//          this commented for testing after that incomment it
+//            Validation v = new Validation();
+//
+//
+//            emailmsg.setText("");
+//            passwordmsg.setText("");
+//
+//            if (!v.checkEmail(emailTextField.getText())){ // if it is False
+//                emailmsg.setText("Email is incorrect!");
+//                emailTextField.setText("");
+//                return;
+//            }
+//
+//            if (!v.checkPassword(passwordField.getText())){ // if it is False
+//                passwordmsg.setText("Password is incorrect!");
+//                passwordField.setText("");
+//                return;
+//            }
 
             UserController uc = new UserController();
-            uc.loginUser(emailTextField.getText(), passwordField.getText());
+            User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
+            if(loggedUser == null) return;
+            dispose();
+
+            if (loggedUser.isAdmin()){
+                AdminDashboard ad = new AdminDashboard(loggedUser);
+            }
+            else {
+
+                MainFrame mf = new MainFrame(loggedUser);
+            }
+
 
         }
     });
 }
 
     private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         paddedPanel.add(field);
         paddedPanel.add(msg);

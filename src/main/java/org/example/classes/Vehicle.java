@@ -53,4 +53,14 @@ public class Vehicle {
     public void setCarModel(CarModel carModel) {
         this.carModel = carModel;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", carModelId=" + carModelId +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }

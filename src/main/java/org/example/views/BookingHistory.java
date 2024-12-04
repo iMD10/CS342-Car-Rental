@@ -1,12 +1,14 @@
 package org.example.views;
 
+import org.example.classes.User;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class BookingHistory extends JPanel {
 
 
-    BookingHistory() {
+    BookingHistory(User loggedUser) {
         this.setLayout(new BorderLayout()); // Set layout for the main panel
 
         JLabel titleLabel;
@@ -90,9 +92,9 @@ public class BookingHistory extends JPanel {
     }
 
 
-    public static void main(String[] args) {
-        new BookingHistory();
-
-    }
+//    public static void main(String[] args) {
+//        new BookingHistory(loggedUser);
+//
+//    }
 
 }

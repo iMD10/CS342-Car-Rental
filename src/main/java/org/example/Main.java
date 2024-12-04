@@ -1,10 +1,12 @@
 package org.example;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import org.example.view.Login;
+
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("Abo Mohammed Car Rental Agency");
-
-
+        FlatLightLaf.setup();
+        Login login = new Login();
     }
 }

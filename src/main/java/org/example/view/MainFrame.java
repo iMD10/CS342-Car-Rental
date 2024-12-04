@@ -1,6 +1,8 @@
 package org.example.view;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import org.example.classes.User;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,7 +10,7 @@ public class MainFrame extends JFrame {
 
     private JPanel contentPanel;
 
-    public MainFrame() {
+    public MainFrame(User loggedUser) {
         setTitle("Car Rental Application");
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -33,7 +35,7 @@ public class MainFrame extends JFrame {
         topBar.add(logoPanel);
 
         Dimension buttonSize = new Dimension(100, 85);
-        JButton homeButton = new JButton("Home");
+        JButton homeButton = new JButton("Book");
         JButton myBookingsButton = new JButton("My Bookings");
         JButton invoicesButton = new JButton("Invoices");
         JButton agreementsButton = new JButton("Agreements");
@@ -60,10 +62,10 @@ public class MainFrame extends JFrame {
 
         // Content panel
         contentPanel = new JPanel(new CardLayout());
-        contentPanel.add(new BrowseVehicles(this), "Browse Vehicles");
-        contentPanel.add(new MyBookings(this), "My Bookings");
-        contentPanel.add(new Invoices(this), "Invoices");
-        contentPanel.add(new Agreements(this), "Agreements");
+        contentPanel.add(new BrowseVehicles(this, loggedUser), "Browse Vehicles");
+        contentPanel.add(new MyBookings(this, loggedUser), "My Bookings");
+        contentPanel.add(new Invoices(this,loggedUser), "Invoices");
+        contentPanel.add(new Agreements(this,loggedUser), "Agreements");
 
         add(contentPanel, BorderLayout.CENTER);
 
@@ -80,8 +82,5 @@ public class MainFrame extends JFrame {
         cl.show(contentPanel, panelName);
     }
 
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        new MainFrame();
-    }
+
 }

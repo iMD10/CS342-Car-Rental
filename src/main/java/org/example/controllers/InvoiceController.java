@@ -48,12 +48,12 @@ public class InvoiceController {
 
     public List<Invoice> getAllInvoicesByUserId(int userId) {
         dbHandler = new DatabaseHandler();
-        String query = "SELECT * FROM invoice WHERE user_id = ?";
+        String query = "SELECT invoice.id as invoice_id, booking_id, late_fees, total_price, issued_at FROM invoice JOIN booking on booking_id = booking.id Where user_id = ?;";
         try(ResultSet rs = dbHandler.executeQuery(query,userId)) {
             List<Invoice> invoices = new ArrayList<>();
             while(rs.next()) {
                 invoices.add( new Invoice(
-                        rs.getInt("id"),
+                        rs.getInt("invoice_id"),
                         rs.getInt("booking_id"),
                         rs.getDouble("late_fees"),
                         rs.getDouble("total_price"),

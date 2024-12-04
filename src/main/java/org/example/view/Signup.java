@@ -1,9 +1,10 @@
-package org.example.views;
+package org.example.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.formdev.flatlaf.*;
+import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
 
@@ -74,8 +75,17 @@ public class Signup extends JFrame {
 
 
 
-        JPanel signupFieldsPanel = new JPanel(new GridLayout(9, 1, 5, 5));
+        JPanel signupFieldsPanel = new JPanel(new GridLayout(10, 1, 5, 5));
+        JLabel logoLabel = new JLabel();
+        ImageIcon logoIcon = new ImageIcon("res\\R.png");
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 55, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(scaledImage);
+        logoLabel.setIcon(logoIcon);
+        JPanel logoPanel = new JPanel();
+        logoPanel.setPreferredSize(new Dimension(100, 85));
+        logoPanel.add(logoLabel, BorderLayout.CENTER);
 
+        signupFieldsPanel.add(logoPanel);
         signupFieldsPanel.add(createPaddedPanelLabel(title));
         JLabel fnamemsg = new JLabel("");
         signupFieldsPanel.add(createPaddedPanel(fnLabel,fnTextField, fnamemsg));
@@ -130,9 +140,11 @@ public class Signup extends JFrame {
                     return;
                 }
 
-                UserController uc = new UserController();
-                uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
 
+                UserController uc = new UserController();
+                User loggedCustomer = uc.registerCustomer(emailTextField.getText(),fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(),  passwordField.getText());
+                dispose();
+                MainFrame mf = new MainFrame(loggedCustomer);
             }
         });
 
@@ -141,7 +153,7 @@ public class Signup extends JFrame {
     }
 
     private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         paddedPanel.add(field);
         paddedPanel.add(msg);

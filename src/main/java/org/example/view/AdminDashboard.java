@@ -1,81 +1,70 @@
 package org.example.view;
-import com.formdev.flatlaf.*;
+
+import org.example.classes.User;
 import javax.swing.*;
 import java.awt.*;
 
 public class AdminDashboard extends JFrame {
 
-    public AdminDashboard() {
+    private JPanel contentPanel;
+
+    public AdminDashboard(User loggedUser) {
         setTitle("Admin Dashboard");
-        setSize(700, 500);
+        setSize(870, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel for logo and title
-        JPanel topPanel = new JPanel(new BorderLayout());
+        // Top bar for navigation
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        topBar.setBackground(new Color(0, 172, 237));
 
+        // Add logo to the top bar
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Eyad9.DESKTOP-BCQI8E7\\OneDrive\\Desktop\\R.png"); // Update with your logo path
-        Image scaledImage = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Adjust width and height
+        ImageIcon logoIcon = new ImageIcon("res\\R.png");
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
-        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        topPanel.add(logoLabel, BorderLayout.NORTH);
 
-        JLabel titleLabel = new JLabel("Admin dashboard");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        topPanel.add(titleLabel, BorderLayout.SOUTH);
+        JPanel logoPanel = new JPanel();
+        logoPanel.setBackground(Color.WHITE);
+        logoPanel.setPreferredSize(new Dimension(85, 85));
+        logoPanel.add(logoLabel, BorderLayout.CENTER);
+        topBar.add(logoPanel);
 
-        // Center panel for action buttons with padding
-        JPanel centerPanelContainer = new JPanel(new BorderLayout());
-        centerPanelContainer.setBorder(BorderFactory.createEmptyBorder(20, 200, 20, 200));
-
-        JPanel centerPanel = new JPanel(new GridLayout(3, 1, 20, 20));
-        JButton manageVehicleButton = new JButton("Manage vehicles");
-        manageVehicleButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
-        manageVehicleButton.setForeground(Color.WHITE);
-        JButton manageBookingsButton = new JButton("Manage Bookings");
-        manageBookingsButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
-        manageBookingsButton.setForeground(Color.WHITE);
+        Dimension buttonSize = new Dimension(130, 85);
+        JButton vehiclesButton = new JButton("Manage Vehicles");
+        JButton bookingsButton = new JButton("Manage Bookings");
         JButton reportsButton = new JButton("Reports");
-        reportsButton.setBackground(new Color(0, 172, 237)); // Matching blue from the logo
-        reportsButton.setForeground(Color.WHITE);
-        centerPanel.add(manageVehicleButton);
-        centerPanel.add(manageBookingsButton);
-        centerPanel.add(reportsButton);
 
-        centerPanelContainer.add(centerPanel, BorderLayout.CENTER);
+        JButton[] buttons = {vehiclesButton, bookingsButton, reportsButton};
+        for (JButton button : buttons) {
+            button.setBackground(new Color(0, 172, 237));
+            button.setForeground(Color.WHITE);
+            button.setPreferredSize(buttonSize);
+            topBar.add(button);
+        }
 
-        // Bottom panel for Exit button
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton ExitButton = new JButton("Exit");
-        ExitButton.setBackground(Color.LIGHT_GRAY);
-        ExitButton.setForeground(Color.BLACK);
-        bottomPanel.add(ExitButton);
+        add(topBar, BorderLayout.NORTH);
 
-        // Adding panels to the frame
-        add(topPanel, BorderLayout.NORTH);
-        add(centerPanelContainer, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
+        // Content panel
+        contentPanel = new JPanel(new CardLayout());
+        contentPanel.add(new ManageVehicles(this), "Manage Vehicles");
+        contentPanel.add(new ManageBookings(this), "Manage Bookings");
+        contentPanel.add(new ReportsPanel(), "Reports");
 
-        setVisible(true);
+        add(contentPanel, BorderLayout.CENTER);
 
         // Action listeners for navigation
-        manageVehicleButton.addActionListener(e -> showFrame(new ManageVehicles(this)));
-        manageBookingsButton.addActionListener(e -> showFrame(new ManageBookings(this)));
-        reportsButton.addActionListener(e -> showFrame(new Reports(this)));
-        ExitButton.addActionListener(e -> System.exit(0));
+        vehiclesButton.addActionListener(e -> switchPanel("Manage Vehicles"));
+        bookingsButton.addActionListener(e -> switchPanel("Manage Bookings"));
+        reportsButton.addActionListener(e -> switchPanel("Reports"));
+
+        setVisible(true);
     }
 
-    private void showFrame(JFrame frame) {
-        this.setVisible(false);
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        new AdminDashboard();
+    public void switchPanel(String panelName) {
+        CardLayout cl = (CardLayout) contentPanel.getLayout();
+        cl.show(contentPanel, panelName);
     }
 }
