@@ -9,7 +9,7 @@ public class ConfirmBooking extends JFrame {
 
     public ConfirmBooking(MainFrame mainFrame, ImageIcon vehicleImage, String vehicleName) {
         this.mainFrame = mainFrame;
-        setTitle("Booking Details");
+        setTitle("Rental Agreement");
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

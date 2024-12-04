@@ -44,14 +44,12 @@ public class Invoices extends JPanel {
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton refreshButton = new JButton("Refresh");
         JButton printButton = new JButton("Print");
-        JButton backButton = new JButton("Back to Dashboard");
 
         // Refresh button action listener
         refreshButton.addActionListener(e -> updateInvoices(tableModel, loggedUser));
 
         actionButtonPanel.add(refreshButton);
         actionButtonPanel.add(printButton);
-        actionButtonPanel.add(backButton);
 
         // Add panels to the layout
         add(tableScrollPane, BorderLayout.CENTER);
@@ -65,7 +63,6 @@ public class Invoices extends JPanel {
         tableModel.setRowCount(0); // Clear the table
 
         // Get invoices for the user
-        System.out.println(loggedUser.getId());
         List<Invoice> invoices = invoiceController.getAllInvoicesByUserId(loggedUser.getId());
         // Cache bookings and vehicles to avoid redundant database queries
         Map<Integer, Booking> bookingCache = new HashMap<>();
@@ -76,13 +73,9 @@ public class Invoices extends JPanel {
             Booking booking = bookingCache.computeIfAbsent(invoice.getBooking_id(),
                     id -> bookingController.getBookingByBookingId(id));
 
-            if (booking == null) continue; // Skip if booking is not found
-
             // Get vehicle and cache it
             Vehicle vehicle = vehicleCache.computeIfAbsent(booking.getVehicleId(),
                     id -> vehicleController.getVehicleByVehicleId(id));
-
-            if (vehicle == null) continue; // Skip if vehicle is not found
 
             // Add row to the table
             tableModel.addRow(new Object[]{
