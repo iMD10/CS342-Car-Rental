@@ -42,7 +42,7 @@ public class ReportingController {
         return -1;
     }
     public int getTotalCancelled() {
-        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'CANCELLED';";
+        String query = "SELECT COUNT(id) AS total FROM booking WHERE status = 'CANCELD';";
         try(ResultSet rs = db.executeQuery(query)) {
             if (rs.next()){
                 return rs.getInt("total");
