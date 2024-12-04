@@ -5,44 +5,51 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.optionalusertools.DateVetoPolicy;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import org.example.classes.CarModel;
+import org.example.classes.User;
 import org.example.classes.Vehicle;
 import org.example.controllers.VehicleController;
-import org.example.views.Components;
 
 import javax.swing.*;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseVehicles extends JPanel {
+
+    private  boolean isLoading = false;
+    private  Vehicle selectedCar = null;
+    private  User loggedUser;
 
     private VehicleController vehicleController;
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private JPanel gridList;
     private List<Vehicle> vehiclesList;
-    private  boolean isLoading = false;
 
     private LocalDate startingDate = LocalDate.now();
     private LocalDate endingDate = LocalDate.now().plusDays(30);
 
-//    private JPanel accountSideButton, browseSideButton, historySideButton;
-    private JLabel buttonText, searchLabel, startBookLabel, endBookLabel;
     private JTextField searchTf;
     private JTextPane pageTitle;
 
     private DatePicker startDatePicker, endDatePicker;
 
-    public BrowseVehicles() {
+    final private String FILTER_ALL = "all";
+
+    public BrowseVehicles(User loggedUser) {
         this.setLayout(new BorderLayout()); // Set layout for the main panel
-
+        this.loggedUser = loggedUser;
         vehicleController = new VehicleController();
-
+        System.out.println("loggedUser:");
+        System.out.println(loggedUser.getEmail());
 
 
         JPanel vehiclesPanel = new JPanel(new BorderLayout());
@@ -68,7 +75,6 @@ public class BrowseVehicles extends JPanel {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.add(vehiclesPanel, UserUIWindow.BROWSE_PANEL);
-        cardPanel.add(new CarDetails(cardPanel, cardLayout), UserUIWindow.CAR_DETAILS_PANEL);
 
         add(cardPanel, BorderLayout.CENTER);
 //        cardLayout.show(cardPanel, "BrowseVehicles");
@@ -76,43 +82,58 @@ public class BrowseVehicles extends JPanel {
     }
     private JPanel createHead() {
         JPanel contentHead = new JPanel(new BorderLayout());
+        contentHead.setBorder(new EmptyBorder(5, 7, 5, 7));  // 10px padding on top and bottom, 20px on left and right
 
         JPanel titleAndSearchPanel = new JPanel();
-        titleAndSearchPanel.setLayout(new BoxLayout(titleAndSearchPanel, BoxLayout.X_AXIS));
-        pageTitle = new JTextPane();
+        titleAndSearchPanel.setLayout(new BorderLayout());
+        JLabel pageTitle = new JLabel("Browse Vehicles");
+        pageTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
 
-        // Styled text
-        SimpleAttributeSet attributes = new SimpleAttributeSet();
-        StyleConstants.setBold(attributes, true);
-        StyleConstants.setFontSize(attributes, 25);
+        JLabel searchLabel = new JLabel("Search: ");
+        searchLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
 
-        pageTitle.setCharacterAttributes(attributes, true);
-        pageTitle.setText("Browse Vehicles");
-        pageTitle.setEditable(false);
+        searchTf = new JTextField(15);
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        searchPanel.add(searchLabel);
+        searchPanel.add(searchTf);
 
-        searchLabel = new JLabel("Search: ");
-        searchTf = new JTextField(20);
-
-        titleAndSearchPanel.add(pageTitle);
-        titleAndSearchPanel.add(Box.createHorizontalGlue());
-        titleAndSearchPanel.add(searchLabel);
-        titleAndSearchPanel.add(searchTf);
+        titleAndSearchPanel.add(pageTitle, BorderLayout.CENTER);
+        titleAndSearchPanel.add(searchPanel, BorderLayout.EAST);
 
         contentHead.add(titleAndSearchPanel, BorderLayout.NORTH);
 
         // Booking date panel
-        JPanel bookDatePanel = new JPanel();
-        bookDatePanel.setLayout(new BoxLayout(bookDatePanel, BoxLayout.X_AXIS));
+        JPanel filtersPanel = new JPanel();
+        filtersPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0,10));
 
-        startBookLabel = new JLabel("Booking start:");
-        endBookLabel = new JLabel("Booking end:");
+        Font filtersFont = new Font("SansSerif", Font.PLAIN, 14);
+        JLabel byTypeLabel = new JLabel("Filter by type: ");
+        byTypeLabel.setFont(filtersFont);
+        JLabel startBookLabel = new JLabel("Booking start: ");
+        startBookLabel.setFont(filtersFont);
+        JLabel endBookLabel = new JLabel("Booking end: ");
+        endBookLabel.setFont(filtersFont);
+
+        JComboBox<String> typeComboBox = new JComboBox<>(getVehicleTypes());
+        typeComboBox.setFont(filtersFont);
+        typeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                filterByType(typeComboBox.getSelectedItem().toString());
+
+
+            }
+        });
+        Font datesFont = new Font("SansSerif", Font.BOLD, 14);
 
         DatePickerSettings startDateFormat = new DatePickerSettings();
         startDateFormat.setFormatForDatesCommonEra("dd/MM/yyyy");
         startDateFormat.setAllowEmptyDates(false);
-
+        startDateFormat.setAllowKeyboardEditing(false);
+        startDateFormat.setFontCalendarDateLabels(filtersFont);
+        startDateFormat.setFontValidDate(datesFont);
         DatePickerSettings endDateFormat = startDateFormat.copySettings();
-
         startDatePicker = new DatePicker(startDateFormat);
         startDatePicker.setDate(startingDate);
         startDatePicker.addDateChangeListener(new DateChangeListener() {
@@ -141,16 +162,39 @@ public class BrowseVehicles extends JPanel {
         endDateFormat.setVetoPolicy(new EndingDatesVetoPolicy()); // user can only choose from today to 30 days ahead
 
 
-        bookDatePanel.add(Box.createHorizontalGlue());
-        bookDatePanel.add(startBookLabel);
-        bookDatePanel.add(startDatePicker);
-        bookDatePanel.add(endBookLabel);
-        bookDatePanel.add(endDatePicker);
+
+        filtersPanel.add(byTypeLabel);
+        filtersPanel.add(typeComboBox);
+
+        filtersPanel.add(Box.createRigidArea(new Dimension(30,1)));
+
+        filtersPanel.add(startBookLabel);
+        filtersPanel.add(startDatePicker);
+
+        filtersPanel.add(Box.createRigidArea(new Dimension(30,1)));
+        filtersPanel.add(endBookLabel);
+        filtersPanel.add(endDatePicker);
 
 
-        contentHead.add(bookDatePanel, BorderLayout.SOUTH);
+        contentHead.add(filtersPanel, BorderLayout.SOUTH);
         return contentHead;
 
+    }
+
+    private void filterByType(String type) {
+
+        gridList.removeAll();
+        for (Vehicle vehicle : vehiclesList) {
+//            System.out.println(vehicle.getCarModel().getType() + " != " + type);
+
+            if ( !(vehicle.getCarModel().getType()) .equalsIgnoreCase(type) && !(type.equalsIgnoreCase(FILTER_ALL)) ) continue;
+            JPanel elementPanel = createElementPanel(vehicle);
+            gridList.add(elementPanel);
+        }
+
+        // Revalidate and repaint to update the UI
+        gridList.revalidate();
+        gridList.repaint();
     }
 
     /**
@@ -163,6 +207,13 @@ public class BrowseVehicles extends JPanel {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
                 // Fetch the vehicles from the database in the background
+                System.out.println("_________________");
+                System.out.println(vehicleController.getAvailableVehicles(
+                        Timestamp.valueOf(startingDate.atStartOfDay()),
+                        Timestamp.valueOf(endingDate.atStartOfDay())
+                ).size());
+                System.out.println("_________________");
+
                 return vehicleController.getAvailableVehicles(
                         Timestamp.valueOf(startingDate.atStartOfDay()),
                         Timestamp.valueOf(endingDate.atStartOfDay())
@@ -178,6 +229,7 @@ public class BrowseVehicles extends JPanel {
                     // Clear and update the gridList with the new vehicles
                     gridList.removeAll();
                     for (Vehicle vehicle : vehiclesList) {
+
                         JPanel elementPanel = createElementPanel(vehicle);
                         gridList.add(elementPanel);
                     }
@@ -186,6 +238,7 @@ public class BrowseVehicles extends JPanel {
                     gridList.revalidate();
                     gridList.repaint();
                     System.out.println("loadCars done");
+                    System.out.println(vehiclesList.size());
 
 
                 } catch (Exception e) {
@@ -200,13 +253,14 @@ public class BrowseVehicles extends JPanel {
     }
 
 
+
     private JPanel createElementPanel(Vehicle vehicle) {
         JPanel elementPanel = new JPanel(new BorderLayout());
 
         ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
         JLabel carImage = new JLabel(carImageSource);
 
-        JLabel carName = new JLabel(vehicle.getCarModel().getName()  , JLabel.CENTER);
+        JLabel carName = new JLabel(vehicle.getCarModel().getName()+ " " +vehicle.getCarModel().getModelYear()  , JLabel.CENTER);
         carName.setFont(new Font("SansSerif", Font.BOLD, 16));
         JLabel carPrice = new JLabel(vehicle.getCarModel().getPrice() + " SAR"  , JLabel.CENTER);
         carPrice.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -217,27 +271,42 @@ public class BrowseVehicles extends JPanel {
 
         elementPanel.add(carImage, BorderLayout.CENTER);
         elementPanel.add(nameAndPrice, BorderLayout.SOUTH);
-        elementPanel.addMouseListener(new MouseAction(UserUIWindow.CAR_DETAILS_PANEL,vehicle.getId())); // Handle click
+        elementPanel.addMouseListener(new carDetailsClick(vehicle)); // Handle click
         return elementPanel;
+    }
+    private String[] getVehicleTypes() {
+        // Fetch vehicle types dynamically from the controller
+        List<CarModel> carModels= vehicleController.getCarModels();
+        List<String> types = new ArrayList<>(carModels.size());
+
+        types.add(FILTER_ALL);
+        for(CarModel cars :carModels) {
+            types.add(cars.getType());
+        }
+        return types.toArray(new String[0]);
     }
 
 
-    private class MouseAction implements MouseListener {
-        private String destination;
+    private class carDetailsClick implements MouseListener {
+        private Vehicle selectedCar_;
 
-        MouseAction(String destination, int id) {
-            this.destination = destination;
-            System.out.println(id+"");
+        carDetailsClick( Vehicle selectedCar_) {
+//          this.destination = destination;
+//            System.out.println(selectedCar);
+            this.selectedCar_ = selectedCar_;
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
 
-            Vehicle vehicle = vehicleController.getVehicleByVehicleId(vehiclesList.getFirst().getId());
-            JPanel elementPanel = createElementPanel(vehicle);
-            gridList.add(elementPanel);
-//            cardLayout.show(cardPanel, destination);
+            cardPanel.add(new CarDetails( loggedUser, cardPanel, cardLayout, selectedCar_, startingDate, endingDate), UserUIWindow.CAR_DETAILS_PANEL);
+            cardLayout.show(cardPanel, UserUIWindow.CAR_DETAILS_PANEL);
 
+
+            if (cardPanel.getComponents().length == 3) cardPanel.remove(1); // remove last carDetails panel
+//            System.out.println("- - - -");
+//            System.out.println(cardPanel.getComponents().length);
+//            System.out.println("- - - -");
         }
 
         @Override
@@ -279,12 +348,12 @@ public class BrowseVehicles extends JPanel {
 
 
 
-    public static void main(String[] args) {
-        // Test the panel in a standalone JFrame
-        JFrame frame = new JFrame("Browse Vehicles Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new BrowseVehicles());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        // Test the panel in a standalone JFrame
+//        JFrame frame = new JFrame("Browse Vehicles Test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(800, 600);
+//        frame.add(new BrowseVehicles(loggedUser));
+//        frame.setVisible(true);
+//    }
 }
