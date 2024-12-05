@@ -73,7 +73,7 @@ public class CustomersInfo extends JPanel {
                     return;
                 }
 
-                List<User> allUsers = userController.getAllUsers();
+                List<User> allUsers = userController.getCustomers();
                 data = new Object[allUsers.size()][columnNames.length];
                 int found_data_size = 0;
                 for (int i = 0; i < allUsers.size(); i++) {
