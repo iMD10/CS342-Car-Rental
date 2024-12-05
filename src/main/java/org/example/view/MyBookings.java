@@ -7,6 +7,7 @@ import org.example.common.TableCreator;
 import org.example.controllers.BookingController;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 import org.example.controllers.BookingController;
@@ -15,27 +16,27 @@ import org.example.controllers.VehicleController;
 public class MyBookings extends JPanel {
 
     private final MainFrame mainFrame;
-    private final BookingController bookingController= new BookingController();
-    private final VehicleController vehicleController= new VehicleController();
+    private  BookingController bookingController= new BookingController();
+    private  VehicleController vehicleController= new VehicleController();
     public MyBookings(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
 
         // Center panel for table
         String[] columnNames = {"ID", "Car", "Start Date", "End Date","Status"};
-        List<Booking> allBookings = bookingController.getAllBookingsByUserid(loggedUser.getId());
-        Object[][] data = new Object[allBookings.size()][columnNames.length];
-        for(int i = 0 ; i < allBookings.size();i++){
 
-            data[i][0] = allBookings.get(i).getId();
-            data[i][1] = vehicleController.getVehicleByVehicleId(allBookings.get(i).getVehicleId()).getCarModel().getName();
-            data[i][2] = allBookings.get(i).getStart_date();
-            data[i][3] = allBookings.get(i).getEnd_date();
-            data[i][4] = allBookings.get(i).getStatus();
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-        }
+        JTable bookingTable = new JTable(tableModel);
+        JScrollPane tableScrollPane = new JScrollPane(bookingTable);
 
-        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false});
+
+
 
         // Bottom panel for action buttons
         JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -43,7 +44,8 @@ public class MyBookings extends JPanel {
         JButton refreshButton = new JButton("Refresh");
 
         refreshButton.addActionListener(e -> {
-            this.revalidate();
+            updateBooking(tableModel, loggedUser);
+
         });
 
         cancelButton.addActionListener(e -> {
@@ -72,8 +74,24 @@ public class MyBookings extends JPanel {
         actionButtonPanel.add(cancelButton);
         actionButtonPanel.add(refreshButton);
 
+        updateBooking(tableModel, loggedUser);
         // Add panels to the frame
         add(tableScrollPane, BorderLayout.CENTER);
         add(actionButtonPanel, BorderLayout.SOUTH);
+    }
+
+    private void updateBooking(DefaultTableModel tableModel, User loggedUser) {
+        tableModel.setRowCount(0);
+        List<Booking> allBookings = bookingController.getAllBookingsByUserid(loggedUser.getId());
+
+        for(Booking booking : allBookings){
+            tableModel.addRow(new Object[]{
+                    booking.getId(),
+                    vehicleController.getVehicleByVehicleId(booking.getVehicleId()).getCarModel().getName(),
+                    booking.getStart_date(),
+                    booking.getEnd_date(),
+                    booking.getStatus()
+            });
+        }
     }
 }

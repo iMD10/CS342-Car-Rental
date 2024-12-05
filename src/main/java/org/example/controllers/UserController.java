@@ -14,23 +14,22 @@ public class UserController {
 
     public User loginUser(String email, String password) {
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
-        db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(query, email, password)){
 
             if(rs.next() && rs != null) {
                 return new User(
-                  rs.getInt("id"),
-                  rs.getString("name"),
-                  rs.getString("email"),
-                  rs.getString("password"),
-                  rs.getString("phone"),
-                  rs.getBoolean("is_admin")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phone"),
+                        rs.getBoolean("is_admin")
                 );
             } else {
                 throw new RuntimeException("Email or password is incorrect");
             }
         } catch (SQLException | RuntimeException e) {
-           ErrorHandler.handleException(e,e.getMessage());
+            ErrorHandler.handleException(e,e.getMessage());
         }
         return  null;
     }
@@ -68,8 +67,7 @@ public class UserController {
     }
 
     public List<User> getAllUsers() {
-            db = new DatabaseHandler();
-            String query = "select * from users";
+        String query = "select * from users";
         try(ResultSet rs = db.executeQuery(query)){
             List<User> users = new ArrayList<>();
             while(rs.next()) {
@@ -110,6 +108,15 @@ public class UserController {
 
         return null;
     }
-
+    public boolean updateCustomerInfo(String email, String firstName, String lastName, String phone, String password) {
+        String query = "UPDATE users SET first_name = ?, last_name = ?, phone = ?, password = ? WHERE email = ?";
+        try {
+            db.executeUpdate(query, firstName, lastName, phone, password, email);
+            return true;
+        }
+        catch (SQLException e) {
+            ErrorHandler.handleException(e, "Error updating user information"); return false;
+        }
+    }
 
 }

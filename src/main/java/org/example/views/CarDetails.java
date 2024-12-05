@@ -27,11 +27,10 @@ public class CarDetails extends JPanel {
     private JLabel carImage, totalPriceLabel;
     private CardLayout cardLayout;
     private JPanel cardPanel;
-    CarDetails(User loggedUser, JPanel parentCardPanel, CardLayout parentcardLayout, Vehicle selectedCar, LocalDate startingDate_, LocalDate endingDate_) {
-
+    CarDetails(User loggedUser, JPanel parentCardPanel, CardLayout parentcardLayout, Vehicle selectedCar, LocalDate startingDate, LocalDate endingDate) {
         this.selectedCar = selectedCar;
-        this.startingDate = startingDate_;
-        this.endingDate = endingDate_;
+        this.startingDate = startingDate;
+        this.endingDate = endingDate;
         this.totalPrice = calculateTotalPrice();
         JPanel contentPanel = new JPanel(new BorderLayout());
 
@@ -73,7 +72,6 @@ public class CarDetails extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
-                System.out.println(startingDate);
                 new RentalAgreement(selectedCar, loggedUser, startingDate, endingDate, true);
             }
         });
@@ -190,7 +188,7 @@ public class CarDetails extends JPanel {
     }
 
     private int calculateTotalDays() {
-        return (int) java.time.temporal.ChronoUnit.DAYS.between(startingDate, endingDate)  ;
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(startingDate, endingDate) + 1 ;
     }
     // Custom veto policy to disallow past dates
     private class StartingDatesVetoPolicy implements DateVetoPolicy {
@@ -199,7 +197,7 @@ public class CarDetails extends JPanel {
             LocalDate today = LocalDate.now();
             LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
-            boolean isNotAfterEnd = ! date.isAfter(endingDate.minusDays(1));
+            boolean isNotAfterEnd = ! date.isAfter(endingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
         }
     }
@@ -208,10 +206,10 @@ public class CarDetails extends JPanel {
     private class EndingDatesVetoPolicy implements DateVetoPolicy {
         @Override
         public boolean isDateAllowed(LocalDate date) {
-            LocalDate today = LocalDate.now().plusDays(1);
-            LocalDate maxDate = today.plusDays(29); // Calculate the maximum allowed date (30 days from today)
+            LocalDate today = LocalDate.now();
+            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
 
-            boolean isNotBeforeStart = ! date.isBefore(startingDate.plusDays(1));
+            boolean isNotBeforeStart = ! date.isBefore(startingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
         }
     }

@@ -8,6 +8,7 @@ import org.example.controllers.UserController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageBookings extends JPanel  {
@@ -34,33 +35,33 @@ public class ManageBookings extends JPanel  {
 
         // Center panel for table
         String[] columnNames = {"ID", "Customer ID","Customer Name", "Car ID", "Start Date", "End Date", "Status"};
-        List<Booking> allBookings = bookingController.getAllBookings();
-
-        Object[][] data = new Object[allBookings.size()][columnNames.length];
-        for(int i = 0 ; i < allBookings.size();i++){
-
-            data[i][0] = allBookings.get(i).getId();
-            data[i][1] = allBookings.get(i).getUserId();
-            data[i][2] = userController.getUserById(allBookings.get(i).getUserId()).getName();
-            data[i][3] = allBookings.get(i).getVehicleId();
-            data[i][4] = allBookings.get(i).getStart_date();
-            data[i][5] = allBookings.get(i).getEnd_date();
-            data[i][6] = allBookings.get(i).getStatus();
-        }
 
 
 
-        JScrollPane tableScrollPane = TableCreator.createTablePanel(columnNames, data, new boolean[]{false, false, false, false, false, false});
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+
+
+        JTable bookingsTable = new JTable(tableModel);
+        bookingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane tableScrollPane = new JScrollPane(bookingsTable);
+
 
 
         // Bottom panel for action buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton cancelButton = new JButton("Cancel Booking");
         JButton markReturnedButton = new JButton("Mark as Returned");
-        JButton backButton = new JButton("Back to Dashboard");
+        JButton refreshButton = new JButton("Refresh");
         bottomPanel.add(cancelButton);
         bottomPanel.add(markReturnedButton);
-        bottomPanel.add(backButton);
+        bottomPanel.add(refreshButton);
+
 
         // Add panels to the frame
         add(topPanel, BorderLayout.NORTH);
@@ -69,11 +70,7 @@ public class ManageBookings extends JPanel  {
 
         setVisible(true);
 
-        // Action listener for "Back to Dashboard" button
-        backButton.addActionListener(e -> {
-            this.setVisible(false);
-            dashboard.setVisible(true);
-        });
+
         cancelButton.addActionListener(e -> {
         JTable table = (JTable) tableScrollPane.getViewport().getView();
         int[] selectedRows = table.getSelectedRows();
@@ -110,6 +107,44 @@ public class ManageBookings extends JPanel  {
             table.getModel().setValueAt("RETURNED", selectedRows[0], 6);
         });
 
+        searchButton.addActionListener(e->{
+            if (!(searchField.getText().isEmpty())) {
+                try {
+                    updateBookings(tableModel, Integer.parseInt(searchField.getText()));
+                } catch (Exception ex) {
+                    ErrorHandler.handleWarning("Enter ID number");
+                }
+            } else {
+                updateBookings(tableModel, -1);
+            }
+        });
 
+        refreshButton.addActionListener(e->{
+            updateBookings(tableModel, -1);
+        });
+
+        updateBookings(tableModel, -1);
+
+    }
+
+    public void updateBookings(DefaultTableModel tableModel, int bookingId){
+        tableModel.setRowCount(0);
+        List<Booking> allBookings = new ArrayList<>();
+        if (bookingId == -1) {
+             allBookings = bookingController.getAllBookings();
+        } else {
+             allBookings.add(bookingController.getBookingByBookingId(bookingId));
+        }
+        for(Booking booking : allBookings){
+            tableModel.addRow(new Object[]{
+                    booking.getId(),
+                    booking.getUserId(),
+                    userController.getUserById(booking.getUserId()).getName(),
+                    booking.getVehicleId(),
+                    booking.getStart_date(),
+                    booking.getEnd_date(),
+                    booking.getStatus(),
+            });
+        }
     }
 }
