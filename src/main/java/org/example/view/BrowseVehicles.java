@@ -20,13 +20,13 @@ public class BrowseVehicles extends JPanel {
 
     private final MainFrame mainFrame;
     private final VehicleController vehicleController;
+    private DefaultTableModel tableModel;
 
     public BrowseVehicles(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
-        this.vehicleController = new VehicleController(); // Initialize controller
+        this.vehicleController = new VehicleController();
         setLayout(new BorderLayout());
 
-        // Top panel for filters
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JLabel typeLabel = new JLabel("Type:");
         JComboBox<String> typeComboBox = new JComboBox<>(getVehicleTypes());
@@ -36,14 +36,35 @@ public class BrowseVehicles extends JPanel {
         fromSettings.setAllowKeyboardEditing(false);
         DatePicker fromDatePicker = new DatePicker(fromSettings);
         fromDatePicker.setDate(LocalDate.now());
+        fromDatePicker.getSettings().setDateRangeLimits(LocalDate.now(), null);
 
         JLabel toLabel = new JLabel("To:");
         DatePickerSettings toSettings = new DatePickerSettings();
         toSettings.setAllowKeyboardEditing(false);
         DatePicker toDatePicker = new DatePicker(toSettings);
-        toDatePicker.setDate(LocalDate.now());
+        toDatePicker.setDate(LocalDate.now().plusDays(1));
+        toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
+
+        fromDatePicker.addDateChangeListener(event -> {
+            if (event.getNewDate() != null && event.getNewDate().isBefore(LocalDate.now())) {
+                fromDatePicker.setDate(LocalDate.now());
+            } else {
+                updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
+            }
+        });
+
+        toDatePicker.addDateChangeListener(event -> {
+            if (event.getNewDate() != null && !event.getNewDate().isAfter(LocalDate.now())) {
+                toDatePicker.setDate(LocalDate.now().plusDays(1));
+            } else {
+                updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
+            }
+        });
+
+        typeComboBox.addActionListener(e -> updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker));
 
         JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> updateTableManually(typeComboBox, fromDatePicker, toDatePicker));
 
         topPanel.add(typeLabel);
         topPanel.add(typeComboBox);
@@ -53,9 +74,8 @@ public class BrowseVehicles extends JPanel {
         topPanel.add(toDatePicker);
         topPanel.add(searchButton);
 
-        // Center panel for table
         String[] columnNames = {"Image", "ID", "Name", "Type", "Price-per-day", "Color", "Year"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+        tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
@@ -86,28 +106,6 @@ public class BrowseVehicles extends JPanel {
         });
         JScrollPane tableScrollPane = new JScrollPane(vehicleTable);
 
-        // Search button action listener
-        searchButton.addActionListener(e -> {
-            LocalDate fromDate = fromDatePicker.getDate();
-            LocalDate toDate = toDatePicker.getDate();
-            String selectedType = (String) typeComboBox.getSelectedItem();
-
-            if (fromDate == null || toDate == null) {
-                JOptionPane.showMessageDialog(this, "Please select both dates.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (fromDate.isAfter(toDate)) {
-                JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (fromDate.isEqual(toDate)) {
-                JOptionPane.showMessageDialog(this, "Can't book same day, please select two different dates.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                // Fetch available vehicles and update table
-                Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
-                Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
-                List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
-                updateTable(tableModel, vehicles);
-            }
-        });
-
-        // Bottom panel for buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton bookButton = new JButton("Book Now");
 
@@ -116,8 +114,7 @@ public class BrowseVehicles extends JPanel {
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "No vehicle selected. Please select a vehicle to book.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                Vehicle selectedVehicle = vehicleController.getVehicleByVehicleId((int) tableModel.getValueAt(selectedRow, 1)); // Assuming Vehicle is stored in table model
-                // Pass selectedVehicle to booking logic (e.g., open RentalAgreement)
+                Vehicle selectedVehicle = vehicleController.getVehicleByVehicleId((int) tableModel.getValueAt(selectedRow, 1));
                 setVisible(false);
                 RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser, fromDatePicker.getDate(), toDatePicker.getDate(), true);
             }
@@ -125,10 +122,46 @@ public class BrowseVehicles extends JPanel {
 
         bottomPanel.add(bookButton);
 
-        // Add panels to the frame
         add(topPanel, BorderLayout.NORTH);
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // Initial update to populate the table
+        updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
+    }
+
+    private void updateTableAutomatically(JComboBox<String> typeComboBox, DatePicker fromDatePicker, DatePicker toDatePicker) {
+        LocalDate fromDate = fromDatePicker.getDate();
+        LocalDate toDate = toDatePicker.getDate();
+        String selectedType = (String) typeComboBox.getSelectedItem();
+
+        if (fromDate == null || toDate == null || fromDate.isAfter(toDate)) {
+            return;
+        }
+
+        Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
+        Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
+        List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+        updateTable(tableModel, vehicles);
+    }
+
+    private void updateTableManually(JComboBox<String> typeComboBox, DatePicker fromDatePicker, DatePicker toDatePicker) {
+        LocalDate fromDate = fromDatePicker.getDate();
+        LocalDate toDate = toDatePicker.getDate();
+        String selectedType = (String) typeComboBox.getSelectedItem();
+
+        if (fromDate == null || toDate == null) {
+            JOptionPane.showMessageDialog(this, "Please select both dates.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (fromDate.isAfter(toDate)) {
+            JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (fromDate.isEqual(toDate)) {
+            JOptionPane.showMessageDialog(this, "Can't book same day, please select two different dates.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
+            Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
+            List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+            updateTable(tableModel, vehicles);
+        }
     }
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
@@ -150,7 +183,6 @@ public class BrowseVehicles extends JPanel {
     }
 
     private String[] getVehicleTypes() {
-        // Fetch vehicle types dynamically from the controller
         List<CarModel> carModels = vehicleController.getCarModels();
         List<String> types = new ArrayList<>(carModels.size());
         for (CarModel cars : carModels) {
