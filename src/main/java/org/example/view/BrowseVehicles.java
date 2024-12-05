@@ -46,16 +46,20 @@ public class BrowseVehicles extends JPanel {
         toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
 
         fromDatePicker.addDateChangeListener(event -> {
-            if (event.getNewDate() != null && event.getNewDate().isBefore(LocalDate.now())) {
-                fromDatePicker.setDate(LocalDate.now());
-            } else {
+            LocalDate newFromDate = event.getNewDate();
+            if (newFromDate != null) {
+                if (newFromDate.isAfter(toDatePicker.getDate())) {
+                    toDatePicker.setDate(newFromDate.plusDays(1));
+                }
+                toDatePicker.getSettings().setDateRangeLimits(newFromDate.plusDays(1), null);
                 updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
         });
 
         toDatePicker.addDateChangeListener(event -> {
-            if (event.getNewDate() != null && !event.getNewDate().isAfter(LocalDate.now())) {
-                toDatePicker.setDate(LocalDate.now().plusDays(1));
+            LocalDate newToDate = event.getNewDate();
+            if (newToDate != null && newToDate.isBefore(fromDatePicker.getDate())) {
+                toDatePicker.setDate(fromDatePicker.getDate().plusDays(1));
             } else {
                 updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
@@ -126,7 +130,6 @@ public class BrowseVehicles extends JPanel {
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Initial update to populate the table
         updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
     }
 

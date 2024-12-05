@@ -10,11 +10,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 public class InvoiceController {
-    private DatabaseHandler dbHandler = new DatabaseHandler();
+    private DatabaseHandler dbHandler;
     private Invoice invoice;
 
     public Invoice createInvoice(int bookingId, double lateFees, double totalPrice, Timestamp issuedAt) {
         String query = "INSERT INTO invoice (booking_id, late_fees, total_price, issued_at) VALUES (?, ?, ?, ?)";
+        dbHandler = new DatabaseHandler();
         try {
             int inv =  dbHandler.executeUpdate(query, bookingId, lateFees, totalPrice, issuedAt);
             invoice = new Invoice(inv,bookingId, lateFees, totalPrice, issuedAt);
@@ -22,10 +23,13 @@ public class InvoiceController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Error creating a new invoice");
             return null;
+        } finally {
+            dbHandler.closeConnection();
         }
     }
     public List<Invoice> getAllInvoices() {
         List<Invoice> invoices = new ArrayList<>();
+        dbHandler = new DatabaseHandler();
         String query = "SELECT * FROM invoice";
         try (ResultSet resSet = dbHandler.executeQuery(query)){
             while (resSet != null && resSet.next()) {
@@ -42,6 +46,8 @@ public class InvoiceController {
             ErrorHandler.handleException(e, "Error retrieving all invoices");
         } catch (Exception ee) {
             ErrorHandler.showError(ee.getMessage() + " Error retrieving all invoices");
+        }finally {
+            dbHandler.closeConnection();
         }
         return invoices;
     }
@@ -63,6 +69,8 @@ public class InvoiceController {
             return invoices;
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Error retrieving all invoices");
+        }finally {
+            dbHandler.closeConnection();
         }
         return null;
     }

@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 public class BookingController {
-    private DatabaseHandler DbHandler = new DatabaseHandler();
+    private DatabaseHandler DbHandler ;
     private Booking booking;
     private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
+        DbHandler = new DatabaseHandler();
         try {
             if (CarIsBusy(vehicleId, start_date, end_date)) {
                 ErrorHandler.handleWarning("Car is Already Booked ");
@@ -35,6 +36,8 @@ public class BookingController {
         }
         catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+        }finally {
+            DbHandler.closeConnection();
         }
         return null;
     }
@@ -46,13 +49,15 @@ public class BookingController {
           AND start_date <= ? 
           AND end_date >= ?
     """;
-
-        try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, start_date, end_date)) {
+        DbHandler = new DatabaseHandler();
+        try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, end_date, start_date)) {
             if (resSet.next() && resSet.getInt("count") > 0) {
                 return true; // Car is busy
             }
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Error checking car availability");
+        }finally {
+            DbHandler.closeConnection();
         }
         return false; // Car is not busy
     }
@@ -61,6 +66,7 @@ public class BookingController {
     public List<Booking> getAllBookingsByUserid(int userId){
         List<Booking> bookings = new ArrayList<>();
         String query = "select * from booking where user_id = ?";
+        DbHandler = new DatabaseHandler();
         try(ResultSet resSet = DbHandler.executeQuery(query,userId)) {
 
 
@@ -83,22 +89,26 @@ public class BookingController {
             ErrorHandler.handleException(e,e.getMessage());
       } catch (Exception ee) {
           ErrorHandler.showError(ee.getMessage()+"Error retrieving bookings for user ID: " + userId);
-      }
+      }finally {
+            DbHandler.closeConnection();
+        }
         return bookings;
     }
     public void editBookingStatusToCanceled(int bookingId){
-
+        DbHandler = new DatabaseHandler();
         String query = "UPDATE booking SET status = ? WHERE id = ?";
         try{
             DbHandler.executeUpdate(query,"CANCELD",bookingId);
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to canceled");
 
+        }finally {
+            DbHandler.closeConnection();
         }
 
     }
     public void editBookingStatusToReturned(int bookingId){
-
+        DbHandler = new DatabaseHandler();
         String query = "SELECT * from booking WHERE id = ?";
         try(ResultSet resSet = DbHandler.executeQuery(query,bookingId)){
 
@@ -130,9 +140,13 @@ public class BookingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Error updating booking status to Returned");
         }
+        finally {
+            DbHandler.closeConnection();
+        }
     }
     public List<Booking> getAllBookings(){
         List<Booking> bookings = new ArrayList<>();
+        DbHandler = new DatabaseHandler();
         String query = "select * from booking;";
         try( ResultSet resSet = DbHandler.executeQuery(query)) {
             while (resSet != null && resSet.next()) {
@@ -155,12 +169,15 @@ public class BookingController {
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception ee) {
             ErrorHandler.showError(ee+"Error retrieving all bookings ");
+        }finally {
+            DbHandler.closeConnection();
         }
         return bookings;
     }
 
     public Booking getBookingByBookingId(int bookingId) {
         String query = "select * from booking where id = ?";
+        DbHandler = new DatabaseHandler();
         try(ResultSet resSet = DbHandler.executeQuery(query,bookingId)) {
             if(resSet.next()){
                return new Booking(
@@ -181,6 +198,9 @@ public class BookingController {
             ErrorHandler.handleException(e,e.getMessage());
         } catch (RuntimeException ee) {
             ErrorHandler.handleException(ee, ee.getMessage());
+        }
+        finally {
+            DbHandler.closeConnection();
         }
         return null;
     }

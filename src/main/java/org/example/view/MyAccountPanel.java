@@ -36,9 +36,11 @@ public class MyAccountPanel extends JPanel {
         phoneLabel = new JLabel("Phone:     ");
         passwordLabel = new JLabel("Password: ");
         saveChangesButton = new JButton("Save Changes");
-        fnameTextField = new JTextField(loggedUser.getName(), 20);
-        lnameTextField = new JTextField(loggedUser.getName(), 20);
+        String[] fullName =loggedUser.getName().split(" ");
+        fnameTextField = new JTextField(fullName[0], 20);
+        lnameTextField = new JTextField(fullName[1], 20);
         emailTextField = new JTextField(loggedUser.getEmail(), 20);
+        emailTextField.setEditable(false);
         phoneTextField = new JTextField(loggedUser.getPhone(), 20);
         passwordField = new JPasswordField(20);
 
