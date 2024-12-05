@@ -120,7 +120,9 @@ public class BrowseVehicles extends JPanel {
             } else {
                 Vehicle selectedVehicle = vehicleController.getVehicleByVehicleId((int) tableModel.getValueAt(selectedRow, 1));
                 setVisible(false);
+
                 RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser, fromDatePicker.getDate(), toDatePicker.getDate(), true);
+
             }
         });
 

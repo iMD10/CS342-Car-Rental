@@ -26,7 +26,12 @@ public class ManageVehicles extends JPanel {
 
         // Create initial table data
         updateTableData();
-        table = new JTable(new DefaultTableModel(data, columnNames));
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table = new JTable(model);
         table.setRowHeight(100); // Set row height to display images properly
 
         // Set custom renderer for the Image column

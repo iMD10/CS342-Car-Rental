@@ -90,4 +90,5 @@ public class Booking {
     public void setCost(double cost) {
         this.cost = cost;
     }
+
 }

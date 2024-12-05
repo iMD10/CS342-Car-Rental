@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class NotificationsPanel extends JPanel {
 
-    private DefaultListModel<String> notificationsModel;
+    private static DefaultListModel<String> notificationsModel;
 
     public NotificationsPanel() {
         setLayout(new BorderLayout());
@@ -24,12 +24,11 @@ public class NotificationsPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(notificationsList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Sample Notification
-        addNotification("Welcome to your Notifications Panel!");
     }
 
     // Method to add a notification
-    public void addNotification(String notification) {
+    public static void addNotification(String notification) {
         notificationsModel.addElement(notification);
     }
+    public static void removeNotification(String notification) {}
 }
