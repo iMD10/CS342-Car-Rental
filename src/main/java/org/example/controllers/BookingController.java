@@ -3,6 +3,8 @@ import org.example.classes.Booking;
 import org.example.classes.Invoice;
 import org.example.classes.Vehicle;
 import org.example.common.*;
+import org.example.view.NotificationsPanel;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -14,7 +16,7 @@ public class BookingController {
     private Booking booking;
     private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
-        DbHandler = new DatabaseHandler();
+
         try {
             if (CarIsBusy(vehicleId, start_date, end_date)) {
                 ErrorHandler.handleWarning("Car is Already Booked ");
@@ -29,8 +31,8 @@ public class BookingController {
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis);
             double cost = vehicle.getCarModel().getPrice() * differenceInDays;
             String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status, cost) VALUES (?, ?, ?, ?, ?, 'active', ?)";
+            DbHandler = new DatabaseHandler();
             int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
-
             booking = new Booking(id, userId, vehicleId,"ACTIVE", now,null ,start_date, end_date, cost);
             return booking;
         }
@@ -48,6 +50,7 @@ public class BookingController {
         WHERE vehicle_id = ? 
           AND start_date <= ? 
           AND end_date >= ?
+          AND status = 'active'
     """;
         DbHandler = new DatabaseHandler();
         try (ResultSet resSet = DbHandler.executeQuery(query, vehicleId, end_date, start_date)) {
@@ -203,6 +206,38 @@ public class BookingController {
             DbHandler.closeConnection();
         }
         return null;
+    }
+
+    public List<Booking> getActiveBookingsByUserid(int userId){
+        List<Booking> bookings = new ArrayList<>();
+        String query = "select * from booking where user_id = ? AND status = 'active'";
+        DbHandler = new DatabaseHandler();
+        try(ResultSet resSet = DbHandler.executeQuery(query,userId)) {
+
+
+            while (resSet != null && resSet.next()) {
+                bookings.add( new Booking(resSet.getInt("id"),
+                        resSet.getInt("user_id"),
+                        resSet.getInt("vehicle_id"),
+                        resSet.getString("status"),
+                        resSet.getTimestamp("booked_at"),
+                        resSet.getTimestamp("returned_at"),
+                        resSet.getTimestamp("start_date"),
+                        resSet.getTimestamp("end_date"),
+                        resSet.getDouble("cost")
+                ));
+
+            }
+
+        }
+        catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
+        } catch (Exception ee) {
+            ErrorHandler.showError(ee.getMessage()+"Error retrieving bookings for user ID: " + userId);
+        }finally {
+            DbHandler.closeConnection();
+        }
+        return bookings;
     }
 
 }

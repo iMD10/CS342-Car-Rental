@@ -120,7 +120,9 @@ public class BrowseVehicles extends JPanel {
             } else {
                 Vehicle selectedVehicle = vehicleController.getVehicleByVehicleId((int) tableModel.getValueAt(selectedRow, 1));
                 setVisible(false);
+
                 RentalAgreement ra = new RentalAgreement(selectedVehicle, loggedUser, fromDatePicker.getDate(), toDatePicker.getDate(), true);
+
             }
         });
 
@@ -186,10 +188,10 @@ public class BrowseVehicles extends JPanel {
     }
 
     private String[] getVehicleTypes() {
-        List<CarModel> carModels = vehicleController.getCarModels();
+        List<String> carModels = vehicleController.getCarTypes();
         List<String> types = new ArrayList<>(carModels.size());
-        for (CarModel cars : carModels) {
-            types.add(cars.getType());
+        for (String cars : carModels) {
+            types.add(cars);
         }
         return types.toArray(new String[0]);
     }

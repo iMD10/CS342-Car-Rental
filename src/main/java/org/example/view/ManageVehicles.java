@@ -26,7 +26,12 @@ public class ManageVehicles extends JPanel {
 
         // Create initial table data
         updateTableData();
-        table = new JTable(new DefaultTableModel(data, columnNames));
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table = new JTable(model);
         table.setRowHeight(100); // Set row height to display images properly
 
         // Set custom renderer for the Image column
@@ -79,9 +84,26 @@ public class ManageVehicles extends JPanel {
             data[i][5] = vehicle.getColor();
             data[i][6] = vehicle.getCarModel().getModelYear();
             data[i][7] = vehicle.getSerialNumber();
+
+
         }
         if (table != null) {
             table.setModel(new DefaultTableModel(data, columnNames));
+        table.getColumn("Image").setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof ImageIcon) {
+                    JLabel label = new JLabel();
+                    label.setIcon((ImageIcon) value);
+                    return label;
+                } else {
+                    return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                }
+            }
+        });
+
+
+        table.removeEditor();
         }
     }
 

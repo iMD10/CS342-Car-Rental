@@ -136,6 +136,27 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
         return null;
     }
 
+    public List<String> getCarTypes() {
+        db = new DatabaseHandler();
+        String query = "SELECT distinct type FROM car_model;";
+        try (ResultSet rs = db.executeQuery(query)){
+
+            List<String> carTypes = new ArrayList<>();
+            while (rs.next()) {
+                carTypes.add(rs.getString("type"));
+            }
+            return carTypes;
+
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
+        }
+        return null;
+    }
+
     public Vehicle getVehicleByVehicleId(int vehicleId) {
         db = new DatabaseHandler();
         String query = " SELECT vehicle.id as vehicle_id, car_model_id, model_year, serial_number, name, color, company, type, price FROM vehicle JOIN car_model on car_model_id = car_model.id WHERE vehicle.id = ?;";

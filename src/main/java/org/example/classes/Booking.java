@@ -1,4 +1,6 @@
 package org.example.classes;
+import org.example.controllers.VehicleController;
+
 import java.sql.*;
 
 public class Booking {
@@ -17,6 +19,7 @@ public class Booking {
         this.start_date = start_date;
         this.end_date = end_date;
         this.cost = cost;
+
     }
 
     public int getId() {
@@ -90,4 +93,5 @@ public class Booking {
     public void setCost(double cost) {
         this.cost = cost;
     }
+
 }

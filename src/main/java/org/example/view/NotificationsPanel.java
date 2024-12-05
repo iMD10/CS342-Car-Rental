@@ -1,11 +1,17 @@
 package org.example.view;
 
+import org.example.classes.Booking;
+import org.example.classes.User;
+import org.example.controllers.BookingController;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class NotificationsPanel extends JPanel {
 
-    private DefaultListModel<String> notificationsModel;
+    private static DefaultListModel<String> notificationsModel;
+
 
     public NotificationsPanel() {
         setLayout(new BorderLayout());
@@ -24,12 +30,18 @@ public class NotificationsPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(notificationsList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Sample Notification
-        addNotification("Welcome to your Notifications Panel!");
     }
 
     // Method to add a notification
-    public void addNotification(String notification) {
+    public static void addNotification(String notification) {
         notificationsModel.addElement(notification);
+    }
+
+    public static void sendReminder(User loggedUser) {
+        BookingController bookingController = new BookingController();
+        List<Booking> bookings  = bookingController.getActiveBookingsByUserid(loggedUser.getId());
+        for (Booking booking : bookings) {
+            notificationsModel.addElement("Reminder: You should return the vehicle of booking ID: "+ booking.getId() + " at "+ booking.getEnd_date());
+        }
     }
 }
