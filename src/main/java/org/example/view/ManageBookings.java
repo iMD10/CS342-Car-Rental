@@ -1,6 +1,7 @@
 package org.example.view;
 
 import org.example.classes.Booking;
+import org.example.classes.User;
 import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.common.TableCreator;
@@ -8,7 +9,7 @@ import org.example.controllers.UserController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class ManageBookings extends JPanel  {
@@ -110,8 +111,9 @@ public class ManageBookings extends JPanel  {
         searchButton.addActionListener(e->{
             if (!(searchField.getText().isEmpty())) {
                 try {
+
                     updateBookings(tableModel, Integer.parseInt(searchField.getText()));
-                } catch (Exception ex) {
+                } catch (NumberFormatException ex) {
                     ErrorHandler.handleWarning("Enter ID number");
                 }
             } else {
@@ -127,19 +129,30 @@ public class ManageBookings extends JPanel  {
 
     }
 
-    public void updateBookings(DefaultTableModel tableModel, int bookingId){
+    public void updateBookings(DefaultTableModel tableModel, int bookingId) {
+        // Clear the table
         tableModel.setRowCount(0);
-        List<Booking> allBookings = new ArrayList<>();
-        if (bookingId == -1) {
-             allBookings = bookingController.getAllBookings();
-        } else {
-             allBookings.add(bookingController.getBookingByBookingId(bookingId));
+
+        // Retrieve bookings based on the bookingId
+        List<Booking> allBookings = (bookingId == -1)
+                ? bookingController.getAllBookings()
+                : Collections.singletonList(bookingController.getBookingByBookingId(bookingId));
+
+        // Fetch user details for all bookings in a single operation (if possible)
+        Map<Integer, User> userMap = new HashMap<>();
+        for (Booking booking : allBookings) {
+            if (!userMap.containsKey(booking.getUserId())) {
+                userMap.put(booking.getUserId(), userController.getUserById(booking.getUserId()));
+            }
         }
-        for(Booking booking : allBookings){
-            tableModel.addRow(new Object[]{
+
+        // Populate the table
+        for (Booking booking : allBookings) {
+            User user = userMap.get(booking.getUserId());
+            tableModel.addRow(new Object[] {
                     booking.getId(),
                     booking.getUserId(),
-                    userController.getUserById(booking.getUserId()).getName(),
+                    user != null ? user.getName() : "Unknown",
                     booking.getVehicleId(),
                     booking.getStart_date(),
                     booking.getEnd_date(),
@@ -147,4 +160,6 @@ public class ManageBookings extends JPanel  {
             });
         }
     }
+
 }
+
