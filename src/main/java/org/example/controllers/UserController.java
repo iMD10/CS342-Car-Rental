@@ -14,7 +14,6 @@ public class UserController {
 
     public User loginUser(String email, String password) {
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
-        db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(query, email, password)){
 
             if(rs.next() && rs != null) {
@@ -68,8 +67,7 @@ public class UserController {
     }
 
     public List<User> getAllUsers() {
-            db = new DatabaseHandler();
-            String query = "select * from users";
+        String query = "select * from users";
         try(ResultSet rs = db.executeQuery(query)){
             List<User> users = new ArrayList<>();
             while(rs.next()) {

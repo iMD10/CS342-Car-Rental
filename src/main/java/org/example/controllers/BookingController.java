@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 public class BookingController {
-    private DatabaseHandler DbHandler = new DatabaseHandler();;
+    private DatabaseHandler DbHandler = new DatabaseHandler();
     private Booking booking;
     private Invoice invoice;
     public Booking createBooking (int userId,int vehicleId,Timestamp start_date, Timestamp end_date ) {
@@ -179,6 +179,8 @@ public class BookingController {
             }
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+        } catch (RuntimeException ee) {
+            ErrorHandler.handleException(ee, ee.getMessage());
         }
         return null;
     }
