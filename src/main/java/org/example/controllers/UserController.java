@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserController {
-    private DatabaseHandler db = new DatabaseHandler();
+    private DatabaseHandler db;
 
     public User loginUser(String email, String password) {
+        db = new DatabaseHandler();
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (ResultSet rs = db.executeQuery(query, email, password)){
 
@@ -21,8 +22,8 @@ public class UserController {
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        rs.getString("password"),
                         rs.getString("phone"),
+                        rs.getString("password"),
                         rs.getBoolean("is_admin")
                 );
             } else {
@@ -31,6 +32,9 @@ public class UserController {
         } catch (SQLException | RuntimeException e) {
             ErrorHandler.handleException(e,e.getMessage());
         }
+        finally {
+            db.closeConnection();
+        }
         return  null;
     }
 
@@ -38,7 +42,7 @@ public class UserController {
         //Don't change users to user because we changed it in db!!!!
         String checkQuery = "SELECT * FROM users WHERE email = ?;";
         String insertQuery = "INSERT INTO users (email, name, phone, password, is_admin) VALUES (?, ?, ?, ?, false)";
-
+        db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(checkQuery, email)) {
             // Check if email already exists
             if (rs != null && rs.next()) {
@@ -62,12 +66,16 @@ public class UserController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "A database error occurred: " + e.getMessage());
         }
+        finally {
+            db.closeConnection();
+        }
 
         return null; // Return null if registration fails
     }
 
     public List<User> getAllUsers() {
         String query = "select * from users";
+        db = new DatabaseHandler();
         try(ResultSet rs = db.executeQuery(query)){
             List<User> users = new ArrayList<>();
             while(rs.next()) {
@@ -84,6 +92,8 @@ public class UserController {
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e, e.getMessage());
+        }finally {
+            db.closeConnection();
         }
         return null;
     }
@@ -96,8 +106,8 @@ public class UserController {
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        rs.getString("password"),
                         rs.getString("phone"),
+                        rs.getString("password"),
                         rs.getBoolean("is_admin")
                 );
             }
@@ -105,17 +115,25 @@ public class UserController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, e.getMessage());
         }
+        finally {
+            db.closeConnection();
+        }
 
         return null;
     }
     public boolean updateCustomerInfo(String email, String firstName, String lastName, String phone, String password) {
-        String query = "UPDATE users SET first_name = ?, last_name = ?, phone = ?, password = ? WHERE email = ?";
+        db = new DatabaseHandler();
+        String name = firstName + " " + lastName;
+        String query = "UPDATE users SET name = ?,phone = ?, password = ? WHERE email = ?";
         try {
-            db.executeUpdate(query, firstName, lastName, phone, password, email);
+            db.executeUpdate(query,name, phone, password, email);
             return true;
         }
         catch (SQLException e) {
             ErrorHandler.handleException(e, "Error updating user information"); return false;
+        }
+        finally {
+            db.closeConnection();
         }
     }
 

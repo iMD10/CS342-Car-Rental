@@ -12,6 +12,7 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
     private DatabaseHandler db;
 
     private List<Vehicle> getVehicles(ResultSet rs) throws  Exception {
+        db = new DatabaseHandler();
         try {
             List<Vehicle> vehicles = new ArrayList<>();
             while (rs.next()) {
@@ -33,6 +34,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
+        }finally {
+            db.closeConnection();
         }
     }
 
@@ -47,13 +50,15 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
         return null;
     }
     public List<Vehicle> getAvailableVehicles(Timestamp start, Timestamp end) {
             String query = "SELECT vehicle.id AS vehicle_id, car_model_id, serial_number, color, name, model_year,  price, company, type FROM vehicle JOIN car_model ON car_model_id = car_model.id LEFT JOIN booking ON vehicle.id = booking.vehicle_id  AND booking.status = 'active' AND (booking.start_date <= ? AND booking.end_date >= ?) WHERE booking.id IS NULL;";
             db = new DatabaseHandler();
-        try(ResultSet rs = db.executeQuery(query, start, end)) {
+        try(ResultSet rs = db.executeQuery(query, end, start)) {
 
             return getVehicles(rs);
 
@@ -61,6 +66,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
         return null;
     }
@@ -68,7 +75,7 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
     public List<Vehicle> getAvailableVehiclesByType(String type, Timestamp start, Timestamp end) {
             String query = "SELECT car_model_id, vehicle.id AS vehicle_id, car_model_id, serial_number, color, name, model_year, price, company, type FROM vehicle JOIN car_model ON car_model_id = car_model.id LEFT JOIN booking ON vehicle.id = booking.vehicle_id  AND booking.status = 'active' AND (booking.start_date <= ? AND booking.end_date >= ?) WHERE (booking.id IS NULL AND type = ?);";
             db = new DatabaseHandler();
-        try(ResultSet rs = db.executeQuery(query, start, end, type)) {
+        try(ResultSet rs = db.executeQuery(query, end, start, type)) {
 
 
             return getVehicles(rs);
@@ -77,6 +84,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
         return null;
     }
@@ -91,6 +100,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
         return -1;
     }
@@ -119,6 +130,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             ErrorHandler.handleException(e,e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
         return null;
     }
@@ -143,6 +156,8 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
             }
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+        }finally {
+            db.closeConnection();
         }
         return null;
     }

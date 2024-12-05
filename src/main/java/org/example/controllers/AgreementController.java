@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 public class AgreementController {
-    private DatabaseHandler db = new DatabaseHandler();
+    private DatabaseHandler db;
 
     public Agreement createAgreement(int bookingId, Timestamp issuedAt ) {
         db = new DatabaseHandler();
@@ -46,10 +46,14 @@ public class AgreementController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
         }
+        finally {
+            db.closeConnection();
+        }
         return null;
     }
     public List<Agreement> getAllAgreements() {
         String query = "SELECT * FROM agreement";
+        db = new DatabaseHandler();
         try (ResultSet rs = db.executeQuery(query)){
             List<Agreement> agreements = new ArrayList<>();
             while(rs.next()){
@@ -59,9 +63,13 @@ public class AgreementController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Couldn't get all agreements");
         }
+        finally {
+            db.closeConnection();
+        }
         return null;
     }
     public List<Agreement> getAgreementsByUserId(int userId) {
+        db = new DatabaseHandler();
         String query = "SELECT * FROM agreement JOIN booking on booking_id = booking.id WHERE user_id=?;";
         try (ResultSet rs = db.executeQuery(query, userId)){
             List<Agreement> agreements = new ArrayList<>();
@@ -72,9 +80,13 @@ public class AgreementController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Couldn't get customer agreements");
         }
+        finally {
+            db.closeConnection();
+        }
         return null;
     }
     public Agreement getAgreementById(int id) {
+        db = new DatabaseHandler();
         String query = "SELECT * FROM agreement WHERE id=?;";
         try (ResultSet rs = db.executeQuery(query, id)){
 
@@ -84,6 +96,9 @@ public class AgreementController {
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,"Couldn't get agreement");
+        }
+        finally {
+            db.closeConnection();
         }
         return null;
     }

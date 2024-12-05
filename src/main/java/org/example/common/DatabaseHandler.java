@@ -8,6 +8,7 @@ public class DatabaseHandler {
     private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     private Connection connection;
+    private PreparedStatement ps;
 
     public DatabaseHandler() {
         try {
@@ -19,9 +20,11 @@ public class DatabaseHandler {
     }
 
     public ResultSet executeQuery(String query, Object... params) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement(query);
-        setParameters(ps, params);
-        return ps.executeQuery(); // Caller must close the ResultSet
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            setParameters(ps, params);
+            return ps.executeQuery(); // Caller must close the ResultSet
+
     }
 
     public int executeUpdate(String query, Object... params) throws SQLException {
@@ -54,6 +57,9 @@ public class DatabaseHandler {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
+            }
+            if (ps != null && !ps.isClosed()) {
+                ps.close();
             }
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to close the database connection.");
