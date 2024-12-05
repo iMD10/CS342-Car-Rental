@@ -72,14 +72,14 @@ public class CarDetails extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
-                //new RentalAgreement(selectedCar, loggedUser, startingDate,endingDate);
+                new RentalAgreement(selectedCar, loggedUser, startingDate, endingDate, true);
             }
         });
 
         JPanel btnPanel = new JPanel(new GridLayout(1,3));
         btnPanel.add(bookBtn);
-//        btnPanel.setMaximumSize(new Dimension(200, 40));
-//        btnPanel.setPreferredSize(new Dimension(200, 40));
+//      btnPanel.setMaximumSize(new Dimension(200, 40));
+//      btnPanel.setPreferredSize(new Dimension(200, 40));
 
         underImagePanel.add(nameAndBookPanel);
         underImagePanel.add(Box.createVerticalGlue());
