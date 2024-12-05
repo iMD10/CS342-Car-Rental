@@ -18,18 +18,18 @@ public class UserController {
 
             if(rs.next() && rs != null) {
                 return new User(
-                  rs.getInt("id"),
-                  rs.getString("name"),
-                  rs.getString("email"),
-                  rs.getString("password"),
-                  rs.getString("phone"),
-                  rs.getBoolean("is_admin")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phone"),
+                        rs.getBoolean("is_admin")
                 );
             } else {
                 throw new RuntimeException("Email or password is incorrect");
             }
         } catch (SQLException | RuntimeException e) {
-           ErrorHandler.handleException(e,e.getMessage());
+            ErrorHandler.handleException(e,e.getMessage());
         }
         return  null;
     }
@@ -108,6 +108,15 @@ public class UserController {
 
         return null;
     }
-
+    public boolean updateCustomerInfo(String email, String firstName, String lastName, String phone, String password) {
+        String query = "UPDATE users SET first_name = ?, last_name = ?, phone = ?, password = ? WHERE email = ?";
+        try {
+            db.executeUpdate(query, firstName, lastName, phone, password, email);
+            return true;
+        }
+        catch (SQLException e) {
+            ErrorHandler.handleException(e, "Error updating user information"); return false;
+        }
+    }
 
 }

@@ -16,14 +16,12 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top bar for navigation
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setBackground(new Color(0, 172, 237));
 
-        // Left panel for the logo
         JPanel logoPanel = new JPanel(new BorderLayout());
         logoPanel.setBackground(Color.WHITE);
-        logoPanel.setPreferredSize(new Dimension(85, 85)); // Same size as the buttons
+        logoPanel.setPreferredSize(new Dimension(85, 85));
 
         JLabel logoLabel = new JLabel();
         ImageIcon logoIcon = new ImageIcon("res\\R.png");
@@ -35,8 +33,7 @@ public class MainFrame extends JFrame {
 
         topBar.add(logoPanel, BorderLayout.WEST);
 
-        // Right panel for the buttons
-        JPanel buttonsPanel = new JPanel(new GridLayout(1, 4));
+        JPanel buttonsPanel = new JPanel(new GridLayout(1, 6));
         buttonsPanel.setBackground(new Color(255, 255, 255));
 
         Dimension buttonSize = new Dimension(130, 85);
@@ -44,9 +41,10 @@ public class MainFrame extends JFrame {
         JButton myBookingsButton = new JButton("My Bookings");
         JButton invoicesButton = new JButton("Invoices");
         JButton agreementsButton = new JButton("Agreements");
+        JButton myAccountButton = new JButton("My Account");
         JButton logoutButton = new JButton("Logout");
 
-        JButton[] buttons = {homeButton, myBookingsButton, invoicesButton, agreementsButton, logoutButton};
+        JButton[] buttons = {homeButton, myBookingsButton, invoicesButton, agreementsButton, myAccountButton, logoutButton};
         for (JButton button : buttons) {
             button.setBackground(new Color(0, 172, 237));
             button.setForeground(Color.WHITE);
@@ -62,12 +60,12 @@ public class MainFrame extends JFrame {
 
         add(topBar, BorderLayout.NORTH);
 
-        // Content panel
         contentPanel = new JPanel(new CardLayout());
         contentPanel.add(new BrowseVehicles(this, loggedUser), "Browse Vehicles");
         contentPanel.add(new MyBookings(this, loggedUser), "My Bookings");
         contentPanel.add(new Invoices(this, loggedUser), "Invoices");
         contentPanel.add(new Agreements(this, loggedUser), "Agreements");
+        contentPanel.add(new MyAccountPanel(loggedUser), "My Account");
 
         add(contentPanel, BorderLayout.CENTER);
 
@@ -75,6 +73,7 @@ public class MainFrame extends JFrame {
         myBookingsButton.addActionListener(e -> switchPanel("My Bookings"));
         invoicesButton.addActionListener(e -> switchPanel("Invoices"));
         agreementsButton.addActionListener(e -> switchPanel("Agreements"));
+        myAccountButton.addActionListener(e -> switchPanel("My Account"));
         logoutButton.addActionListener(e -> {
             dispose();
             new Login();
