@@ -46,22 +46,20 @@ public class BrowseVehicles extends JPanel {
         toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
 
         fromDatePicker.addDateChangeListener(event -> {
-            if (event.getNewDate() != null && event.getNewDate().isBefore(LocalDate.now())) {
-                fromDatePicker.setDate(LocalDate.now());
-            } else {
-                LocalDate fromDate = fromDatePicker.getDate();
-                if (fromDate != null) {
-                    toDatePicker.getSettings().setDateRangeLimits(fromDate.plusDays(1), null);
-                } else {
-                    toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
+            LocalDate newFromDate = event.getNewDate();
+            if (newFromDate != null) {
+                if (newFromDate.isAfter(toDatePicker.getDate())) {
+                    toDatePicker.setDate(newFromDate.plusDays(1));
                 }
+                toDatePicker.getSettings().setDateRangeLimits(newFromDate.plusDays(1), null);
                 updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
         });
 
         toDatePicker.addDateChangeListener(event -> {
-            if (event.getNewDate() != null && !event.getNewDate().isAfter(LocalDate.now())) {
-                toDatePicker.setDate(LocalDate.now().plusDays(1));
+            LocalDate newToDate = event.getNewDate();
+            if (newToDate != null && newToDate.isBefore(fromDatePicker.getDate())) {
+                toDatePicker.setDate(fromDatePicker.getDate().plusDays(1));
             } else {
                 updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
@@ -170,7 +168,7 @@ public class BrowseVehicles extends JPanel {
     }
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Clear existing rows
         for (Vehicle vehicle : vehicles) {
             String path = "res/" + vehicle.getCarModel().getName() + ".png";
             ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
