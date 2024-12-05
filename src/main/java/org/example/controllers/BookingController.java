@@ -29,7 +29,7 @@ public class BookingController {
             double cost = vehicle.getCarModel().getPrice() * differenceInDays;
             String query = "insert into booking (user_id, vehicle_id, booked_at, start_date, end_date, status, cost) VALUES (?, ?, ?, ?, ?, 'active', ?)";
             int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
-            System.out.println(id);
+
             booking = new Booking(id, userId, vehicleId,"ACTIVE", now,null ,start_date, end_date, cost);
             return booking;
         }

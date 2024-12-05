@@ -17,9 +17,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Agreements extends JPanel {
-    AgreementController agreementController = new AgreementController();
-    BookingController bookingController = new BookingController();
-    VehicleController vehicleController = new VehicleController();
+    private AgreementController agreementController = new AgreementController();
+    private BookingController bookingController = new BookingController();
+    private VehicleController vehicleController = new VehicleController();
 
     private final MainFrame mainFrame;
 
