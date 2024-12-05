@@ -108,7 +108,7 @@ public class ManageBookings extends JPanel  {
         });
 
         searchButton.addActionListener(e->{
-            if (!(searchField.getText().equals(""))) {
+            if (!(searchField.getText().isEmpty())) {
                 try {
                     updateBookings(tableModel, Integer.parseInt(searchField.getText()));
                 } catch (Exception ex) {
