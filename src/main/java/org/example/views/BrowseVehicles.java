@@ -207,12 +207,12 @@ public class BrowseVehicles extends JPanel {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
                 // Fetch the vehicles from the database in the background
-                System.out.println("_________________");
-                System.out.println(vehicleController.getAvailableVehicles(
-                        Timestamp.valueOf(startingDate.atStartOfDay()),
-                        Timestamp.valueOf(endingDate.atStartOfDay())
-                ).size());
-                System.out.println("_________________");
+//                System.out.println("_________________");
+//                System.out.println(vehicleController.getAvailableVehicles(
+//                        Timestamp.valueOf(startingDate.atStartOfDay()),
+//                        Timestamp.valueOf(endingDate.atStartOfDay())
+//                ).size());
+//                System.out.println("_________________");
 
                 return vehicleController.getAvailableVehicles(
                         Timestamp.valueOf(startingDate.atStartOfDay()),
