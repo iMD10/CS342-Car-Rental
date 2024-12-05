@@ -49,6 +49,12 @@ public class BrowseVehicles extends JPanel {
             if (event.getNewDate() != null && event.getNewDate().isBefore(LocalDate.now())) {
                 fromDatePicker.setDate(LocalDate.now());
             } else {
+                LocalDate fromDate = fromDatePicker.getDate();
+                if (fromDate != null) {
+                    toDatePicker.getSettings().setDateRangeLimits(fromDate.plusDays(1), null);
+                } else {
+                    toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
+                }
                 updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
         });
@@ -126,7 +132,6 @@ public class BrowseVehicles extends JPanel {
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Initial update to populate the table
         updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
     }
 
@@ -165,7 +170,7 @@ public class BrowseVehicles extends JPanel {
     }
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
-        tableModel.setRowCount(0); // Clear existing rows
+        tableModel.setRowCount(0);
         for (Vehicle vehicle : vehicles) {
             String path = "res/" + vehicle.getCarModel().getName() + ".png";
             ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
