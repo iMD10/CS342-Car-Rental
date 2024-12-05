@@ -1,19 +1,27 @@
 package org.example.view;
-
+import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import com.formdev.flatlaf.*;
+
 import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 public class Signup extends JFrame {
 
+    private JLabel welcome, title, fnameLabel, lnameLabel, emailLabel, phoneLabel, passwordLabel, goLabel;
+    private JButton signupButton, goToLoginButton;
+    private JTextField fnameTextField, lnameTextField, emailTextField, phoneTextField;
+    private JPasswordField passwordField;
+
     public Signup() {
-        this.setResizable(false);
-        this.setTitle("Sign up");
+
+        this.setTitle("Sign Up");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
@@ -22,131 +30,150 @@ public class Signup extends JFrame {
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+        this.setBounds(W/4, H/4, W/2, H/2);
 
         JPanel mainPanel = new JPanel(new BorderLayout(2, 1));
 
-        JPanel signupPanel = createSignupPanel();
+        // Initialize components
+        welcome = new JLabel("Welcome to Blu");
+        welcome.setFont(new Font("Arial", Font.BOLD, 20));
+        title = new JLabel("Sign Up Page");
+        fnameLabel = new JLabel("First Name: ");
+        lnameLabel = new JLabel("Last Name: ");
+        emailLabel = new JLabel("Email:      ");
+        phoneLabel = new JLabel("Phone:     ");
+        passwordLabel = new JLabel("Password: ");
+        signupButton = new JButton("Sign Up");
+        goToLoginButton = new JButton("Sign In");
+        fnameTextField = new JTextField(20);
+        lnameTextField = new JTextField(20);
+        emailTextField = new JTextField(20);
+        phoneTextField = new JTextField(20);
+        passwordField = new JPasswordField(20);
 
-        JButton loginButton = new JButton("Log In");
-        JLabel GoLabel = new JLabel("Go to");
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        footerPanel.add(GoLabel);
-        footerPanel.add(loginButton);
-
-        mainPanel.add(signupPanel, BorderLayout.CENTER);
-        mainPanel.add(footerPanel, BorderLayout.SOUTH);
-        add(mainPanel);
-
-        setVisible(true);
-
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Login().setVisible(true);
-                dispose();
-            }
-        });
-    }
-
-    private JPanel createSignupPanel() {
-        JLabel welcomeLabel = new JLabel("Welcome to Blu");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-
-        JLabel title = new JLabel("Sign Up Page");
-        JLabel fnLabel = new JLabel("First Name:               ");
-        JTextField fnTextField = new JTextField(20);
-        JLabel lnLabel = new JLabel("Last Name:                ");
-        JTextField lnTextField = new JTextField(20);
-        JLabel phoneLabel = new JLabel("Phone Number:         ");
-        JTextField phoneTextField = new JTextField(20);
-        JLabel emailLabel = new JLabel("Email:                        ");
-        JTextField emailTextField = new JTextField(20);
-        JLabel passwordLabel = new JLabel("Password:                  ");
-        JPasswordField passwordField = new JPasswordField(20);
-        JButton signupButton = new JButton("Sign Up");
-
-        JPanel signupFieldsPanel = new JPanel(new GridLayout(10, 1, 3, 3));
+        // Add logo
         JLabel logoLabel = new JLabel();
         ImageIcon logoIcon = new ImageIcon("res\\R.png");
-        Image scaledImage = logoIcon.getImage().getScaledInstance(90, 35, Image.SCALE_SMOOTH);
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 60, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);
         JPanel logoPanel = new JPanel();
         logoPanel.setPreferredSize(new Dimension(100, 85));
         logoPanel.add(logoLabel, BorderLayout.CENTER);
 
-        signupFieldsPanel.add(logoPanel);
-        signupFieldsPanel.add(createPaddedPanelLabel(welcomeLabel)); // Add Welcome Label
-        signupFieldsPanel.add(createPaddedPanelLabel(title));
-        JLabel fnamemsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(fnLabel, fnTextField, fnamemsg));
-        JLabel lnamemsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(lnLabel, lnTextField, lnamemsg));
-        JLabel phonemsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(phoneLabel, phoneTextField, phonemsg));
-        JLabel emailmsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(emailLabel, emailTextField, emailmsg));
-        JLabel passwordmsg = new JLabel("");
-        signupFieldsPanel.add(createPaddedPanel(passwordLabel, passwordField, passwordmsg));
-        signupFieldsPanel.add(createPaddedPanelButton(signupButton));
+        // Panel for signup fields
+        JPanel signupPanel = new JPanel(new GridLayout(9, 1, 1, 1));
+        signupPanel.add(logoPanel);
+        signupPanel.add(createPaddedPanelLabel(welcome));
+        signupPanel.add(createPaddedPanelLabel(title));
+        signupPanel.add(createPaddedPanel(fnameLabel, fnameTextField));
+        signupPanel.add(createPaddedPanel(lnameLabel, lnameTextField));
+        signupPanel.add(createPaddedPanel(emailLabel, emailTextField));
+        signupPanel.add(createPaddedPanel(phoneLabel, phoneTextField));
+        signupPanel.add(createPaddedPanel(passwordLabel, passwordField));
+        signupPanel.add(createPaddedPanelButton(signupButton));
 
+        mainPanel.add(signupPanel, BorderLayout.CENTER);
+
+        // Panel for footer with "Go to Sign In" button
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        goLabel = new JLabel("Go to");
+        footerPanel.add(goLabel);
+        footerPanel.add(goToLoginButton);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
+
+        // Add panels to the frame
+        this.add(mainPanel);
+
+        // Make frame visible
+        this.setVisible(true);
+
+        // Add action listener to the sign-up button
         signupButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                Validation v = new Validation();
-
-                fnamemsg.setText("");
-                lnamemsg.setText("");
-                phonemsg.setText("");
-                emailmsg.setText("");
-                passwordmsg.setText("");
-
-                if (!v.checkName(fnTextField.getText())) { // if it is False
-                    fnamemsg.setText("Must only contain alphabetic characters or numbers!");
-                    fnTextField.setText("");
-                    return;
-                }
-
-                if (!v.checkName(lnTextField.getText())) { // if it is False
-                    lnamemsg.setText("Must only contain alphabetic characters or numbers!");
-                    lnTextField.setText("");
-                    return;
-                }
-
-                if (!v.checkPhone(phoneTextField.getText())) { // if it is False
-                    phonemsg.setText("Must be 10 numbers!");
-                    phoneTextField.setText("");
-                    return;
-                }
-
-                if (!v.checkEmail(emailTextField.getText())) { // if it is False
-                    emailmsg.setText("Must contain '@'!");
-                    emailTextField.setText("");
-                    return;
-                }
-
-                if (!v.checkPassword(passwordField.getText())) { // if it is False
-                    passwordmsg.setText("Must be more than 6 Characters!");
-                    passwordField.setText("");
-                    return;
-                }
-
-                UserController uc = new UserController();
-                User loggedCustomer = uc.registerCustomer(emailTextField.getText(), fnTextField.getText(), lnTextField.getText(), phoneTextField.getText(), passwordField.getText());
-                dispose();
-                MainFrame mf = new MainFrame(loggedCustomer);
+                performSignup();
             }
         });
 
-        return signupFieldsPanel;
+        // Add action listener to the "Go to Sign In" button
+        goToLoginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new Login().setVisible(true);
+                dispose();
+            }
+        });
+
+        // Add Enter key functionality
+        KeyAdapter enterKeyListener = new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    performSignup();
+                }
+            }
+        };
+
+        fnameTextField.addKeyListener(enterKeyListener);
+        lnameTextField.addKeyListener(enterKeyListener);
+        emailTextField.addKeyListener(enterKeyListener);
+        phoneTextField.addKeyListener(enterKeyListener);
+        passwordField.addKeyListener(enterKeyListener);
     }
 
-    private JPanel createPaddedPanel(JLabel label, JTextField field, JLabel msg) {
+    private void performSignup() {
+        Validation v = new Validation();
+
+        // Check if all fields are filled
+        if (fnameTextField.getText().isEmpty() || lnameTextField.getText().isEmpty() || emailTextField.getText().isEmpty() ||
+                phoneTextField.getText().isEmpty() || passwordField.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(this, "All fields must be filled out!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate email format
+        if (!v.checkEmail(emailTextField.getText())) {
+            JOptionPane.showMessageDialog(this, "Email is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate password format
+        if (!v.checkPassword(new String(passwordField.getPassword()))) {
+            JOptionPane.showMessageDialog(this, "Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate phone number is exactly 10 digits
+        if (!v.checkPhone(phoneTextField.getText())) {
+            JOptionPane.showMessageDialog(this, "Phone number must be exactly 10 digits!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate first name and last name contain only letters
+        if (!v.checkName(fnameTextField.getText()) || !v.checkName(lnameTextField.getText())) {
+            JOptionPane.showMessageDialog(this, "First and Last names must contain only letters!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        UserController uc = new UserController();
+        User newUser = uc.registerCustomer(emailTextField.getText(), fnameTextField.getText(), lnameTextField.getText(), phoneTextField.getText(), new String(passwordField.getPassword()));
+
+        if (newUser == null) {
+            JOptionPane.showMessageDialog(this, "Phone number is already used!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        dispose();
+
+        if (newUser.isAdmin()) {
+            AdminDashboard ad = new AdminDashboard(newUser);
+        } else {
+            MainFrame mf = new MainFrame(newUser);
+        }
+    }
+
+    private JPanel createPaddedPanel(JLabel label, JTextField field) {
         JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         paddedPanel.add(label);
         paddedPanel.add(field);
-        paddedPanel.add(msg);
         return paddedPanel;
     }
 
