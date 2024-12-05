@@ -154,7 +154,7 @@ public class Signup extends JFrame {
         }
 
         UserController uc = new UserController();
-        User newUser = uc.registerCustomer(emailTextField.getText(), fnameTextField.getText(), lnameTextField.getText(), phoneTextField.getText(), new String(passwordField.getPassword()));
+        User newUser = uc.registerCustomer(emailTextField.getText().toLowerCase(), fnameTextField.getText(), lnameTextField.getText(), phoneTextField.getText(), new String(passwordField.getPassword()));
 
         if (newUser == null) {
             JOptionPane.showMessageDialog(this, "Phone number is already used!", "Error", JOptionPane.ERROR_MESSAGE);

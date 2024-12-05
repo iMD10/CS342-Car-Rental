@@ -92,7 +92,7 @@ public class Login extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UserController uc = new UserController();
-                User loggedUser = uc.loginUser(emailTextField.getText(), passwordField.getText());
+                User loggedUser = uc.loginUser(emailTextField.getText().toLowerCase(), passwordField.getText());
                 if(loggedUser == null) return;
                 dispose();
 

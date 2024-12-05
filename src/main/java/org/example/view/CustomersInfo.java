@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import org.example.common.Validation;
 
 public class CustomersInfo extends JPanel {
 
@@ -23,7 +24,7 @@ public class CustomersInfo extends JPanel {
 
         // Top panel for search by ID
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JLabel searchLabel = new JLabel("Search by ID:");
+        JLabel searchLabel = new JLabel("Search by Name:");
         JTextField searchField = new JTextField(15);
         JButton searchButton = new JButton("Search");
         topPanel.add(searchLabel);
@@ -62,34 +63,48 @@ public class CustomersInfo extends JPanel {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean found = false; 
-                int searchId;
-                try {
-                    searchId = Integer.parseInt(searchField.getText());
+                String key_word = searchField.getText().toLowerCase();
+                Validation v = new Validation();
+                
+                if (key_word.isEmpty()|!v.checkName(key_word)){
+                    JOptionPane.showMessageDialog(new JFrame(), "Error: Please enter a valid Name!", 
+                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    searchField.setText("");
+                    return;
                 }
-                catch (NumberFormatException er) {
-                 // Display an error message if parsing fails
-                 JOptionPane.showMessageDialog(new JFrame(), "Error: Please enter a valid ID!", 
-                 "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                 searchField.setText("");
-                 return;
-                }
+
                 List<User> allUsers = userController.getAllUsers();
-                data = new Object[1][columnNames.length];
+                data = new Object[allUsers.size()][columnNames.length];
+                int found_data_size = 0;
                 for (int i = 0; i < allUsers.size(); i++) {
                     User user = allUsers.get(i);
-                    if (user.getId() == searchId){
-                        data[0][0] = user.getId();
-                        data[0][1] = user.getName();
-                        data[0][2] = user.getEmail();
-                        data[0][3] = user.getPhone();
+                    if (user.isAdmin()){ // Skip Admins
+                        continue;
+                    }
+                    if (user.getName().toLowerCase().contains(key_word)){
+                        data[found_data_size][0] = user.getId();
+                        data[found_data_size][1] = user.getName();
+                        data[found_data_size][2] = user.getEmail();
+                        data[found_data_size][3] = user.getPhone();
+                        found_data_size++;
                         found = true;
                     }
                 }
+
                 if (found) {
-                    table.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
+                    Object[][] found_data = new Object[found_data_size][columnNames.length]; // Create Another shorter data, so only what we found is shown
+
+                    for (int i = 0; i < found_data_size; i++){
+                        found_data[i][0] = data[i][0];
+                        found_data[i][1] = data[i][1];
+                        found_data[i][2] = data[i][2];
+                        found_data[i][3] = data[i][3];
+                    }
+
+                    table.setModel(new javax.swing.table.DefaultTableModel(found_data, columnNames));
                 }
                 else{
-                    JOptionPane.showMessageDialog(new JFrame(), "ID not found!", 
+                    JOptionPane.showMessageDialog(new JFrame(), "Name not found!", 
                  "Not Found", JOptionPane.WARNING_MESSAGE);
                  searchField.setText("");
                 }
