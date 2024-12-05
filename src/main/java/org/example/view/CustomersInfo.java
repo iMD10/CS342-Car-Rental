@@ -102,7 +102,7 @@ public class CustomersInfo extends JPanel {
     }
 
     private void updateTableData() {
-        List<User> allUsers = userController.getAllUsers();
+        List<User> allUsers = userController.getCustomers();
         data = new Object[allUsers.size()][columnNames.length];
         for (int i = 0; i < allUsers.size(); i++) {
             User user = allUsers.get(i);

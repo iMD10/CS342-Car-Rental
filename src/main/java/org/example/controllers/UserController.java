@@ -121,6 +121,30 @@ public class UserController {
 
         return null;
     }
+    public List<User> getCustomers() {
+        String query = "select * from users where is_admin = false";
+        db = new DatabaseHandler();
+        try(ResultSet rs = db.executeQuery(query)){
+            List<User> users = new ArrayList<>();
+            while(rs.next()) {
+                users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("password"),
+                        rs.getBoolean("is_admin")
+                ));
+            }
+            return users;
+
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, e.getMessage());
+        }finally {
+            db.closeConnection();
+        }
+        return null;
+    }
     public boolean updateCustomerInfo(String email, String firstName, String lastName, String phone, String password) {
         db = new DatabaseHandler();
         String name = firstName + " " + lastName;
