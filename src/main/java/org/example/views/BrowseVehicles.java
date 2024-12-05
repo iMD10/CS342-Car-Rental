@@ -329,7 +329,7 @@ public class BrowseVehicles extends JPanel {
             LocalDate today = LocalDate.now();
             LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
-            boolean isNotAfterEnd = ! date.isAfter(endingDate);
+            boolean isNotAfterEnd = ! date.isAfter(endingDate.minusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
         }
     }
@@ -338,22 +338,14 @@ public class BrowseVehicles extends JPanel {
     private class EndingDatesVetoPolicy implements DateVetoPolicy {
         @Override
         public boolean isDateAllowed(LocalDate date) {
-            LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate today = LocalDate.now().plusDays(1);
+            LocalDate maxDate = today.plusDays(29); // Calculate the maximum allowed date (30 days from today)
 
-            boolean isNotBeforeStart = ! date.isBefore(startingDate);
+            boolean isNotBeforeStart = ! date.isBefore(startingDate.plusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
         }
     }
 
 
 
-//    public static void main(String[] args) {
-//        // Test the panel in a standalone JFrame
-//        JFrame frame = new JFrame("Browse Vehicles Test");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(800, 600);
-//        frame.add(new BrowseVehicles(loggedUser));
-//        frame.setVisible(true);
-//    }
 }

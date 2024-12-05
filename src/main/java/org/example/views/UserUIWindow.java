@@ -43,10 +43,6 @@ public class UserUIWindow extends JFrame {
         cardPanel.add(new BrowseVehicles(loggedUser), BROWSE_PANEL);
         cardPanel.add(new AccountPage(loggedUser), ACCOUNT_PANEL);
         cardPanel.add(new BookingHistory(loggedUser), HISTORY_PANEL);
-//        cardPanel.add(new CarDetails(), "CarDetails");
-
-//        JPanel mainPanel = new JPanel(new BorderLayout());      // GLOBAL panel
-//        JPanel contentPanel = new BrowseVehicles();   // main content (the Right)
 
         setLayout(new BorderLayout());
 
@@ -97,16 +93,18 @@ public class UserUIWindow extends JFrame {
 
         JLabel accIcon = new JLabel(carImage);
 
-        JLabel buttonText = new JLabel(buttonName);
-        buttonText.setSize(100, 100);
+        JLabel buttonText = new JLabel(buttonName, JLabel.CENTER);
+//        buttonText.setSize(100, 100);
 
 
+        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        labelPanel.add(buttonText);
         JPanel accBtnPan = new JPanel();
         accBtnPan.setLayout(new BoxLayout(accBtnPan, BoxLayout.Y_AXIS)); // Stack components vertically
 
         // Add icon and text to the panel
         accBtnPan.add(accIcon);
-        accBtnPan.add(buttonText);
+        accBtnPan.add(labelPanel);
 
         return accBtnPan;
     }
