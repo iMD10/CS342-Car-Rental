@@ -34,7 +34,6 @@ public class BookingController {
             DbHandler = new DatabaseHandler();
             int id = DbHandler.executeUpdate(query, userId, vehicleId, now, start_date, end_date,cost);
             booking = new Booking(id, userId, vehicleId,"ACTIVE", now,null ,start_date, end_date, cost);
-            NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
             return booking;
         }
         catch (SQLException e) {

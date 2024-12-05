@@ -71,6 +71,7 @@ public class RentalAgreement extends JFrame {
                 AgreementController agreementController = new AgreementController();
                 agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
                 JOptionPane.showMessageDialog(this, "Agreement accepted!");
+                NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
                 dispose();
             });
 
