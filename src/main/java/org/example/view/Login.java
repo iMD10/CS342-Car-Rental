@@ -99,6 +99,7 @@ public class Login extends JFrame {
                 if (loggedUser.isAdmin()){
                     AdminDashboard ad = new AdminDashboard(loggedUser);
                 } else {
+
                     MainFrame mf = new MainFrame(loggedUser);
                 }
             }

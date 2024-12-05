@@ -208,4 +208,36 @@ public class BookingController {
         return null;
     }
 
+    public List<Booking> getActiveBookingsByUserid(int userId){
+        List<Booking> bookings = new ArrayList<>();
+        String query = "select * from booking where user_id = ? AND status = 'active'";
+        DbHandler = new DatabaseHandler();
+        try(ResultSet resSet = DbHandler.executeQuery(query,userId)) {
+
+
+            while (resSet != null && resSet.next()) {
+                bookings.add( new Booking(resSet.getInt("id"),
+                        resSet.getInt("user_id"),
+                        resSet.getInt("vehicle_id"),
+                        resSet.getString("status"),
+                        resSet.getTimestamp("booked_at"),
+                        resSet.getTimestamp("returned_at"),
+                        resSet.getTimestamp("start_date"),
+                        resSet.getTimestamp("end_date"),
+                        resSet.getDouble("cost")
+                ));
+
+            }
+
+        }
+        catch (SQLException e) {
+            ErrorHandler.handleException(e,e.getMessage());
+        } catch (Exception ee) {
+            ErrorHandler.showError(ee.getMessage()+"Error retrieving bookings for user ID: " + userId);
+        }finally {
+            DbHandler.closeConnection();
+        }
+        return bookings;
+    }
+
 }
