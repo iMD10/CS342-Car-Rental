@@ -18,8 +18,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get revenue");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
     public int getTotalBookings() {
@@ -32,8 +32,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get total bookings");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
     public int getTotalActive() {
@@ -46,8 +46,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get total active bookings");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
     public int getTotalCancelled() {
@@ -60,8 +60,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get total cancelled bookings");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
     public int getTotalReturned() {
@@ -74,8 +74,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get total returned bookings");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
     public int getTotalCustomer() {
@@ -88,8 +88,8 @@ public class ReportingController {
         } catch (SQLException e) {
             ErrorHandler.handleException(e, "Failed to get total number of our customers");
         }finally {
-        }
         db.closeConnection();
+        }
         return -1;
     }
 }

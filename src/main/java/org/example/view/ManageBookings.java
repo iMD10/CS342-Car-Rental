@@ -1,10 +1,12 @@
 package org.example.view;
 
 import org.example.classes.Booking;
+import org.example.classes.Invoice;
 import org.example.classes.User;
 import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.common.TableCreator;
+import org.example.controllers.InvoiceController;
 import org.example.controllers.UserController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -35,7 +37,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer Name", "Car ID", "Start Date", "End Date", "Status"};
+        String[] columnNames = {"ID", "Customer Name", "Car ID", "Start Date", "End Date", "Status", "Cost"};
 
 
 
@@ -187,13 +189,17 @@ public class ManageBookings extends JPanel  {
                 List<Object[]> rows = new ArrayList<>();
                 for (Booking booking : allBookings) {
                     User user = userMap.get(booking.getUserId());
+                    InvoiceController invoiceController = new InvoiceController();
+                    Invoice invoice = null;
+                   // invoice = invoiceController.getInvoiceByBookingId(booking.getId());
                     rows.add(new Object[] {
                             booking.getId(),
                             user != null ? user.getName() : "Unknown",
                             booking.getVehicleId(),
-                            booking.getStart_date(),
-                            booking.getEnd_date(),
+                            booking.getStart_date().toLocalDateTime().toLocalDate(),
+                            booking.getEnd_date().toLocalDateTime().toLocalDate(),
                             booking.getStatus(),
+                            invoice != null ? invoice.getTotal_price() : booking.getCost()
                     });
                 }
                 return rows;

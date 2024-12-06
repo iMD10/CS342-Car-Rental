@@ -74,6 +74,29 @@ public class InvoiceController {
         }
         return null;
     }
+    public Invoice getInvoiceByBookingId(int bookingId) {
+        dbHandler = new DatabaseHandler();
+        String query = "SELECT * FROM invoice where booking_id = ?;";
+        try (ResultSet resSet = dbHandler.executeQuery(query, bookingId)) {
+
+            if (resSet != null && resSet.next()) {
+                return new Invoice(
+                        resSet.getInt("id"),
+                        resSet.getInt("booking_id"),
+                        resSet.getDouble("late_fees"),
+                        resSet.getDouble("total_price"),
+                        resSet.getTimestamp("issued_at"));
+            }
+
+        } catch (SQLException e) {
+            ErrorHandler.handleException(e, "Error retrieving all invoices");
+        } catch (Exception ee) {
+            ErrorHandler.showError(ee.getMessage() + " Error retrieving all invoices");
+        }finally {
+            dbHandler.closeConnection();
+        }
+        return null;
+    }
     public Invoice getInvoiceByInvoiceId(int invoiceId) {
         dbHandler = new DatabaseHandler();
         String query = "SELECT * FROM invoice where id = ?;";
