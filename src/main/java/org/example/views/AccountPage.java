@@ -226,27 +226,49 @@ public class AccountPage extends JPanel {
     }
 
     private void loadNotifications() {
-        BookingController bookingController= new BookingController();
-        List<Booking> userBookings = bookingController.getAllBookingsByUserid(loggedUser.getId());
-        LocalDateTime nowDate = LocalDateTime.now();
+        SwingWorker<Void, JLabel> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                BookingController bookingController = new BookingController();
+                List<Booking> userBookings = bookingController.getAllBookingsByUserid(loggedUser.getId());
+                LocalDateTime nowDate = LocalDateTime.now();
 
+                for (Booking bookingInfo : userBookings) {
+                    if (!bookingInfo.getStatus().equals("active")) continue;
 
-        notificationsList.removeAll();
-        for (Booking bookingInfo : userBookings ){
-            if (! bookingInfo.getStatus().equals("active")) continue;
-
-            LocalDateTime endDate = bookingInfo.getEnd_date().toLocalDateTime();
-            if (bookingInfo.getBookedAt().toLocalDateTime().toLocalDate().equals(nowDate.toLocalDate())){
-                JLabel notificationLabel = new JLabel("* Your booking number #"+bookingInfo.getId()+" has been accepted", JLabel.CENTER);
-                notificationsList.add(notificationLabel);
-            } else if (endDate.isAfter(nowDate) && endDate.isBefore(nowDate.plusDays(1)) ){
-                JLabel notificationLabel = new JLabel("* Your booking number #"+bookingInfo.getId()+" ends soon", JLabel.CENTER);
-                notificationsList.add(notificationLabel);
+                    LocalDateTime endDate = bookingInfo.getEnd_date().toLocalDateTime();
+                    if (bookingInfo.getBookedAt().toLocalDateTime().toLocalDate().equals(nowDate.toLocalDate())) {
+                        JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " has been accepted", JLabel.CENTER);
+                        publish(notificationLabel); // Send to process() for GUI update
+                    } else if (endDate.isAfter(nowDate) && endDate.isBefore(nowDate.plusDays(1))) {
+                        JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " ends soon", JLabel.CENTER);
+                        publish(notificationLabel); // Send to process() for GUI update
+                    }
+                }
+                return null;
             }
 
-        }
-        notificationsList.repaint();
-        notificationsList.revalidate();
+            @Override
+            protected void process(List<JLabel> notifications) {
+                // Safely update GUI here
+                notificationsList.removeAll();
+                for (JLabel notificationLabel : notifications) {
+                    notificationsList.add(notificationLabel);
+                }
+                notificationsList.repaint();
+                notificationsList.revalidate();
+            }
+
+            @Override
+            protected void done() {
+                // Optional: Perform any final tasks after completion, like logging
+                System.out.println("Background task completed.");
+            }
+        };
+
+// Execute the SwingWorker
+        worker.execute();
+
     }
 
     private JPanel makeItFlowPanel(Component label) {
