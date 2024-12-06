@@ -17,7 +17,7 @@ public class Signup extends JFrame {
     private JPasswordField passwordField;
     private JLabel logoLabel; // Make logoLabel a class member
     private ImageIcon logoIcon;
-    Image icon = Toolkit.getDefaultToolkit().getImage("res/R.png");
+    Image icon = Toolkit.getDefaultToolkit().getImage("src/main/java/org/example/res/R.png");
     public Signup() {
 
         this.setTitle("Sign Up");
@@ -56,7 +56,7 @@ public class Signup extends JFrame {
 
         // Add logo
         logoLabel = new JLabel();
-        logoIcon = new ImageIcon("res\\R.png");
+        logoIcon = new ImageIcon("src/main/java/org/example/res/R.png");
         logoLabel.setIcon(scaleImage(logoIcon, 50, 30));
         gbc.gridx = 1;
         gbc.gridy = 0;

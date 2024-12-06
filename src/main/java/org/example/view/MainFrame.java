@@ -10,7 +10,7 @@ public class MainFrame extends JFrame {
     private Color Cyan = new Color(0, 172, 237);
     private Color Red = new Color(161, 1, 1);
     private Color White = Color.white;
-    Image icon = Toolkit.getDefaultToolkit().getImage("res/R.png");
+    Image icon = Toolkit.getDefaultToolkit().getImage("src/main/java/org/example/res/R.png");
     public MainFrame(User loggedUser) {
         setTitle("Car Rental Application");
         setSize(870, 720);
@@ -27,7 +27,7 @@ public class MainFrame extends JFrame {
         logoPanel.setPreferredSize(new Dimension(85, 85));
 
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("res\\R.png");
+        ImageIcon logoIcon = new ImageIcon("src/main/java/org/example/res/R.png");
         Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         logoIcon = new ImageIcon(scaledImage);
         logoLabel.setIcon(logoIcon);

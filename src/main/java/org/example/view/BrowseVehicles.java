@@ -216,7 +216,7 @@ public class BrowseVehicles extends JPanel {
             return;
         }
         for (Vehicle vehicle : vehicles) {
-            String path = "res/" + vehicle.getCarModel().getName() + ".png";
+            String path = "src/main/java/org/example/res/" + vehicle.getCarModel().getName() + ".png";
             ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(130, 90, Image.SCALE_SMOOTH));
 
             tableModel.addRow(new Object[]{
