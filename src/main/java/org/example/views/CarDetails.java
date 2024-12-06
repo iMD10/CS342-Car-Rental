@@ -39,7 +39,7 @@ public class CarDetails extends JPanel {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
+        ImageIcon carImageSource = new ImageIcon("res\\"+selectedCar.getCarModel().getName()+".png");
         Image scaledImage = carImageSource.getImage().getScaledInstance(350, 175, Image.SCALE_SMOOTH);
 
         carImageSource = new ImageIcon(scaledImage);
@@ -78,11 +78,12 @@ public class CarDetails extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+                backLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                backLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
 
             }
         });

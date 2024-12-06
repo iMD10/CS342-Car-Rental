@@ -14,6 +14,7 @@ public class PDFInvoiceGenerator {
         String pdfPath = customerName+"Invoice.pdf";
 
         try {
+            System.out.println("generateInvoice");
             PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
             com.itextpdf.kernel.pdf.PdfDocument pdfDocument = new com.itextpdf.kernel.pdf.PdfDocument(writer);
             Document document = new Document(pdfDocument);

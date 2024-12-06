@@ -1,21 +1,20 @@
 package org.example.views;
 
 import org.example.classes.Booking;
+import org.example.classes.Invoice;
 import org.example.classes.User;
 import org.example.classes.Vehicle;
 import org.example.controllers.BookingController;
+import org.example.controllers.InvoiceController;
 import org.example.controllers.VehicleController;
+import org.example.view.PDFInvoiceGenerator;
+import org.example.view.RentalAgreement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.time.LocalDate;
+import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class BookingHistory extends JPanel {
         JLabel titleLabel;
 
 
-        titleLabel = new JLabel("Account Page");
+        titleLabel = new JLabel("My Bookings");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
 
         listPanel = new JPanel(new GridLayout(0, 1, 30, 20));
@@ -73,10 +72,14 @@ public class BookingHistory extends JPanel {
             protected List<JPanel> doInBackground() {
                 BookingController bookingsController = new BookingController();
                 VehicleController vehicleController = new VehicleController();
+                InvoiceController invoiceController = new InvoiceController();
 
                 // Fetch and sort bookings
                 List<Booking> bookingsList = bookingsController.getAllBookingsByUserid(loggedUser.getId());
                 List<Vehicle> vehiclesList = vehicleController.getAllVehicles();
+                List<Invoice> invoicesList = new InvoiceController().getAllInvoicesByUserId(loggedUser.getId());
+
+
                 bookingsList.sort(new bookingDatesComparator().reversed()); // Latest bookings first
 
 
@@ -87,7 +90,18 @@ public class BookingHistory extends JPanel {
                             .filter(vehicle -> vehicle.getId() == booking.getVehicleId())
                             .findFirst()
                             .orElse(null); // Return null if no match is found
-                    JPanel element = createElement(vehicleInfo, booking);
+
+                    Invoice invoiceInfo =  invoicesList.stream()
+                            .peek(invoice -> System.out.println("Checking: Invoice booking ID = " + invoice.getBooking_id() +
+                                    ", Booking ID to match = " + booking.getId()))
+                            .filter(invoice -> invoice.getBooking_id() == booking.getId())
+                            .findFirst()
+                            .orElse(null); // Return null if no match is found
+
+
+
+
+                    JPanel element = createElement(vehicleInfo, booking, invoiceInfo);
                     bookingPanels.add(element);
                 }
 
@@ -121,11 +135,12 @@ public class BookingHistory extends JPanel {
 
 
 
-    private JPanel createElement(Vehicle vehicle, Booking booking) {
+    private JPanel createElement(Vehicle vehicle, Booking booking, Invoice invoice) {
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel, BoxLayout.X_AXIS));
 
-        ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
+
+        ImageIcon carImageSource = new ImageIcon("res\\"+vehicle.getCarModel().getName()+".png");
         Image img = carImageSource.getImage(); // Transform the ImageIcon to Image
         Image scaledImg = img.getScaledInstance(120, 120 / 2, Image.SCALE_SMOOTH); // Resize the image
         carImageSource = new ImageIcon(scaledImg); // Create a new ImageIcon from the resized image
@@ -162,26 +177,100 @@ public class BookingHistory extends JPanel {
         cancelBtn.setPreferredSize(bpreferredSize);
         cancelBtn.setMaximumSize(bpreferredSize);
 //        System.out.println(booking.getStatus());
+
         cancelBtn.setVisible( booking.getStatus().equals("active") );
         cancelBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cancelBookingInBackground(booking);
-                loadBookings(loggedUser);
+//                loadBookings(loggedUser);
             }
         });
 
-        JLabel printAgreement = new JLabel("<html><u>Print Agreement</u></html>");
-        printAgreement.setFont(new Font("SansSerif", Font.PLAIN, 15));
-        printAgreement.setForeground(Color.BLUE);
-        printAgreement.setPreferredSize(preferredSize);
-        printAgreement.setMaximumSize(preferredSize);
+        JLabel showAgreement = new JLabel("<html><u>Show Agreement</u></html>");
+        showAgreement.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        showAgreement.setForeground(Color.BLUE);
+        showAgreement.setPreferredSize(preferredSize);
+        showAgreement.setMaximumSize(preferredSize);
+
+        JLabel printInvoice = new JLabel("<html><u>Print Invoice</u></html>");
+        printInvoice.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        printInvoice.setForeground(Color.BLUE);
+        printInvoice.setPreferredSize(preferredSize);
+        printInvoice.setMaximumSize(preferredSize);
+        if (booking.getStatus().equals("RETURNED")) {
+            printInvoice.setVisible(true);
+            showAgreement.setVisible(false);
+        }else {
+            printInvoice.setVisible(false);
+            showAgreement.setVisible(true);
+
+        }
+
+
+        showAgreement.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new RentalAgreement(vehicle, loggedUser, booking.getStart_date().toLocalDateTime().toLocalDate(), booking.getEnd_date().toLocalDateTime().toLocalDate(), false, null, null);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                showAgreement.setFont(new Font("SansSerif", Font.BOLD, 15));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                showAgreement.setFont(new Font("SansSerif", Font.PLAIN, 15));
+
+            }
+        });
+        printInvoice.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PDFInvoiceGenerator.generateInvoice(loggedUser.getName(), vehicle.getCarModel().getName(), booking.getStart_date().toLocalDateTime().toLocalDate(), booking.getEnd_date().toLocalDateTime().toLocalDate(), booking.getCost(), invoice.getLate_fees());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                printInvoice.setFont(new Font("SansSerif", Font.BOLD, 15));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                printInvoice.setFont(new Font("SansSerif", Font.PLAIN, 15));
+
+            }
+        });
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
         buttonsPanel.add(Box.createRigidArea(new Dimension(10,10)));
         buttonsPanel.add(cancelBtn);
-        buttonsPanel.add(printAgreement);
+        buttonsPanel.add(showAgreement);
+        buttonsPanel.add(printInvoice);
         buttonsPanel.add(Box.createRigidArea(new Dimension(10,10)));
 
         //            JLabel carName = new JLabel("Car Name");
@@ -230,8 +319,8 @@ public class BookingHistory extends JPanel {
             @Override
             protected void done() {
                 try {
-                    // Update the UI after the task is done
-//                    JOptionPane.showMessageDialog(null, "Booking successfully canceled.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    loadBookings(loggedUser);
+
                 } catch (Exception e) {
                     e.printStackTrace(); // Handle post-task exceptions
                 }
@@ -241,6 +330,7 @@ public class BookingHistory extends JPanel {
         // Execute the SwingWorker
         worker.execute();
     }
+
 
 
 //    public static void main(String[] args) {

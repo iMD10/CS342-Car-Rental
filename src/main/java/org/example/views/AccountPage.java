@@ -4,8 +4,11 @@ import org.example.classes.Booking;
 import org.example.classes.User;
 import org.example.controllers.BookingController;
 import org.example.controllers.UserController;
+import org.example.view.Login;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -140,6 +143,37 @@ public class AccountPage extends JPanel {
         JLabel logOutLabel = new JLabel("<html><u>Log out </u></html>", JLabel.CENTER);
         logOutLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
         logOutLabel.setForeground(Color.RED);
+        logOutLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new Login();
+                java.awt.Window window = SwingUtilities.getWindowAncestor(logOutLabel);
+                if (window != null) {
+                    window.dispose();
+                }
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
 
 
