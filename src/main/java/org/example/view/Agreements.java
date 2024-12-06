@@ -65,7 +65,7 @@ public class Agreements extends JPanel {
                 Agreement selectedAgreement =  agreementController.getAgreementById((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
                 Booking booking = bookingController.getBookingByBookingId(selectedAgreement.getBookingId());
                 Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
-                RentalAgreement ra = new RentalAgreement(vehicle,loggedUser, booking.getStart_date().toLocalDateTime().toLocalDate() ,booking.getEnd_date().toLocalDateTime().toLocalDate(), false);
+                RentalAgreement ra = new RentalAgreement(vehicle,loggedUser, booking.getStart_date().toLocalDateTime().toLocalDate() ,booking.getEnd_date().toLocalDateTime().toLocalDate(), false, null, null);
             }
         });
     }

@@ -1,104 +1,131 @@
 package org.example.view;
 
-import org.example.classes.Booking;
-import org.example.classes.Vehicle;
-import org.example.classes.User;
+import org.example.classes.*;
+
 import org.example.controllers.AgreementController;
 import org.example.controllers.BookingController;
+import org.example.controllers.UserController;
+import org.example.controllers.VehicleController;
+import org.example.views.UserUIWindow;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class RentalAgreement extends JFrame {
 
-    public RentalAgreement(Vehicle vehicle, User user, LocalDate start, LocalDate end, boolean isConfirm) {
+    public RentalAgreement(Vehicle vehicle, User user, LocalDate start, LocalDate end, boolean isConfirm, CardLayout cardLayout, JPanel cardPanel) {
         super("Rental Agreement");
 
+        // Set layout and size of the frame
         setLayout(new BorderLayout());
+        setLocation(400,400);
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JLabel titleLabel = new JLabel("Rental Agreement");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        topPanel.add(titleLabel);
+        // Booking Details Panel
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new GridLayout(5, 1, 10, 10)); // 5 rows, 1 column with spacing
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        // Getting Vehicle details
 
-        JPanel detailsPanel = new JPanel(new GridLayout(4, 1, 10, 10));
         long diffInDays = ChronoUnit.DAYS.between(start, end);
-        JLabel customerNameLabel = new JLabel("Customer Name: " + user.getName());
-        JLabel rentalDatesLabel = new JLabel("Rental Dates: " + start + " to " + end);
-        JLabel totalPriceLabel = new JLabel("Total Price: $" + (diffInDays * vehicle.getCarModel().getPrice()));
-        JLabel vehicleDetailsLabel = new JLabel("Vehicle: " + vehicle.getCarModel().getName());
+        JLabel customerNameLabel = new JLabel(" Customer Name: " + user.getName());
+        JLabel rentalDatesLabel = new JLabel(" Rental Dates: " +start + " to " + end);
+        JLabel totalPriceLabel = new JLabel(" Total Price: $" + ( diffInDays * (vehicle.getCarModel().getPrice() )));
+        JLabel vehicleDetailsLabel = new JLabel(" Vehicle: " + vehicle.getCarModel().getName());
 
         detailsPanel.add(customerNameLabel);
         detailsPanel.add(rentalDatesLabel);
         detailsPanel.add(totalPriceLabel);
         detailsPanel.add(vehicleDetailsLabel);
 
-        centerPanel.add(detailsPanel, BorderLayout.NORTH);
+        // Terms and Conditions Panel
+        JTextArea termsArea = new JTextArea();
+        termsArea.setText("""
+        CAR RENTAL AGREEMENT TERMS
 
-        JPanel termsPanel = new JPanel(new GridLayout(0, 1, 10, 10));
-        termsPanel.setBorder(BorderFactory.createTitledBorder(null, "Car Rental Agreement Terms", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Arial", Font.BOLD, 16)));
+        1. Rental Period:
+        The vehicle must be returned on or before the agreed return date and time. Late returns may incur additional charges.
 
-        termsPanel.add(createTermLabel("1. Rental Period: The vehicle must be returned on or before the agreed return date and time. Late returns may incur additional charges."));
-        termsPanel.add(createTermLabel("2. Payment: The renter is responsible for rental fees, taxes, and any additional charges for damages or late returns."));
-        termsPanel.add(createTermLabel("3. Vehicle Usage: The renter must use the vehicle responsibly, follow all traffic laws, and not allow unauthorized drivers."));
-        termsPanel.add(createTermLabel("4. Damage Liability: The renter is liable for any damages not covered by insurance."));
-        termsPanel.add(createTermLabel("5. Insurance: Additional insurance options are available and recommended."));
-        termsPanel.add(createTermLabel("6. Prohibited Uses: The vehicle must not be used for racing, towing, or illegal activities."));
+        2. Payment:
+        The renter is responsible for rental fees, taxes, and any additional charges for damages or late returns.
 
-        centerPanel.add(termsPanel, BorderLayout.CENTER);
+        3. Vehicle Usage:
+        The renter must use the vehicle responsibly, follow all traffic laws, and not allow unauthorized drivers.
 
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        4. Damage Liability:
+        The renter is liable for any damages not covered by insurance.
+
+        5. Insurance:
+        Additional insurance options are available and recommended.
+
+        6. Prohibited Uses:
+        The vehicle must not be used for racing, towing, or illegal activities.
+
+        By booking a vehicle, you agree to these terms.
+        """);
+        termsArea.setEditable(false);
+        termsArea.setWrapStyleWord(true);
+        termsArea.setLineWrap(true);
+        termsArea.setEditable(false); // Read-only
+        JScrollPane termsScrollPane = new JScrollPane(termsArea);
+        termsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new FlowLayout());
+
+
         if (isConfirm) {
+            // Buttons Panel
             JButton acceptButton = new JButton("Accept");
             JButton cancelButton = new JButton("Cancel");
 
+            buttonsPanel.add(acceptButton);
+            buttonsPanel.add(cancelButton);
+
+            // Add components to the frame
+
+            // Button Action Listeners
             acceptButton.addActionListener(e -> {
                 BookingController bookingController = new BookingController();
-                Timestamp fromStamp = Timestamp.valueOf(start.atStartOfDay());
-                Timestamp toStamp = Timestamp.valueOf(end.atStartOfDay());
-                Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(), fromStamp, toStamp);
-                if (booking == null) {
+                Timestamp fromstamp = Timestamp.valueOf(start.atStartOfDay());;
+                Timestamp tostamp =Timestamp.valueOf(end.atStartOfDay());;
+                Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(),fromstamp,tostamp);
+                if(booking == null) {
                     return;
                 }
                 AgreementController agreementController = new AgreementController();
+
                 agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
                 JOptionPane.showMessageDialog(this, "Agreement accepted!");
-                NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
-                dispose();
+//                NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
+
+                if (cardPanel != null && cardLayout != null )
+                    cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
+
+                dispose(); // Close the frame
             });
 
             cancelButton.addActionListener(e -> {
                 JOptionPane.showMessageDialog(this, "Agreement canceled.");
-                dispose();
+                dispose(); // Close the frame
             });
-
-            buttonsPanel.add(acceptButton);
-            buttonsPanel.add(cancelButton);
         } else {
             JButton backButton = new JButton("Back");
-            backButton.addActionListener(e -> dispose());
+            backButton.addActionListener(e -> {
+                dispose();
+            });
             buttonsPanel.add(backButton);
         }
 
-        add(topPanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
+
+        add(detailsPanel, BorderLayout.NORTH);
+        add(termsScrollPane, BorderLayout.CENTER);
         add(buttonsPanel, BorderLayout.SOUTH);
-
-        setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    private JLabel createTermLabel(String text) {
-        JLabel termLabel = new JLabel("<html>" + text + "</html>");
-        termLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        return termLabel;
     }
 }

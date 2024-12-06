@@ -1,14 +1,18 @@
 package org.example.views;
 
+import org.example.classes.User;
 import org.example.classes.Vehicle;
+import org.example.controllers.InvoiceController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class BookingDone extends JPanel {
 
 
-    public BookingDone(Vehicle selectedCar) {
+    public BookingDone(Vehicle selectedCar, User loggedUser, CardLayout cardLayout, JPanel cardPanel) {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -23,9 +27,67 @@ public class BookingDone extends JPanel {
         JLabel carImage = new JLabel(carImageSource);
 
         // Print agreement label setup
-        JLabel printAgreementLabel = new JLabel("<html><u>Print Agreement?</u></html>");
-        printAgreementLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        printAgreementLabel.setForeground(Color.BLUE);
+        JLabel printInvoiceLabel = new JLabel("<html><u>Print Invoice?</u></html>");
+        printInvoiceLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        printInvoiceLabel.setForeground(Color.BLUE);
+        printInvoiceLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                InvoiceController invoiceController = new InvoiceController();
+//                invoiceController.getAllInvoicesByUserId();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+
+        JLabel goBackLabel = new JLabel("Browse Vehicles");
+        goBackLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        goBackLabel.setForeground(Color.GRAY);
+        goBackLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(cardPanel, UserUIWindow.BROWSE_PANEL);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         // Layout for the different panels
         JPanel donePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -35,7 +97,9 @@ public class BookingDone extends JPanel {
         imagePanel.add(carImage);
 
         JPanel agreementPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        agreementPanel.add(printAgreementLabel);
+        agreementPanel.add(printInvoiceLabel);
+        JPanel goBackPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        goBackPanel.add(goBackLabel);
 
         // Add components to the main panel
         mainPanel.add(Box.createVerticalGlue());
@@ -43,6 +107,7 @@ public class BookingDone extends JPanel {
         mainPanel.add(donePanel);
         mainPanel.add(imagePanel);
         mainPanel.add(agreementPanel);
+        mainPanel.add(goBackPanel);
         mainPanel.add(Box.createVerticalGlue());
         mainPanel.add(Box.createVerticalGlue());
 
