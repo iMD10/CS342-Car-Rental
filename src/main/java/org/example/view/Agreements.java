@@ -114,8 +114,8 @@ public class Agreements extends JPanel {
                             agreement.getId(),
                             booking.getId(),
                             vehicle.getCarModel().getName(),
-                            booking.getStart_date(),
-                            booking.getEnd_date(),
+                            booking.getStart_date().toLocalDateTime().toLocalDate(),
+                            booking.getEnd_date().toLocalDateTime().toLocalDate(),
                             booking.getBookedAt()
                     });
                 }

@@ -41,7 +41,7 @@ public class NotificationsPanel extends JPanel {
         BookingController bookingController = new BookingController();
         List<Booking> bookings  = bookingController.getActiveBookingsByUserid(loggedUser.getId());
         for (Booking booking : bookings) {
-            notificationsModel.addElement("Reminder: You should return the vehicle of booking ID: "+ booking.getId() + " at "+ booking.getEnd_date());
+            notificationsModel.addElement("Reminder: You should return the vehicle of booking ID: "+ booking.getId() + " at "+ booking.getEnd_date().toLocalDateTime().toLocalDate());
         }
     }
 }
