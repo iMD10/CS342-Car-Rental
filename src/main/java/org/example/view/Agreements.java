@@ -62,33 +62,81 @@ public class Agreements extends JPanel {
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "No agreement selected. Please select an agreement to show.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                Agreement selectedAgreement =  agreementController.getAgreementById((int)tableModel.getValueAt(selectedRow, 0)); // Assuming Vehicle is stored in table model
-                Booking booking = bookingController.getBookingByBookingId(selectedAgreement.getBookingId());
-                Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
-                RentalAgreement ra = new RentalAgreement(vehicle,loggedUser, booking.getStart_date().toLocalDateTime().toLocalDate() ,booking.getEnd_date().toLocalDateTime().toLocalDate(), false);
+                int agreementId = (int) tableModel.getValueAt(selectedRow, 0);
+
+                new SwingWorker<RentalAgreement, Void>() {
+                    @Override
+                    protected RentalAgreement doInBackground() throws Exception {
+                        Agreement selectedAgreement = agreementController.getAgreementById(agreementId);
+                        Booking booking = bookingController.getBookingByBookingId(selectedAgreement.getBookingId());
+                        Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
+
+                        return new RentalAgreement(
+                                vehicle,
+                                loggedUser,
+                                booking.getStart_date().toLocalDateTime().toLocalDate(),
+                                booking.getEnd_date().toLocalDateTime().toLocalDate(),
+                                false
+                        );
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            RentalAgreement ra = get();
+                            // Display or handle the RentalAgreement instance as needed
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(Agreements.this, "Error loading agreement details: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }.execute();
             }
         });
+
     }
 
     public void updateAgreements(DefaultTableModel tableModel, User loggedUser) {
+        // Clear the table while loading
         tableModel.setRowCount(0);
 
-        List<Agreement> agreementList = agreementController.getAgreementsByUserId(loggedUser.getId());
+        new SwingWorker<List<Object[]>, Void>() {
+            @Override
+            protected List<Object[]> doInBackground() throws Exception {
+                List<Agreement> agreementList = agreementController.getAgreementsByUserId(loggedUser.getId());
+                List<Object[]> rows = new ArrayList<>();
 
-        for (Agreement agreement : agreementList) {
-            Booking booking = bookingController.getBookingByBookingId(agreement.getBookingId());
-            Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
+                for (Agreement agreement : agreementList) {
+                    Booking booking = bookingController.getBookingByBookingId(agreement.getBookingId());
+                    Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
 
-            tableModel.addRow(new Object[]{
-                    agreement.getId(),
-                    booking.getId(),
-                    vehicle.getCarModel().getName(),
-                    booking.getStart_date(),
-                    booking.getEnd_date(),
-                    booking.getBookedAt()
-            });
+                    rows.add(new Object[]{
+                            agreement.getId(),
+                            booking.getId(),
+                            vehicle.getCarModel().getName(),
+                            booking.getStart_date(),
+                            booking.getEnd_date(),
+                            booking.getBookedAt()
+                    });
+                }
+                return rows;
+            }
 
-        }
-
+            @Override
+            protected void done() {
+                try {
+                    List<Object[]> rows = get();
+                    SwingUtilities.invokeLater(() -> {
+                        for (Object[] row : rows) {
+                            tableModel.addRow(row);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(Agreements.this, "Error loading agreements: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
     }
+
 }

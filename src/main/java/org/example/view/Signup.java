@@ -23,7 +23,8 @@ public class Signup extends JFrame {
         this.setTitle("Sign Up");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 400);
+
+        this.setMinimumSize(new Dimension(600, 600));
 
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
@@ -46,7 +47,7 @@ public class Signup extends JFrame {
         phoneLabel = new JLabel("Phone:     ");
         passwordLabel = new JLabel("Password: ");
         signupButton = new JButton("Sign Up");
-        goToLoginButton = new JButton("Sign In");
+        goToLoginButton = new JButton("Log In");
         fnameTextField = new JTextField(20);
         lnameTextField = new JTextField(20);
         emailTextField = new JTextField(20);

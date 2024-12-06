@@ -12,4 +12,7 @@ public class ErrorHandler {
     public static void handleWarning(String wmsg){
         JOptionPane.showMessageDialog(null, wmsg,"WARNING",JOptionPane.WARNING_MESSAGE);
     }
+    public static void handleInfo(String wmsg){
+        JOptionPane.showMessageDialog(null, wmsg,"INFO",JOptionPane.INFORMATION_MESSAGE);
+    }
 }

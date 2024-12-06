@@ -22,6 +22,7 @@ public class BrowseVehicles extends JPanel {
     private final VehicleController vehicleController;
     private DefaultTableModel tableModel;
 
+    private JComboBox<String> typeComboBox;
     public BrowseVehicles(MainFrame mainFrame, User loggedUser) {
         this.mainFrame = mainFrame;
         this.vehicleController = new VehicleController();
@@ -29,7 +30,7 @@ public class BrowseVehicles extends JPanel {
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JLabel typeLabel = new JLabel("Type:");
-        JComboBox<String> typeComboBox = new JComboBox<>(getVehicleTypes());
+        typeComboBox = new JComboBox<>(getVehicleTypes());
 
         JLabel fromLabel = new JLabel("From:");
         DatePickerSettings fromSettings = new DatePickerSettings();
@@ -146,8 +147,24 @@ public class BrowseVehicles extends JPanel {
 
         Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
         Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
-        List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
-        updateTable(tableModel, vehicles);
+
+        new SwingWorker<List<Vehicle>, Void>() {
+            @Override
+            protected List<Vehicle> doInBackground() throws Exception {
+                return vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    List<Vehicle> vehicles = get();
+                    updateTable(tableModel, vehicles);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(BrowseVehicles.this, "Error loading data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
     }
 
     private void updateTableManually(JComboBox<String> typeComboBox, DatePicker fromDatePicker, DatePicker toDatePicker) {
@@ -157,17 +174,41 @@ public class BrowseVehicles extends JPanel {
 
         if (fromDate == null || toDate == null) {
             JOptionPane.showMessageDialog(this, "Please select both dates.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else if (fromDate.isAfter(toDate)) {
-            JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else if (fromDate.isEqual(toDate)) {
-            JOptionPane.showMessageDialog(this, "Can't book same day, please select two different dates.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
-            Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
-            List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
-            updateTable(tableModel, vehicles);
+            return;
         }
+
+        if (fromDate.isAfter(toDate)) {
+            JOptionPane.showMessageDialog(this, "'From' date cannot be after 'To' date.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (fromDate.isEqual(toDate)) {
+            JOptionPane.showMessageDialog(this, "Can't book same day, please select two different dates.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Timestamp fromstamp = Timestamp.valueOf(fromDate.atStartOfDay());
+        Timestamp tostamp = Timestamp.valueOf(toDate.atStartOfDay());
+
+        new SwingWorker<List<Vehicle>, Void>() {
+            @Override
+            protected List<Vehicle> doInBackground() throws Exception {
+                return vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    List<Vehicle> vehicles = get();
+                    updateTable(tableModel, vehicles);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(BrowseVehicles.this, "Error loading data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
     }
+
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
         tableModel.setRowCount(0); // Clear existing rows
@@ -188,11 +229,27 @@ public class BrowseVehicles extends JPanel {
     }
 
     private String[] getVehicleTypes() {
-        List<String> carModels = vehicleController.getCarTypes();
-        List<String> types = new ArrayList<>(carModels.size());
-        for (String cars : carModels) {
-            types.add(cars);
-        }
+        List<String> types = new ArrayList<>();
+
+        new SwingWorker<List<String>, Void>() {
+            @Override
+            protected List<String> doInBackground() throws Exception {
+                return vehicleController.getCarTypes();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    types.addAll(get());
+                    SwingUtilities.invokeLater(() -> typeComboBox.setModel(new DefaultComboBoxModel<>(types.toArray(new String[0]))));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(BrowseVehicles.this, "Error loading vehicle types: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
+
         return types.toArray(new String[0]);
     }
+
 }

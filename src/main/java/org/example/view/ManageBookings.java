@@ -35,7 +35,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer ID","Customer Name", "Car ID", "Start Date", "End Date", "Status"};
+        String[] columnNames = {"ID", "Customer Name", "Car ID", "Start Date", "End Date", "Status"};
 
 
 
@@ -73,40 +73,75 @@ public class ManageBookings extends JPanel  {
 
 
         cancelButton.addActionListener(e -> {
-        JTable table = (JTable) tableScrollPane.getViewport().getView();
-        int[] selectedRows = table.getSelectedRows();
-        if(selectedRows.length > 1){
-            ErrorHandler.handleWarning("Can't select more than one row, please select one");
-            return;
-        }
-        else if(selectedRows.length == 0){
-            ErrorHandler.handleWarning("No row selected, please select one");
-            return;
-        } else if (table.getValueAt(selectedRows[0], 6).equals("CANCELD") ) {
-            ErrorHandler.handleWarning("this booking is already cancelled");
-            return;
-        }
-        bookingController.editBookingStatusToCanceled((Integer) table.getValueAt(selectedRows[0],0));
-        table.getModel().setValueAt("CANCELD", selectedRows[0], 6);
-
-        });
-        markReturnedButton.addActionListener(e->{
-            JTable table = (JTable) tableScrollPane.getViewport().getView();
-            int[] selectedRows = table.getSelectedRows();
-            if(selectedRows.length > 1){
-                ErrorHandler.handleWarning("Can't select more than one row, please select one");
-                return;
-            }
-            else if(selectedRows.length == 0){
+            int selectedRow = bookingsTable.getSelectedRow();
+            if (selectedRow == -1) {
                 ErrorHandler.handleWarning("No row selected, please select one");
                 return;
-            } else if (table.getValueAt(selectedRows[0], 6).equals("RETURNED") ) {
-                ErrorHandler.handleWarning("this booking is already RETURNED");
+            }
+
+            String status = (String) bookingsTable.getValueAt(selectedRow, 5);
+            if ("CANCELLED".equals(status)) {
+                ErrorHandler.handleWarning("This booking is already cancelled");
                 return;
             }
-            bookingController.editBookingStatusToReturned((Integer) table.getValueAt(selectedRows[0],0));
-            table.getModel().setValueAt("RETURNED", selectedRows[0], 6);
+
+            int bookingId = (int) bookingsTable.getValueAt(selectedRow, 0);
+
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    bookingController.editBookingStatusToCanceled(bookingId);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        bookingsTable.setValueAt("CANCELLED", selectedRow, 5);
+                        ErrorHandler.handleInfo("Booking cancelled successfully.");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        ErrorHandler.handleException(ex,"Error cancelling booking: " + ex.getMessage());
+                    }
+                }
+            }.execute();
         });
+
+        markReturnedButton.addActionListener(e -> {
+            int selectedRow = bookingsTable.getSelectedRow();
+            if (selectedRow == -1) {
+                ErrorHandler.handleWarning("No row selected, please select one");
+                return;
+            }
+
+            String status = (String) bookingsTable.getValueAt(selectedRow, 5);
+            if ("RETURNED".equals(status)) {
+                ErrorHandler.handleWarning("This booking is already marked as returned");
+                return;
+            }
+
+            int bookingId = (int) bookingsTable.getValueAt(selectedRow, 0);
+
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    bookingController.editBookingStatusToReturned(bookingId);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        bookingsTable.setValueAt("RETURNED", selectedRow, 5);
+                        ErrorHandler.handleInfo("Booking marked as returned successfully.");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        ErrorHandler.handleException(ex,"Error marking booking as returned: " + ex.getMessage());
+                    }
+                }
+            }.execute();
+        });
+
 
         searchButton.addActionListener(e->{
             if (!(searchField.getText().isEmpty())) {
@@ -130,36 +165,57 @@ public class ManageBookings extends JPanel  {
     }
 
     public void updateBookings(DefaultTableModel tableModel, int bookingId) {
-        // Clear the table
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Clear the table
 
-        // Retrieve bookings based on the bookingId
-        List<Booking> allBookings = (bookingId == -1)
-                ? bookingController.getAllBookings()
-                : Collections.singletonList(bookingController.getBookingByBookingId(bookingId));
+        new SwingWorker<List<Object[]>, Void>() {
+            @Override
+            protected List<Object[]> doInBackground() throws Exception {
+                // Retrieve bookings based on the bookingId
+                List<Booking> allBookings = (bookingId == -1)
+                        ? bookingController.getAllBookings()
+                        : Collections.singletonList(bookingController.getBookingByBookingId(bookingId));
 
-        // Fetch user details for all bookings in a single operation (if possible)
-        Map<Integer, User> userMap = new HashMap<>();
-        for (Booking booking : allBookings) {
-            if (!userMap.containsKey(booking.getUserId())) {
-                userMap.put(booking.getUserId(), userController.getUserById(booking.getUserId()));
+                // Fetch user details for all bookings in a single operation (if possible)
+                Map<Integer, User> userMap = new HashMap<>();
+                for (Booking booking : allBookings) {
+                    if (!userMap.containsKey(booking.getUserId())) {
+                        userMap.put(booking.getUserId(), userController.getUserById(booking.getUserId()));
+                    }
+                }
+
+                // Prepare data for the table
+                List<Object[]> rows = new ArrayList<>();
+                for (Booking booking : allBookings) {
+                    User user = userMap.get(booking.getUserId());
+                    rows.add(new Object[] {
+                            booking.getId(),
+                            user != null ? user.getName() : "Unknown",
+                            booking.getVehicleId(),
+                            booking.getStart_date(),
+                            booking.getEnd_date(),
+                            booking.getStatus(),
+                    });
+                }
+                return rows;
             }
-        }
 
-        // Populate the table
-        for (Booking booking : allBookings) {
-            User user = userMap.get(booking.getUserId());
-            tableModel.addRow(new Object[] {
-                    booking.getId(),
-                    booking.getUserId(),
-                    user != null ? user.getName() : "Unknown",
-                    booking.getVehicleId(),
-                    booking.getStart_date(),
-                    booking.getEnd_date(),
-                    booking.getStatus(),
-            });
-        }
+            @Override
+            protected void done() {
+                try {
+                    List<Object[]> rows = get();
+                    SwingUtilities.invokeLater(() -> {
+                        for (Object[] row : rows) {
+                            tableModel.addRow(row);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ErrorHandler.handleException(e,"Error updating bookings: " + e.getMessage());
+                }
+            }
+        }.execute();
     }
+
 
 }
 

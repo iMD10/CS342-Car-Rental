@@ -109,15 +109,39 @@ public class Login extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UserController uc = new UserController();
-                User loggedUser = uc.loginUser(emailTextField.getText().toLowerCase(), passwordField.getText());
-                if (loggedUser == null) return;
-                dispose();
 
-                if (loggedUser.isAdmin()) {
-                    new AdminDashboard(loggedUser);
-                } else {
-                    new MainFrame(loggedUser);
-                }
+                new SwingWorker<User, Void>() {
+                    @Override
+                    protected User doInBackground() throws Exception {
+                        String email = emailTextField.getText().toLowerCase();
+                        String password = passwordField.getText();
+                        return uc.loginUser(email, password);
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            User loggedUser = get();
+                            if (loggedUser == null) {
+                                JOptionPane.showMessageDialog(null, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+
+                            SwingUtilities.invokeLater(() -> {
+                                dispose();
+                                if (loggedUser.isAdmin()) {
+                                    new AdminDashboard(loggedUser);
+                                } else {
+                                    new MainFrame(loggedUser);
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "An error occurred during login: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }.execute();
+
             }
         });
 
