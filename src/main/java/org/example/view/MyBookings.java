@@ -23,7 +23,7 @@ public class MyBookings extends JPanel {
         setLayout(new BorderLayout());
 
         // Center panel for table
-        String[] columnNames = {"ID", "Car", "Start Date", "End Date","Status"};
+        String[] columnNames = {"ID", "Car","Booked At", "Start Date", "End Date","Status", "Cost"};
 
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -88,9 +88,11 @@ public class MyBookings extends JPanel {
             tableModel.addRow(new Object[]{
                     booking.getId(),
                     vehicleController.getVehicleByVehicleId(booking.getVehicleId()).getCarModel().getName(),
-                    booking.getStart_date(),
-                    booking.getEnd_date(),
-                    booking.getStatus()
+                    booking.getBookedAt(),
+                    booking.getStart_date().toLocalDateTime().toLocalDate(),
+                    booking.getEnd_date().toLocalDateTime().toLocalDate(),
+                    booking.getStatus(),
+                    booking.getCost()
             });
         }
     }
