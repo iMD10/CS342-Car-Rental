@@ -344,7 +344,7 @@ public class BrowseVehicles extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
             boolean isNotAfterEnd = ! date.isAfter(endingDate.minusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
@@ -356,7 +356,7 @@ public class BrowseVehicles extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now().plusDays(1);
-            LocalDate maxDate = today.plusDays(29); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
 
             boolean isNotBeforeStart = ! date.isBefore(startingDate.plusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;

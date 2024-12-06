@@ -228,7 +228,7 @@ public class CarDetails extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
             boolean isNotAfterEnd = ! date.isAfter(endingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
@@ -240,7 +240,7 @@ public class CarDetails extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
 
             boolean isNotBeforeStart = ! date.isBefore(startingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
