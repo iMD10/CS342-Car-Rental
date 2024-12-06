@@ -88,7 +88,7 @@ public class ManageVehicles extends JPanel {
                     String path = "res/" + vehicle.getCarModel().getName() + ".png";
                     ImageIcon imageIcon = null;
                     try {
-                        imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                        imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(130, 90, Image.SCALE_SMOOTH));
                     } catch (Exception e) {
                         imageIcon = new ImageIcon(); // Use a default or empty icon if loading fails
                     }

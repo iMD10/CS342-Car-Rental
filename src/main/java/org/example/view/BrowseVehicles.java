@@ -214,7 +214,7 @@ public class BrowseVehicles extends JPanel {
         tableModel.setRowCount(0); // Clear existing rows
         for (Vehicle vehicle : vehicles) {
             String path = "res/" + vehicle.getCarModel().getName() + ".png";
-            ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+            ImageIcon imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(130, 90, Image.SCALE_SMOOTH));
 
             tableModel.addRow(new Object[]{
                     imageIcon,
