@@ -155,7 +155,7 @@ public class Signup extends JFrame {
 
         // Validate password format
         if (!v.checkPassword(new String(passwordField.getPassword()))) {
-            JOptionPane.showMessageDialog(this, "Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Password should be more than 6 characters!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

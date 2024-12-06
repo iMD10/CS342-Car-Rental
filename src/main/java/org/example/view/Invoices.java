@@ -132,8 +132,8 @@ public class Invoices extends JPanel {
                     rows.add(new Object[]{
                             invoice.getId(),
                             vehicle.getCarModel().getName(),
-                            booking.getStart_date(),
-                            booking.getEnd_date(),
+                            booking.getStart_date().toLocalDateTime().toLocalDate(),
+                            booking.getEnd_date().toLocalDateTime().toLocalDate(),
                             invoice.getLate_fees(),
                             invoice.getTotal_price()
                     });
