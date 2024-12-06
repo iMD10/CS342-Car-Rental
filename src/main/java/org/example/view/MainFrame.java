@@ -3,6 +3,7 @@ import org.example.controllers.BookingController;
 import org.example.classes.User;
 import javax.swing.*;
 import java.awt.*;
+import com.formdev.flatlaf.*;
 
 public class MainFrame extends JFrame {
 
@@ -13,7 +14,7 @@ public class MainFrame extends JFrame {
     Image icon = Toolkit.getDefaultToolkit().getImage("src/main/java/org/example/res/R.png");
     public MainFrame(User loggedUser) {
         setTitle("Car Rental Application");
-        setSize(870, 720);
+        setSize(1000, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(icon);
@@ -36,7 +37,7 @@ public class MainFrame extends JFrame {
 
         topBar.add(logoPanel, BorderLayout.WEST);
 
-        JPanel buttonsPanel = new JPanel(new GridLayout(1, 7));
+        JPanel buttonsPanel = new JPanel(new GridLayout(1, 8));
         buttonsPanel.setBackground(White);
 
         Dimension buttonSize = new Dimension(130, 85);
@@ -85,6 +86,27 @@ public class MainFrame extends JFrame {
             new Login();
         });
         NotificationsPanel.sendReminder(loggedUser);
+
+        JButton darkModeButton = new JButton("Dark Mode");
+        darkModeButton.setBackground(Color.GRAY);
+        darkModeButton.setForeground(White);
+        darkModeButton.setPreferredSize(buttonSize);
+        buttonsPanel.add(darkModeButton);
+
+        darkModeButton.addActionListener(e -> {
+            if (UIManager.getLookAndFeel() instanceof FlatLightLaf) {
+                darkModeButton.setText("Light Mode");
+                darkModeButton.setForeground(Color.GRAY);
+                darkModeButton.setBackground(White);
+                FlatDarkLaf.setup();
+            } else {
+                darkModeButton.setText("Dark Mode");
+                darkModeButton.setBackground(Color.GRAY);
+                darkModeButton.setForeground(White);
+                FlatLightLaf.setup();
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+        });
 
         setVisible(true);
     }

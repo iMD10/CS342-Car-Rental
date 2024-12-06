@@ -1,5 +1,7 @@
 package org.example.view;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.example.classes.User;
 
 import javax.swing.*;
@@ -80,9 +82,30 @@ public class AdminDashboard extends JFrame {
             dispose();
             new Login();
         });
+        JButton darkModeButton = new JButton("Dark Mode");
+        darkModeButton.setBackground(Color.GRAY);
+        darkModeButton.setForeground(White);
+        darkModeButton.setPreferredSize(buttonSize);
+        buttonsPanel.add(darkModeButton);
+
+        darkModeButton.addActionListener(e -> {
+            if (UIManager.getLookAndFeel() instanceof FlatLightLaf) {
+                darkModeButton.setText("Light Mode");
+                darkModeButton.setForeground(Color.GRAY);
+                darkModeButton.setBackground(White);
+                FlatDarkLaf.setup();
+            } else {
+                darkModeButton.setText("Dark Mode");
+                darkModeButton.setBackground(Color.GRAY);
+                darkModeButton.setForeground(White);
+                FlatLightLaf.setup();
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+        });
 
         setVisible(true);
     }
+
 
     public void switchPanel(String panelName) {
         CardLayout cl = (CardLayout) contentPanel.getLayout();
