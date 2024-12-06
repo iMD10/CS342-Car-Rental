@@ -8,19 +8,23 @@ import java.awt.*;
 public class AdminDashboard extends JFrame {
 
     private JPanel contentPanel;
-
+    private Color Cyan = new Color(0, 172, 237);
+    private Color Red = new Color(161, 1, 1);
+    private Color White = Color.white;
+    Image icon = Toolkit.getDefaultToolkit().getImage("res/R.png");
     public AdminDashboard(User loggedUser) {
         setTitle("Admin Dashboard");
-        setSize(870, 720);
+        setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setIconImage(icon);
         setLayout(new BorderLayout());
 
         JPanel topBar = new JPanel(new BorderLayout());
-        topBar.setBackground(new Color(255, 255, 255));
+        topBar.setBackground(White);
 
         JPanel logoPanel = new JPanel(new BorderLayout());
-        logoPanel.setBackground(Color.WHITE);
+        logoPanel.setBackground(White);
         logoPanel.setPreferredSize(new Dimension(85, 85));
 
         JLabel logoLabel = new JLabel();
@@ -34,7 +38,7 @@ public class AdminDashboard extends JFrame {
         topBar.add(logoPanel, BorderLayout.WEST);
 
         JPanel buttonsPanel = new JPanel(new GridLayout(1, 5));
-        buttonsPanel.setBackground(new Color(255, 255, 255));
+        buttonsPanel.setBackground(White);
 
         Dimension buttonSize = new Dimension(130, 85);
         JButton vehiclesButton = new JButton("Manage Vehicles");
@@ -45,14 +49,14 @@ public class AdminDashboard extends JFrame {
 
         JButton[] buttons = {vehiclesButton, bookingsButton, reportsButton, customersButton, logoutButton};
         for (JButton button : buttons) {
-            button.setBackground(new Color(0, 172, 237));
-            button.setForeground(Color.WHITE);
+            button.setBackground(Cyan);
+            button.setForeground(White);
             button.setPreferredSize(buttonSize);
             buttonsPanel.add(button);
         }
 
-        logoutButton.setBackground(new Color(161, 1, 1));
-        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setBackground(Red);
+        logoutButton.setForeground(White);
         logoutButton.setPreferredSize(buttonSize);
 
         topBar.add(buttonsPanel, BorderLayout.CENTER);
