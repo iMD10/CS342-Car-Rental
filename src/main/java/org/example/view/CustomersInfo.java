@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.classes.User;
 import org.example.controllers.UserController;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +36,11 @@ public class CustomersInfo extends JPanel {
 
         // Create initial table data
         updateTableData();
-        table = new JTable(data, columnNames);
+        table = new JTable(new DefaultTableModel(data, columnNames){
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
         JScrollPane tableScrollPane = new JScrollPane(table);
 
         // Bottom panel for buttons
@@ -101,7 +106,11 @@ public class CustomersInfo extends JPanel {
                         found_data[i][3] = data[i][3];
                     }
 
-                    table.setModel(new javax.swing.table.DefaultTableModel(found_data, columnNames));
+                    table.setModel(new DefaultTableModel(found_data, columnNames){
+                        public boolean isCellEditable(int row, int column) {
+                            return false;
+                        }
+                    });
                 }
                 else{
                     JOptionPane.showMessageDialog(new JFrame(), "Name not found!", 
@@ -127,7 +136,11 @@ public class CustomersInfo extends JPanel {
             data[i][3] = user.getPhone();
         }
         if (table != null) {
-            table.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
+            table.setModel(new javax.swing.table.DefaultTableModel(data, columnNames){
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            });
         }
         
     }

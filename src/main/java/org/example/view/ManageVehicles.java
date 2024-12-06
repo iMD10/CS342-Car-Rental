@@ -115,7 +115,11 @@ public class ManageVehicles extends JPanel {
                     }
 
                     SwingUtilities.invokeLater(() -> {
-                        table.setModel(new DefaultTableModel(data, columnNames));
+                        table.setModel(new DefaultTableModel(data, columnNames){
+                            public boolean isCellEditable(int row, int column) {
+                                return false;
+                            }
+                        });
                         table.getColumn("Image").setCellRenderer(new DefaultTableCellRenderer() {
                             @Override
                             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
