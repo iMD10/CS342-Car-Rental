@@ -16,12 +16,13 @@ public class Login extends JFrame {
     private JPasswordField passwordField;
     private JLabel logoLabel; // Make logoLabel a class member
     private ImageIcon logoIcon;
-
+    Image icon = Toolkit.getDefaultToolkit().getImage("res/R.png");
     public Login() {
 
         this.setTitle("Log In");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setIconImage(icon);
         this.setSize(400, 400);
 
         Toolkit kit = Toolkit.getDefaultToolkit();

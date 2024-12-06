@@ -17,13 +17,13 @@ public class Signup extends JFrame {
     private JPasswordField passwordField;
     private JLabel logoLabel; // Make logoLabel a class member
     private ImageIcon logoIcon;
-
+    Image icon = Toolkit.getDefaultToolkit().getImage("res/R.png");
     public Signup() {
 
         this.setTitle("Sign Up");
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        setIconImage(icon);
         this.setMinimumSize(new Dimension(600, 600));
 
         Toolkit kit = Toolkit.getDefaultToolkit();
