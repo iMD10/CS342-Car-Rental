@@ -52,6 +52,7 @@ public class RentalAgreement extends JFrame {
         termsPanel.add(createTermLabel("4. Damage Liability: The renter is liable for any damages not covered by insurance."));
         termsPanel.add(createTermLabel("5. Insurance: Additional insurance options are available and recommended."));
         termsPanel.add(createTermLabel("6. Prohibited Uses: The vehicle must not be used for racing, towing, or illegal activities."));
+        termsPanel.add(createTermLabel("By confirming you agree to the terms."));
 
         centerPanel.add(termsPanel, BorderLayout.CENTER);
 

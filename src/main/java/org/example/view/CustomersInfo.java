@@ -36,10 +36,12 @@ public class CustomersInfo extends JPanel {
 
         // Create initial table data
         updateTableData();
+
         table = new JTable(new DefaultTableModel(data, columnNames){
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
+
         });
         JScrollPane tableScrollPane = new JScrollPane(table);
 

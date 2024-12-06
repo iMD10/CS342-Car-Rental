@@ -12,7 +12,7 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
     private DatabaseHandler db;
 
     private List<Vehicle> getVehicles(ResultSet rs) throws  Exception {
-        db = new DatabaseHandler();
+
         try {
             List<Vehicle> vehicles = new ArrayList<>();
             while (rs.next()) {
@@ -34,8 +34,6 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        }finally {
-            db.closeConnection();
         }
     }
 

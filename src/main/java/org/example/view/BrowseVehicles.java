@@ -151,13 +151,19 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<Vehicle>, Void>() {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
-                return vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+                List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+                if (vehicles == null) {
+                    vehicles = null;
+                }
+                return vehicles;
             }
+
 
             @Override
             protected void done() {
                 try {
                     List<Vehicle> vehicles = get();
+
                     updateTable(tableModel, vehicles);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -212,7 +218,7 @@ public class BrowseVehicles extends JPanel {
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
         tableModel.setRowCount(0); // Clear existing rows
-        if(vehicles.isEmpty()) {
+        if(vehicles == null) {
             return;
         }
         for (Vehicle vehicle : vehicles) {
