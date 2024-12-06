@@ -1,11 +1,17 @@
 package org.example.view;
 
+import org.example.classes.Booking;
+import org.example.classes.User;
+import org.example.controllers.BookingController;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class NotificationsPanel extends JPanel {
 
     private static DefaultListModel<String> notificationsModel;
+
 
     public NotificationsPanel() {
         setLayout(new BorderLayout());
@@ -30,5 +36,12 @@ public class NotificationsPanel extends JPanel {
     public static void addNotification(String notification) {
         notificationsModel.addElement(notification);
     }
-    public static void removeNotification(String notification) {}
+
+    public static void sendReminder(User loggedUser) {
+        BookingController bookingController = new BookingController();
+        List<Booking> bookings  = bookingController.getActiveBookingsByUserid(loggedUser.getId());
+        for (Booking booking : bookings) {
+            notificationsModel.addElement("Reminder: You should return the vehicle of booking ID: "+ booking.getId() + " at "+ booking.getEnd_date());
+        }
+    }
 }

@@ -1,16 +1,13 @@
 package org.example.view;
+
 import com.formdev.flatlaf.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Signup extends JFrame {
 
@@ -18,6 +15,8 @@ public class Signup extends JFrame {
     private JButton signupButton, goToLoginButton;
     private JTextField fnameTextField, lnameTextField, emailTextField, phoneTextField;
     private JPasswordField passwordField;
+    private JLabel logoLabel; // Make logoLabel a class member
+    private ImageIcon logoIcon;
 
     public Signup() {
 
@@ -30,14 +29,17 @@ public class Signup extends JFrame {
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W/4, H/4, W/2, H/2);
+        this.setBounds(W / 4, H / 4, W / 2, H / 2);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(2, 1));
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         // Initialize components
         welcome = new JLabel("Welcome to Blu");
         welcome.setFont(new Font("Arial", Font.BOLD, 20));
-        title = new JLabel("Sign Up Page");
+        title = new JLabel("            Sign Up Page");
         fnameLabel = new JLabel("First Name: ");
         lnameLabel = new JLabel("Last Name: ");
         emailLabel = new JLabel("Email:      ");
@@ -52,38 +54,53 @@ public class Signup extends JFrame {
         passwordField = new JPasswordField(20);
 
         // Add logo
-        JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("res\\R.png");
-        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 60, Image.SCALE_SMOOTH);
-        logoIcon = new ImageIcon(scaledImage);
-        logoLabel.setIcon(logoIcon);
-        JPanel logoPanel = new JPanel();
-        logoPanel.setPreferredSize(new Dimension(100, 85));
-        logoPanel.add(logoLabel, BorderLayout.CENTER);
+        logoLabel = new JLabel();
+        logoIcon = new ImageIcon("res\\R.png");
+        logoLabel.setIcon(scaleImage(logoIcon, 50, 30));
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(logoLabel, gbc);
 
-        // Panel for signup fields
-        JPanel signupPanel = new JPanel(new GridLayout(9, 1, 1, 1));
-        signupPanel.add(logoPanel);
-        signupPanel.add(createPaddedPanelLabel(welcome));
-        signupPanel.add(createPaddedPanelLabel(title));
-        signupPanel.add(createPaddedPanel(fnameLabel, fnameTextField));
-        signupPanel.add(createPaddedPanel(lnameLabel, lnameTextField));
-        signupPanel.add(createPaddedPanel(emailLabel, emailTextField));
-        signupPanel.add(createPaddedPanel(phoneLabel, phoneTextField));
-        signupPanel.add(createPaddedPanel(passwordLabel, passwordField));
-        signupPanel.add(createPaddedPanelButton(signupButton));
+        // Welcome and Title
+        gbc.gridy = 1;
+        mainPanel.add(welcome, gbc);
+        gbc.gridy = 2;
+        gbc.gridx = 1;
+        mainPanel.add(title, gbc);
 
-        mainPanel.add(signupPanel, BorderLayout.CENTER);
+        // Form fields
+        addLabelAndField(mainPanel, gbc, fnameLabel, fnameTextField, 3);
+        addLabelAndField(mainPanel, gbc, lnameLabel, lnameTextField, 4);
+        addLabelAndField(mainPanel, gbc, emailLabel, emailTextField, 5);
+        addLabelAndField(mainPanel, gbc, phoneLabel, phoneTextField, 6);
+        addLabelAndField(mainPanel, gbc, passwordLabel, passwordField, 7);
 
-        // Panel for footer with "Go to Sign In" button
+        // Signup button
+        gbc.gridy = 8;
+        gbc.gridwidth = 2;
+        mainPanel.add(signupButton, gbc);
+
+        // Footer panel for "Go to Sign In" button
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         goLabel = new JLabel("Go to");
         footerPanel.add(goLabel);
         footerPanel.add(goToLoginButton);
-        mainPanel.add(footerPanel, BorderLayout.SOUTH);
+
+        gbc.gridy = 9;
+        mainPanel.add(footerPanel, gbc);
 
         // Add panels to the frame
         this.add(mainPanel);
+
+        // Resize listener to adjust logo size dynamically
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                adjustLogoSize();
+            }
+        });
 
         // Make frame visible
         this.setVisible(true);
@@ -154,7 +171,7 @@ public class Signup extends JFrame {
         }
 
         UserController uc = new UserController();
-        User newUser = uc.registerCustomer(emailTextField.getText(), fnameTextField.getText(), lnameTextField.getText(), phoneTextField.getText(), new String(passwordField.getPassword()));
+        User newUser = uc.registerCustomer(emailTextField.getText().toLowerCase(), fnameTextField.getText(), lnameTextField.getText(), phoneTextField.getText(), new String(passwordField.getPassword()));
 
         if (newUser == null) {
             JOptionPane.showMessageDialog(this, "Phone number is already used!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -170,23 +187,25 @@ public class Signup extends JFrame {
         }
     }
 
-    private JPanel createPaddedPanel(JLabel label, JTextField field) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        paddedPanel.add(label);
-        paddedPanel.add(field);
-        return paddedPanel;
+    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, JLabel label, JTextField field, int y) {
+        gbc.gridy = y;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        panel.add(label, gbc);
+        gbc.gridx = 1;
+        panel.add(field, gbc);
     }
 
-    private JPanel createPaddedPanelLabel(JLabel label) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        paddedPanel.add(label);
-        return paddedPanel;
+    private void adjustLogoSize() {
+        int frameWidth = getWidth();
+        int newWidth = frameWidth / 10; // Adjust the factor as needed
+        int newHeight = (int) (newWidth * 0.70); // Maintain aspect ratio
+        logoLabel.setIcon(scaleImage(logoIcon, newWidth, newHeight));
     }
 
-    private JPanel createPaddedPanelButton(JButton button) {
-        JPanel paddedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        paddedPanel.add(button);
-        return paddedPanel;
+    private ImageIcon scaleImage(ImageIcon icon, int width, int height) {
+        Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
     }
 
     public static void main(String[] args) {

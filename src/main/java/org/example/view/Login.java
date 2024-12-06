@@ -6,7 +6,6 @@ import java.awt.*;
 import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
-import org.example.views.UserUIWindow;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,7 +99,7 @@ public class Login extends JFrame {
                 if (loggedUser.isAdmin()){
                     AdminDashboard ad = new AdminDashboard(loggedUser);
                 } else {
-                    UserUIWindow userUi = new UserUIWindow(loggedUser);
+                    MainFrame mf = new MainFrame(loggedUser);
                 }
             }
         });

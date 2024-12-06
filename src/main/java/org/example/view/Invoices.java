@@ -4,6 +4,7 @@ import org.example.classes.Invoice;
 import org.example.classes.Booking;
 import org.example.classes.User;
 import org.example.classes.Vehicle;
+import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.controllers.InvoiceController;
 import org.example.controllers.VehicleController;
@@ -50,6 +51,23 @@ public class Invoices extends JPanel {
 
         actionButtonPanel.add(refreshButton);
         actionButtonPanel.add(printButton);
+        printButton.addActionListener(e -> {
+            JTable table = (JTable) tableScrollPane.getViewport().getView();
+            int[] selectedRows = table.getSelectedRows();
+            InvoiceController invoiceController = new InvoiceController();
+            if(selectedRows.length > 1){
+                ErrorHandler.handleWarning("Can't select more than one row, please select one");
+                return;
+            }
+            else if(selectedRows.length == 0){
+                ErrorHandler.handleWarning("No row selected, please select one");
+                return;
+            }
+            Invoice selectedInvoice = invoiceController.getInvoiceByInvoiceId((Integer)table.getValueAt(selectedRows[0],0));
+            Booking booking = bookingController.getBookingByBookingId(selectedInvoice.getBooking_id());
+            Vehicle vehicle = vehicleController.getVehicleByVehicleId(booking.getVehicleId());
+            PDFInvoiceGenerator.generateInvoice(loggedUser.getName(),vehicle.getCarModel().getName(),booking.getStart_date().toLocalDateTime().toLocalDate(),booking.getEnd_date().toLocalDateTime().toLocalDate(),selectedInvoice.getTotal_price(),selectedInvoice.getLate_fees());
+        });
 
         // Add panels to the layout
         add(tableScrollPane, BorderLayout.CENTER);

@@ -80,6 +80,7 @@ public class MainFrame extends JFrame {
             dispose();
             new Login();
         });
+        NotificationsPanel.sendReminder(loggedUser);
 
         setVisible(true);
     }
