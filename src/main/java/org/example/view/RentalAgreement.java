@@ -5,6 +5,7 @@ import org.example.classes.Vehicle;
 import org.example.classes.User;
 import org.example.controllers.AgreementController;
 import org.example.controllers.BookingController;
+import org.example.views.UserUIWindow;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -15,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 
 public class RentalAgreement extends JFrame {
 
-    public RentalAgreement(Vehicle vehicle, User user, LocalDate start, LocalDate end, boolean isConfirm) {
+    public RentalAgreement(Vehicle vehicle, User user, LocalDate start, LocalDate end, boolean isConfirm,  CardLayout cardLayout, JPanel cardPanel) {
         super("Rental Agreement");
 
         setLayout(new BorderLayout());
@@ -73,6 +74,10 @@ public class RentalAgreement extends JFrame {
                 agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
                 JOptionPane.showMessageDialog(this, "Agreement accepted!");
                 NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
+
+                if (cardPanel != null && cardLayout != null )
+                    cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
+
                 dispose();
             });
 

@@ -76,7 +76,7 @@ public class Agreements extends JPanel {
                                 loggedUser,
                                 booking.getStart_date().toLocalDateTime().toLocalDate(),
                                 booking.getEnd_date().toLocalDateTime().toLocalDate(),
-                                false
+                                false, null, null
                         );
                     }
 

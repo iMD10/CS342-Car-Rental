@@ -8,6 +8,7 @@ import java.awt.event.*;
 import org.example.classes.User;
 import org.example.common.Validation;
 import org.example.controllers.UserController;
+import org.example.views.UserUIWindow;
 
 public class Login extends JFrame {
 
@@ -24,13 +25,13 @@ public class Login extends JFrame {
         this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(icon);
-        this.setSize(400, 400);
+        this.setSize(800, 750);
 
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, 450, 750);
+        this.setBounds(W / 4, H / 4 - 200, 800, 750);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -140,7 +141,12 @@ public class Login extends JFrame {
                                 if (loggedUser.isAdmin()) {
                                     new AdminDashboard(loggedUser);
                                 } else {
+                                    // First GUI
                                     new MainFrame(loggedUser);
+
+                                    // Second GUI
+                                   // new UserUIWindow(loggedUser);
+
                                 }
                             });
                         } catch (Exception e) {
