@@ -136,7 +136,7 @@ This project was collaboratively developed by:
 - **Ammer Mohammed**  
   GitHub: [@3wex](https://github.com/3wex)
 
-- **Faisal Qasim**
+- **Faisal Qasim**  
   GitHub: [@csx30](https://github.com/csx30)
 
 ---
