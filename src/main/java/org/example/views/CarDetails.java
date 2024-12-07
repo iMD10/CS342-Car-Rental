@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.LocalDate;
 
 public class CarDetails extends JPanel {
@@ -34,8 +36,10 @@ public class CarDetails extends JPanel {
         this.totalPrice = calculateTotalPrice();
         JPanel contentPanel = new JPanel(new BorderLayout());
 
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
 
-        ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
+        ImageIcon carImageSource = new ImageIcon("res\\"+selectedCar.getCarModel().getName()+".png");
         Image scaledImage = carImageSource.getImage().getScaledInstance(350, 175, Image.SCALE_SMOOTH);
 
         carImageSource = new ImageIcon(scaledImage);
@@ -51,11 +55,42 @@ public class CarDetails extends JPanel {
         JLabel carName = new JLabel(selectedCar.getCarModel().getName()+ " " +selectedCar.getCarModel().getModelYear());
         carName.setFont(new Font("SansSerif", Font.BOLD, 28));
         carName.setMaximumSize(new Dimension(200, 40));
+        JLabel backLabel = new JLabel("<html><u>Back</u></html>");
 
+        backLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        backLabel.setMaximumSize(new Dimension(200, 40));
+        backLabel.setForeground(Color.BLUE);
+        backLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                parentcardLayout.show(parentCardPanel, UserUIWindow.BROWSE_PANEL);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+
+            }
+        });
 
         nameAndBookPanel.add(carName);
         nameAndBookPanel.add(Box.createHorizontalGlue());
-//        nameAndBookPanel.add(btnPanel);
+        nameAndBookPanel.add(backLabel);
 
 
 
@@ -72,7 +107,7 @@ public class CarDetails extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 //                cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
-                new RentalAgreement(selectedCar, loggedUser, startingDate, endingDate, true);
+                new RentalAgreement(selectedCar, loggedUser, startingDate, endingDate, true, cardLayout, cardPanel);
             }
         });
 
@@ -112,11 +147,9 @@ public class CarDetails extends JPanel {
 
         contentPanel.add(paddingPanel, BorderLayout.CENTER);
 
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
 
         cardPanel.add(contentPanel, UserUIWindow.CAR_DETAILS_PANEL);
-        cardPanel.add(new ConfirmBooking(), UserUIWindow.BOOKING_DONE_PANEL);
+        cardPanel.add(new BookingDone(selectedCar, loggedUser, parentcardLayout, parentCardPanel), UserUIWindow.BOOKING_DONE_PANEL);
 
 
         this.setLayout(new BorderLayout());
@@ -188,14 +221,14 @@ public class CarDetails extends JPanel {
     }
 
     private int calculateTotalDays() {
-        return (int) java.time.temporal.ChronoUnit.DAYS.between(startingDate, endingDate) + 1 ;
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(startingDate, endingDate) ;
     }
     // Custom veto policy to disallow past dates
     private class StartingDatesVetoPolicy implements DateVetoPolicy {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
             boolean isNotAfterEnd = ! date.isAfter(endingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
@@ -207,7 +240,7 @@ public class CarDetails extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
 
             boolean isNotBeforeStart = ! date.isBefore(startingDate);
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;

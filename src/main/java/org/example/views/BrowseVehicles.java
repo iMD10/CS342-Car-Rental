@@ -106,7 +106,7 @@ public class BrowseVehicles extends JPanel {
         JPanel filtersPanel = new JPanel();
         filtersPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0,10));
 
-        Font filtersFont = new Font("SansSerif", Font.PLAIN, 14);
+        Font filtersFont = new Font("SansSerif", Font.PLAIN, 13);
         JLabel byTypeLabel = new JLabel("Filter by type: ");
         byTypeLabel.setFont(filtersFont);
         JLabel startBookLabel = new JLabel("Booking start: ");
@@ -125,7 +125,7 @@ public class BrowseVehicles extends JPanel {
 
             }
         });
-        Font datesFont = new Font("SansSerif", Font.BOLD, 14);
+        Font datesFont = new Font("SansSerif", Font.BOLD, 13);
 
         DatePickerSettings startDateFormat = new DatePickerSettings();
         startDateFormat.setFormatForDatesCommonEra("dd/MM/yyyy");
@@ -257,7 +257,7 @@ public class BrowseVehicles extends JPanel {
     private JPanel createElementPanel(Vehicle vehicle) {
         JPanel elementPanel = new JPanel(new BorderLayout());
 
-        ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
+        ImageIcon carImageSource = new ImageIcon("res\\"+vehicle.getCarModel().getName()+".png");
         JLabel carImage = new JLabel(carImageSource);
 
         JLabel carName = new JLabel(vehicle.getCarModel().getName()+ " " +vehicle.getCarModel().getModelYear()  , JLabel.CENTER);
@@ -271,7 +271,7 @@ public class BrowseVehicles extends JPanel {
 
         elementPanel.add(carImage, BorderLayout.CENTER);
         elementPanel.add(nameAndPrice, BorderLayout.SOUTH);
-        elementPanel.addMouseListener(new carDetailsClick(vehicle)); // Handle click
+        elementPanel.addMouseListener(new carDetailsClick(vehicle, elementPanel,nameAndPrice)); // Handle click
         return elementPanel;
     }
     private String[] getVehicleTypes() {
@@ -288,12 +288,18 @@ public class BrowseVehicles extends JPanel {
 
 
     private class carDetailsClick implements MouseListener {
+        private final JPanel elementPanel;
+        private final JPanel nameAndPrice;
         private Vehicle selectedCar_;
+        private Color orignalColor;
 
-        carDetailsClick( Vehicle selectedCar_) {
+        carDetailsClick(Vehicle selectedCar_, JPanel elementPanel, JPanel nameAndPrice) {
 //          this.destination = destination;
 //            System.out.println(selectedCar);
             this.selectedCar_ = selectedCar_;
+            this.elementPanel = elementPanel;
+            this.nameAndPrice = nameAndPrice;
+            this.orignalColor = elementPanel.getBackground();
         }
 
         @Override
@@ -316,10 +322,21 @@ public class BrowseVehicles extends JPanel {
         public void mouseReleased(MouseEvent e) {}
 
         @Override
-        public void mouseEntered(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {
+            int red = Math.min(255, (int) (orignalColor.getRed() * 0.9));
+            int green = Math.min(255, (int) (orignalColor.getGreen() * 0.9));
+            int blue = Math.min(255, (int) (orignalColor.getBlue() * 0.9));
+
+            elementPanel.setBackground(new Color(red, green, blue));
+            nameAndPrice.setBackground(new Color(red, green, blue));
+        }
 
         @Override
-        public void mouseExited(MouseEvent e) {}
+        public void mouseExited(MouseEvent e) {
+
+            elementPanel.setBackground(orignalColor);
+            nameAndPrice.setBackground(orignalColor);
+        }
     }
 
     // Custom veto policy to disallow past dates
@@ -327,7 +344,7 @@ public class BrowseVehicles extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(30); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
             // Allow only dates from today to 30 days in the future
             boolean isNotAfterEnd = ! date.isAfter(endingDate.minusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
@@ -339,7 +356,7 @@ public class BrowseVehicles extends JPanel {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now().plusDays(1);
-            LocalDate maxDate = today.plusDays(29); // Calculate the maximum allowed date (30 days from today)
+            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
 
             boolean isNotBeforeStart = ! date.isBefore(startingDate.plusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;

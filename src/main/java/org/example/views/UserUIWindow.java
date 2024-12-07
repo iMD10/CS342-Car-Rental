@@ -27,8 +27,8 @@ public class UserUIWindow extends JFrame {
         int W = screenSize.width;
         int H = screenSize.height;
         // Define the new width and height
-        int newWidth = (int) (W / 1.7);  // Set desired width (can adjust this value)
-        int newHeight = (int) (H / 1.7); // Set desired height (can adjust this value)
+        int newWidth = (int) (W / 1.65);  // Set desired width (can adjust this value)
+        int newHeight = (int) (H / 1.65); // Set desired height (can adjust this value)
 
         // Calculate the position to keep the window centered
         int x = (W - newWidth) / 2;
@@ -69,11 +69,11 @@ public class UserUIWindow extends JFrame {
         sideBarPanel.add(Box.createVerticalGlue());
 
         // Create the sidebar buttons using the helper method
-        accountSideButton = createSideBarButton("res\\personIcon.png", "Account");
+        accountSideButton = createSideBarButton("res\\personIcon.png", "My Account");
         accountSideButton.addMouseListener(new MouseAction(ACCOUNT_PANEL));
-        browseSideButton = createSideBarButton("res\\searchIcon.png", "Browse");
+        browseSideButton = createSideBarButton("res\\searchIcon.png", "Browse Vehicles");
         browseSideButton.addMouseListener(new MouseAction(BROWSE_PANEL));
-        historySideButton = createSideBarButton("res\\bookingIcon.png", "History");
+        historySideButton = createSideBarButton("res\\bookingIcon.png", "My Bookings");
         historySideButton.addMouseListener(new MouseAction(HISTORY_PANEL));
 
         // Add buttons with automatic spacing
@@ -89,24 +89,26 @@ public class UserUIWindow extends JFrame {
     }
 
     private static JPanel createSideBarButton(String imageIconPath, String buttonName) {
-        ImageIcon carImage = new ImageIcon(imageIconPath);
+        ImageIcon icon = new ImageIcon(imageIconPath);
 
-        JLabel accIcon = new JLabel(carImage);
+        JLabel iconLabel = new JLabel(icon, JLabel.CENTER);
 
         JLabel buttonText = new JLabel(buttonName, JLabel.CENTER);
-//        buttonText.setSize(100, 100);
+
 
 
         JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         labelPanel.add(buttonText);
-        JPanel accBtnPan = new JPanel();
-        accBtnPan.setLayout(new BoxLayout(accBtnPan, BoxLayout.Y_AXIS)); // Stack components vertically
+        JPanel btnPanel = new JPanel();
+        JPanel iconPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        iconPanel.add(iconLabel);
+        btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.Y_AXIS)); // Stack components vertically
 
         // Add icon and text to the panel
-        accBtnPan.add(accIcon);
-        accBtnPan.add(labelPanel);
+        btnPanel.add(iconPanel);
+        btnPanel.add(labelPanel);
 
-        return accBtnPan;
+        return btnPanel;
     }
 
     private class MouseAction implements MouseListener {
