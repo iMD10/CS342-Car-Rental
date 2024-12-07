@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import org.example.classes.User;
+import org.example.common.Validation;
 import org.example.controllers.UserController;
 
 public class Login extends JFrame {
@@ -114,9 +115,16 @@ public class Login extends JFrame {
                 new SwingWorker<User, Void>() {
                     @Override
                     protected User doInBackground() throws Exception {
+                        Validation v = new Validation();
                         String email = emailTextField.getText().toLowerCase();
                         String password = passwordField.getText();
-                        return uc.loginUser(email, password);
+                        if (!v.checkEmail(email) || !v.checkPassword(password)) {
+                            JOptionPane.showMessageDialog(null, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+
+                        }  else {
+                         return uc.loginUser(email, password);
+                        }
+                        return null;
                     }
 
                     @Override
@@ -124,7 +132,6 @@ public class Login extends JFrame {
                         try {
                             User loggedUser = get();
                             if (loggedUser == null) {
-                                JOptionPane.showMessageDialog(null, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
 
@@ -185,8 +192,5 @@ public class Login extends JFrame {
         return new ImageIcon(scaledImage);
     }
 
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        new Login();
-    }
+
 }
