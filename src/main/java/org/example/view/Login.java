@@ -29,7 +29,7 @@ public class Login extends JFrame {
         Dimension screenSize = kit.getScreenSize();
         int W = screenSize.width;
         int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+        this.setBounds(W / 4, H / 4, 450, 750);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -124,7 +124,6 @@ public class Login extends JFrame {
                         try {
                             User loggedUser = get();
                             if (loggedUser == null) {
-                                JOptionPane.showMessageDialog(null, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
 
