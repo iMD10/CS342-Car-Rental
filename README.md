@@ -121,12 +121,23 @@ CS342-Car-Rental/
 ## Contributors
 
 This project was collaboratively developed by:
-- **Muhannad Majed**
-- **Eyad Fahad**
-- **Amer Mohammed**
-- **Mohammed Mansour**
-- **Mohammed Saleh**
-- **Faisal Qasem**
+- **Muhannad Majed**  
+  GitHub: [@iMD_10](https://github.com/iMD_10)
+
+- **Mohammed Saleh**  
+  GitHub: [@rayq-q](https://github.com/rayq-q)
+
+- **Mohammed Mansour**  
+  GitHub: [@MrM3ROF](https://github.com/MrM3ROF)
+
+- **Eyad Fahad**  
+  GitHub: [@commando-xxt](https://github.com/commando-xxt)
+
+- **Ammer Mohammed**  
+  GitHub: [@3wex](https://github.com/3wex)
+
+  - **Faisal Qasim**
+    GitHub: [@csx30](https://github.com/csx30)
 
 ---
 
