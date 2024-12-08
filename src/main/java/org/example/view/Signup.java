@@ -21,16 +21,10 @@ public class Signup extends JFrame {
     public Signup() {
 
         this.setTitle("Sign Up");
-        this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(icon);
-        this.setMinimumSize(new Dimension(600, 600));
-
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds(W / 4, H / 4, W / 2, H / 2);
+        this.setBounds(350, 450 , 1000, 750);
+        this.setResizable(false);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -56,8 +50,8 @@ public class Signup extends JFrame {
 
         // Add logo
         logoLabel = new JLabel();
-        logoIcon = new ImageIcon("src/main/java/org/example/res/R.png");
-        logoLabel.setIcon(scaleImage(logoIcon, 50, 30));
+        logoIcon = new ImageIcon(icon);
+        logoLabel.setIcon(scaleImage(logoIcon, 100,100 ));
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -92,28 +86,19 @@ public class Signup extends JFrame {
         gbc.gridy = 9;
         mainPanel.add(footerPanel, gbc);
 
-        // Add panels to the frame
+
         this.add(mainPanel);
 
-        // Resize listener to adjust logo size dynamically
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                adjustLogoSize();
-            }
-        });
-
-        // Make frame visible
         this.setVisible(true);
 
-        // Add action listener to the sign-up button
+
         signupButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 performSignup();
             }
         });
 
-        // Add action listener to the "Go to Sign In" button
+
         goToLoginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new Login().setVisible(true);
@@ -121,7 +106,7 @@ public class Signup extends JFrame {
             }
         });
 
-        // Add Enter key functionality
+
         KeyAdapter enterKeyListener = new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -195,13 +180,6 @@ public class Signup extends JFrame {
         panel.add(label, gbc);
         gbc.gridx = 1;
         panel.add(field, gbc);
-    }
-
-    private void adjustLogoSize() {
-        int frameWidth = getWidth();
-        int newWidth = frameWidth / 10; // Adjust the factor as needed
-        int newHeight = (int) (newWidth * 0.70); // Maintain aspect ratio
-        logoLabel.setIcon(scaleImage(logoIcon, newWidth, newHeight));
     }
 
     private ImageIcon scaleImage(ImageIcon icon, int width, int height) {
