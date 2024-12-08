@@ -51,6 +51,7 @@ public class AccountPage extends JPanel {
         emailLabel = new JLabel("Email");
         emailLabel.setFont(labelsFont);
         emailLabel.setMaximumSize(new Dimension(300, 30));
+        emailTf.setEditable(false);
 
         phoneLabel = new JLabel("Phone Number");
         phoneLabel.setFont(labelsFont);
@@ -98,7 +99,7 @@ public class AccountPage extends JPanel {
         emailTf = new JTextField(loggedUser.getEmail(), 20);
         emailTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         emailTf.setMaximumSize(new Dimension(200, 30));
-        emailTf.getDocument().addDocumentListener(new infoChangedListener());
+        //emailTf.getDocument().addDocumentListener(new infoChangedListener());
 
         phoneTf = new JTextField(loggedUser.getPhone(), 20);
         phoneTf.setFont(new Font("SansSerif", Font.PLAIN, 15));

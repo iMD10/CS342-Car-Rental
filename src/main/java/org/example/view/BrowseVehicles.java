@@ -49,11 +49,10 @@ public class BrowseVehicles extends JPanel {
         fromDatePicker.addDateChangeListener(event -> {
             LocalDate newFromDate = event.getNewDate();
             if (newFromDate != null) {
-                if (newFromDate.isAfter(toDatePicker.getDate())) {
+                if (!newFromDate.isBefore(toDatePicker.getDate())) {
                     toDatePicker.setDate(newFromDate.plusDays(1));
                 }
                 toDatePicker.getSettings().setDateRangeLimits(newFromDate.plusDays(1), null);
-                updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
             }
         });
 
@@ -151,7 +150,16 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<Vehicle>, Void>() {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
-                List<Vehicle> vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+                List<Vehicle> vehicles = null ;
+                String selectedType1 = (String) typeComboBox.getSelectedItem();
+                if(selectedType1 == null) {
+                    vehicles =  vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                }
+                else if (selectedType1.equals("All") ){
+                    vehicles =  vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                } else {
+                    vehicles = vehicleController.getAvailableVehiclesByType(selectedType1, fromstamp, tostamp);
+                }
                 if (vehicles == null) {
                     vehicles = null;
                 }
@@ -199,13 +207,22 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<Vehicle>, Void>() {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
+                if (selectedType == null)
+                    return vehicleController.getAvailableVehicles(fromstamp, tostamp);
+               else if (selectedType.equals("All")){
+                    return vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                }
                 return vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
             }
 
             @Override
             protected void done() {
                 try {
+
                     List<Vehicle> vehicles = get();
+                    if (vehicles == null) {
+                        vehicles = null;
+                    }
                     updateTable(tableModel, vehicles);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -243,12 +260,14 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<String>, Void>() {
             @Override
             protected List<String> doInBackground() throws Exception {
+
                 return vehicleController.getCarTypes();
             }
 
             @Override
             protected void done() {
                 try {
+                    types.add("All");
                     types.addAll(get());
                     SwingUtilities.invokeLater(() -> typeComboBox.setModel(new DefaultComboBoxModel<>(types.toArray(new String[0]))));
                 } catch (Exception e) {
