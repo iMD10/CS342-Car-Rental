@@ -8,6 +8,7 @@ import java.awt.event.*;
 import org.example.classes.User;
 import org.example.controllers.UserController;
 import org.example.common.Validation;
+import org.example.views.UserUIWindow;
 
 public class Signup extends JFrame {
 
@@ -26,6 +27,7 @@ public class Signup extends JFrame {
         this.setBounds(350, 450 , 1000, 750);
         this.setResizable(false);
 
+        this.setLocationRelativeTo(null);
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -169,7 +171,8 @@ public class Signup extends JFrame {
         if (newUser.isAdmin()) {
             AdminDashboard ad = new AdminDashboard(newUser);
         } else {
-            MainFrame mf = new MainFrame(newUser);
+            //MainFrame mf = new MainFrame(newUser);
+            new UserUIWindow(newUser);
         }
     }
 

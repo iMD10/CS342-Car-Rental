@@ -146,7 +146,7 @@ public class Login extends JFrame {
                                     new MainFrame(loggedUser);
 
                                     // Second GUI
-                                   // new UserUIWindow(loggedUser);
+                                  // new UserUIWindow(loggedUser);
 
                                 }
                             });

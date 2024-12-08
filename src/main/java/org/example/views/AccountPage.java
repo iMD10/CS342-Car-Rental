@@ -51,7 +51,7 @@ public class AccountPage extends JPanel {
         emailLabel = new JLabel("Email");
         emailLabel.setFont(labelsFont);
         emailLabel.setMaximumSize(new Dimension(300, 30));
-        emailTf.setEditable(false);
+        //emailTf.setEditable(false);
 
         phoneLabel = new JLabel("Phone Number");
         phoneLabel.setFont(labelsFont);
