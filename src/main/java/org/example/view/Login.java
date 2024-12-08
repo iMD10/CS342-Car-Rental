@@ -142,10 +142,10 @@ public class Login extends JFrame {
                                     new AdminDashboard(loggedUser);
                                 } else {
                                     // First GUI
-                                    new MainFrame(loggedUser);
+//                                    new MainFrame(loggedUser);
 
                                     // Second GUI
-                                   // new UserUIWindow(loggedUser);
+                                    new UserUIWindow(loggedUser);
 
                                 }
                             });

@@ -4,6 +4,7 @@ import org.example.classes.Booking;
 import org.example.classes.Invoice;
 import org.example.classes.User;
 import org.example.classes.Vehicle;
+import org.example.common.ErrorHandler;
 import org.example.controllers.BookingController;
 import org.example.controllers.InvoiceController;
 import org.example.controllers.VehicleController;
@@ -22,7 +23,8 @@ public class BookingHistory extends JPanel {
 
     private final User loggedUser;
     private JPanel listPanel;
-        private List<Booking> bookingsList;
+    private List<Booking> bookingsList;
+
     BookingHistory(User loggedUser) {
         this.setLayout(new BorderLayout()); // Set layout for the main panel
         this.loggedUser = loggedUser;
@@ -32,8 +34,8 @@ public class BookingHistory extends JPanel {
         titleLabel = new JLabel("My Bookings");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
 
-        listPanel = new JPanel(new GridLayout(0, 1, 30, 20));
-
+        listPanel = new JPanel();
+        listPanel.setLayout(new GridLayout(0, 1, 30, 20));
 
 //        JPanel elementPanel = createElemenet();
 
@@ -65,7 +67,9 @@ public class BookingHistory extends JPanel {
     }
 
     private void loadBookings(User loggedUser) {
-        // Create a SwingWorker to fetch and process bookings in the background
+        if (bookingsList == null)
+        showResultMessage("Loading...");
+
         SwingWorker<List<JPanel>, JPanel> worker = new SwingWorker<>() {
 
             @Override
@@ -74,33 +78,29 @@ public class BookingHistory extends JPanel {
                 VehicleController vehicleController = new VehicleController();
                 InvoiceController invoiceController = new InvoiceController();
 
-                // Fetch and sort bookings
-                List<Booking> bookingsList = bookingsController.getAllBookingsByUserid(loggedUser.getId());
+                bookingsList = bookingsController.getAllBookingsByUserid(loggedUser.getId());
                 List<Vehicle> vehiclesList = vehicleController.getAllVehicles();
-                List<Invoice> invoicesList = new InvoiceController().getAllInvoicesByUserId(loggedUser.getId());
+                List<Invoice> invoicesList = invoiceController.getAllInvoicesByUserId(loggedUser.getId());
 
 
                 bookingsList.sort(new bookingDatesComparator().reversed()); // Latest bookings first
 
 
-                // Create elements for each booking
                 List<JPanel> bookingPanels = new ArrayList<>();
                 for (Booking booking : bookingsList) {
                     Vehicle vehicleInfo =  vehiclesList.stream()
                             .filter(vehicle -> vehicle.getId() == booking.getVehicleId())
                             .findFirst()
-                            .orElse(null); // Return null if no match is found
+                            .orElse(null);
 
                     Invoice invoiceInfo =  invoicesList.stream()
-                            .peek(invoice -> System.out.println("Checking: Invoice booking ID = " + invoice.getBooking_id() +
-                                    ", Booking ID to match = " + booking.getId()))
+
                             .filter(invoice -> invoice.getBooking_id() == booking.getId())
                             .findFirst()
-                            .orElse(null); // Return null if no match is found
+                            .orElse(null);
 
 
-
-
+                    if (vehicleInfo == null) continue;
                     JPanel element = createElement(vehicleInfo, booking, invoiceInfo);
                     bookingPanels.add(element);
                 }
@@ -112,22 +112,23 @@ public class BookingHistory extends JPanel {
             @Override
             protected void done() {
                 try {
-                    // Update the UI with the fetched booking panels
+
                     List<JPanel> bookingPanels = get();
-                    listPanel.removeAll(); // Clear the current list panel
+                    listPanel.removeAll();
+                    listPanel.setLayout(new GridLayout(0, 1, 30, 20));
                     for (JPanel panel : bookingPanels) {
                         listPanel.add(panel);
                     }
-                    listPanel.revalidate(); // Ensure layout is updated
-                    listPanel.repaint();   // Repaint to reflect changes
+                    listPanel.revalidate();
+                    listPanel.repaint();
                     System.out.println("loading bookings done");
                 } catch (Exception e) {
-                    e.printStackTrace(); // Handle exceptions
+                    ErrorHandler.handleException(e,"Loading failed");
                 }
             }
         };
 
-        // Execute the SwingWorker
+
         worker.execute();
     }
 
@@ -140,7 +141,7 @@ public class BookingHistory extends JPanel {
         elementPanel.setLayout(new BoxLayout(elementPanel, BoxLayout.X_AXIS));
 
 
-        ImageIcon carImageSource = new ImageIcon("res\\"+vehicle.getCarModel().getName()+".png");
+        ImageIcon carImageSource = new ImageIcon("src\\main\\java\\org\\example\\res\\"+vehicle.getCarModel().getName()+".png");
         Image img = carImageSource.getImage(); // Transform the ImageIcon to Image
         Image scaledImg = img.getScaledInstance(120, 120 / 2, Image.SCALE_SMOOTH); // Resize the image
         carImageSource = new ImageIcon(scaledImg); // Create a new ImageIcon from the resized image
@@ -183,7 +184,7 @@ public class BookingHistory extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cancelBookingInBackground(booking);
-//                loadBookings(loggedUser);
+
             }
         });
 
@@ -198,7 +199,8 @@ public class BookingHistory extends JPanel {
         printInvoice.setForeground(Color.BLUE);
         printInvoice.setPreferredSize(preferredSize);
         printInvoice.setMaximumSize(preferredSize);
-        if (booking.getStatus().equals("RETURNED")) {
+
+        if (booking.getStatus().equals("RETURNED") && invoice != null) {
             printInvoice.setVisible(true);
             showAgreement.setVisible(false);
         }else {
@@ -302,16 +304,17 @@ public class BookingHistory extends JPanel {
             else return 0;
         }
     }
+
     private void cancelBookingInBackground(Booking booking) {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
                 try {
-                    // Perform the background task
+
                     BookingController bookingController = new BookingController();
                     bookingController.editBookingStatusToCanceled(booking.getId());
                 } catch (Exception e) {
-                    e.printStackTrace(); // Handle exceptions appropriately
+                    ErrorHandler.handleException(e,"Cancel Failed");
                 }
                 return null;
             }
@@ -322,7 +325,7 @@ public class BookingHistory extends JPanel {
                     loadBookings(loggedUser);
 
                 } catch (Exception e) {
-                    e.printStackTrace(); // Handle post-task exceptions
+                ErrorHandler.handleException(e,"Loading Failed");
                 }
             }
         };
@@ -331,23 +334,19 @@ public class BookingHistory extends JPanel {
         worker.execute();
     }
 
+    private void showResultMessage(String msg) {
+        listPanel.removeAll(); // Clear the gridList
+        JLabel messageLabel = new JLabel(msg, JLabel.CENTER);
+        messageLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        messageLabel.setForeground(Color.GRAY);
+        listPanel.setLayout(new BorderLayout());
+        listPanel.add(messageLabel, BorderLayout.CENTER);
+        listPanel.revalidate(); // Revalidate to ensure changes are reflected
+        listPanel.repaint();    // Repaint to refresh the UI
+    }
 
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            JFrame frame = new JFrame("Booking History Test");
-//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//            // Add the BookingHistory panel to the frame
-//            BookingHistory bookingHistoryPanel = new BookingHistory();
-//            frame.add(bookingHistoryPanel);
-//
-//            // Set the frame's size and make it visible
-//            frame.setSize(800, 600); // Adjust size as needed
-//            frame.setLocationRelativeTo(null); // Center the frame on the screen
-//            frame.setVisible(true);
-//        });
-//    }
+
 
 
 }

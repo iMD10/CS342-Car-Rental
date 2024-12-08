@@ -21,13 +21,13 @@ public class BookingDone extends JPanel {
         doneLabel.setFont(new Font("SansSerif", Font.BOLD, 35));
 
         // Car image setup
-        ImageIcon carImageSource = new ImageIcon("res\\sampleCar.png");
+        ImageIcon carImageSource = new ImageIcon("src\\main\\java\\org\\example\\res\\"+selectedCar.getCarModel().getName()+".png");
         Image scaledImage = carImageSource.getImage().getScaledInstance(350, 175, Image.SCALE_SMOOTH);
         carImageSource = new ImageIcon(scaledImage);
         JLabel carImage = new JLabel(carImageSource);
 
         // Print agreement label setup
-        JLabel printInvoiceLabel = new JLabel("<html><u>Print Invoice?</u></html>");
+       /* JLabel printInvoiceLabel = new JLabel("<html><u>Print Invoice?</u></html>");
         printInvoiceLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         printInvoiceLabel.setForeground(Color.BLUE);
         printInvoiceLabel.addMouseListener(new MouseListener() {
@@ -57,10 +57,10 @@ public class BookingDone extends JPanel {
 
             }
         });
+*/
 
-
-        JLabel goBackLabel = new JLabel("Browse Vehicles");
-        goBackLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        JLabel goBackLabel = new JLabel("<html><u>Browse Vehicles</u></html>");
+        goBackLabel.setFont(new Font("SansSerif", Font.PLAIN, 19));
         goBackLabel.setForeground(Color.GRAY);
         goBackLabel.addMouseListener(new MouseListener() {
             @Override
@@ -80,11 +80,13 @@ public class BookingDone extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                goBackLabel.setFont(new Font("SansSerif", Font.BOLD, 19));
 
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                goBackLabel.setFont(new Font("SansSerif", Font.PLAIN, 19));
 
             }
         });
@@ -97,7 +99,7 @@ public class BookingDone extends JPanel {
         imagePanel.add(carImage);
 
         JPanel agreementPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        agreementPanel.add(printInvoiceLabel);
+//        agreementPanel.add(printInvoiceLabel);
         JPanel goBackPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         goBackPanel.add(goBackLabel);
 

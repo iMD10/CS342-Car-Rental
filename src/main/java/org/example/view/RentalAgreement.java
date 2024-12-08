@@ -10,6 +10,7 @@ import org.example.views.UserUIWindow;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.security.cert.Extension;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -63,17 +64,9 @@ public class RentalAgreement extends JFrame {
             JButton cancelButton = new JButton("Cancel");
 
             acceptButton.addActionListener(e -> {
-                BookingController bookingController = new BookingController();
-                Timestamp fromStamp = Timestamp.valueOf(start.atStartOfDay());
-                Timestamp toStamp = Timestamp.valueOf(end.atStartOfDay());
-                Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(), fromStamp, toStamp);
-                if (booking == null) {
-                    return;
-                }
-                AgreementController agreementController = new AgreementController();
-                agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
+
+                createAgreementInBackground( start, end, user, vehicle);
                 JOptionPane.showMessageDialog(this, "Agreement accepted!");
-                NotificationsPanel.addNotification("Booking Confirm: The booking of ID: "+ booking.getId() + ", "+ " is confirmed at "+ booking.getBookedAt() +" The initial cost: "+ booking.getCost());
 
                 if (cardPanel != null && cardLayout != null )
                     cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
@@ -107,4 +100,27 @@ public class RentalAgreement extends JFrame {
         termLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         return termLabel;
     }
+
+    private void createAgreementInBackground(LocalDate start, LocalDate end, User user, Vehicle vehicle) {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                BookingController bookingController = new BookingController();
+                Timestamp fromStamp = Timestamp.valueOf(start.atStartOfDay());
+                Timestamp toStamp = Timestamp.valueOf(end.atStartOfDay());
+                Booking booking = bookingController.createBooking(user.getId(), vehicle.getId(), fromStamp, toStamp);
+
+                if (booking == null) return null ;
+
+                AgreementController agreementController = new AgreementController();
+                agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
+                return null;
+            }
+
+        };
+
+        worker.execute();
+    }
+
 }

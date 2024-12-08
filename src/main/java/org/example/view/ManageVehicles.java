@@ -85,7 +85,7 @@ public class ManageVehicles extends JPanel {
                         continue; // Skip null or invalid vehicle data
                     }
 
-                    String path = "src/main/java/org/example/res/" + vehicle.getCarModel().getName() + ".png";
+                    String path = "src\\main\\java\\org\\example\\res\\" + vehicle.getCarModel().getName() + ".png";
                     ImageIcon imageIcon = null;
                     try {
                         imageIcon = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(130, 90, Image.SCALE_SMOOTH));

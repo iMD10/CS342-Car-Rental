@@ -69,11 +69,11 @@ public class UserUIWindow extends JFrame {
         sideBarPanel.add(Box.createVerticalGlue());
 
         // Create the sidebar buttons using the helper method
-        accountSideButton = createSideBarButton("res\\personIcon.png", "My Account");
+        accountSideButton = createSideBarButton("src\\main\\java\\org\\example\\res\\personIcon.png", "My Account");
         accountSideButton.addMouseListener(new MouseAction(ACCOUNT_PANEL));
-        browseSideButton = createSideBarButton("res\\searchIcon.png", "Browse Vehicles");
+        browseSideButton = createSideBarButton("src\\main\\java\\org\\example\\res\\searchIcon.png", "Browse Vehicles");
         browseSideButton.addMouseListener(new MouseAction(BROWSE_PANEL));
-        historySideButton = createSideBarButton("res\\bookingIcon.png", "My Bookings");
+        historySideButton = createSideBarButton("src\\main\\java\\org\\example\\res\\bookingIcon.png", "My Bookings");
         historySideButton.addMouseListener(new MouseAction(HISTORY_PANEL));
 
         // Add buttons with automatic spacing

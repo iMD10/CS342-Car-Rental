@@ -39,7 +39,7 @@ public class CarDetails extends JPanel {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        ImageIcon carImageSource = new ImageIcon("res\\"+selectedCar.getCarModel().getName()+".png");
+        ImageIcon carImageSource = new ImageIcon("src\\main\\java\\org\\example\\res\\"+selectedCar.getCarModel().getName()+".png");
         Image scaledImage = carImageSource.getImage().getScaledInstance(350, 175, Image.SCALE_SMOOTH);
 
         carImageSource = new ImageIcon(scaledImage);
@@ -78,7 +78,7 @@ public class CarDetails extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                backLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+                backLabel.setFont(new Font("SansSerif", Font.BOLD, 17));
             }
 
             @Override
@@ -223,14 +223,14 @@ public class CarDetails extends JPanel {
     private int calculateTotalDays() {
         return (int) java.time.temporal.ChronoUnit.DAYS.between(startingDate, endingDate) ;
     }
-    // Custom veto policy to disallow past dates
+
     private class StartingDatesVetoPolicy implements DateVetoPolicy {
         @Override
         public boolean isDateAllowed(LocalDate date) {
             LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
-            // Allow only dates from today to 30 days in the future
-            boolean isNotAfterEnd = ! date.isAfter(endingDate);
+            LocalDate maxDate = today.plusDays(60);
+
+            boolean isNotAfterEnd = ! date.isAfter(endingDate.minusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotAfterEnd;
         }
     }
@@ -239,19 +239,13 @@ public class CarDetails extends JPanel {
     private class EndingDatesVetoPolicy implements DateVetoPolicy {
         @Override
         public boolean isDateAllowed(LocalDate date) {
-            LocalDate today = LocalDate.now();
-            LocalDate maxDate = today.plusDays(60); // Calculate the maximum allowed date (30 days from today)
+            LocalDate today = LocalDate.now().plusDays(1);
+            LocalDate maxDate = today.plusDays(60);
 
-            boolean isNotBeforeStart = ! date.isBefore(startingDate);
+            boolean isNotBeforeStart = ! date.isBefore(startingDate.plusDays(1));
             return !date.isBefore(today) && !date.isAfter(maxDate) && isNotBeforeStart ;
         }
     }
 
-
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-
-
-    }
 
 }
