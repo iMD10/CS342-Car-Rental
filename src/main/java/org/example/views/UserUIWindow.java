@@ -20,6 +20,8 @@ public class UserUIWindow extends JFrame {
 
 
     public UserUIWindow(User loggedUser){
+        Image icon = Toolkit.getDefaultToolkit().getImage("src/main/java/org/example/res/R.png");
+        this.setIconImage(icon);
 
 
         Toolkit kit = Toolkit.getDefaultToolkit();
