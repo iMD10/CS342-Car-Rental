@@ -24,12 +24,12 @@ public class AccountPage extends JPanel {
     private User loggedUser;
     private  JPanel notificationsList;
     private JLabel saveChangesLabel;
-    private JTextField fNameTf, lNameTf, emailTf, phoneTf;
+    private JTextField fNameTf, lNameTf, emailTf, phoneTf, passTf;
     private JPanel mainPanel;
 
     AccountPage(User loggedUser) {
         this.loggedUser = loggedUser;
-        JLabel titleLabel, fNameLabel, lNameLabel, emailLabel, phoneLabel;
+        JLabel titleLabel, fNameLabel, lNameLabel, emailLabel, phoneLabel, passLabel;
 
         this.setLayout(new BorderLayout()); // Set layout for the main panel
 
@@ -57,6 +57,11 @@ public class AccountPage extends JPanel {
         phoneLabel.setFont(labelsFont);
         phoneLabel.setMaximumSize(new Dimension(300, 30));
 
+        passLabel = new JLabel("Password");
+        passLabel.setFont(labelsFont);
+        passLabel.setMaximumSize(new Dimension(300, 30));
+
+
         saveChangesLabel = new JLabel("<html><u>Save Changes</u></html>");
         saveChangesLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
         saveChangesLabel.setForeground(Color.GRAY);
@@ -65,14 +70,7 @@ public class AccountPage extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                if (!isInfoChanged()) return;
-                saveChangesLabel.setForeground(Color.lightGray);
-                System.out.println("Saved");
-                UserController uc =  new UserController();
-                uc.updateCustomerInfo(emailTf.getText(), fNameTf.getText(), lNameTf.getText(), phoneTf.getText(), loggedUser.getPassword());
-
-                loggedUser.setName(fNameTf.getText() + " " + lNameTf.getText());
-                loggedUser.setEmail(emailTf.getText());
-                loggedUser.setPhone(phoneTf.getText());
+                updateInfoInBackground();
             }
             @Override
             public void mousePressed(MouseEvent e) {}
@@ -100,6 +98,12 @@ public class AccountPage extends JPanel {
         emailTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         emailTf.setMaximumSize(new Dimension(200, 30));
         //emailTf.getDocument().addDocumentListener(new infoChangedListener());
+        emailTf.setEditable(false);
+
+        passTf = new JTextField(loggedUser.getPassword(), 20);
+        passTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        passTf.setMaximumSize(new Dimension(200, 30));
+        passTf.getDocument().addDocumentListener(new infoChangedListener());
 
         phoneTf = new JTextField(loggedUser.getPhone(), 20);
         phoneTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -118,11 +122,15 @@ public class AccountPage extends JPanel {
         contentPanel.add(makeItFlowPanel(lNameLabel));
         contentPanel.add(makeItFlowPanel(lNameTf));
         contentPanel.add(Box.createVerticalGlue());
-        contentPanel.add(Box.createRigidArea(new Dimension(1, 20)));
+//        contentPanel.add(Box.createRigidArea(new Dimension(1, 20)));
 
 
         contentPanel.add(makeItFlowPanel(emailLabel));
         contentPanel.add(makeItFlowPanel(emailTf));
+        contentPanel.add(Box.createVerticalGlue());
+
+        contentPanel.add(makeItFlowPanel(passLabel));
+        contentPanel.add(makeItFlowPanel(passTf));
         contentPanel.add(Box.createVerticalGlue());
         contentPanel.add(Box.createVerticalGlue());
 
@@ -235,16 +243,18 @@ public class AccountPage extends JPanel {
                 LocalDateTime nowDate = LocalDateTime.now();
 
                 for (Booking bookingInfo : userBookings) {
-                    if (!bookingInfo.getStatus().equals("active")) continue;
-
-                    LocalDateTime endDate = bookingInfo.getEnd_date().toLocalDateTime();
-                    if (bookingInfo.getBookedAt().toLocalDateTime().toLocalDate().equals(nowDate.toLocalDate())) {
-                        JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " has been accepted", JLabel.CENTER);
-                        publish(notificationLabel); // Send to process() for GUI update
-                    } else if (endDate.isAfter(nowDate) && endDate.isBefore(nowDate.plusDays(1))) {
-                        JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " ends soon", JLabel.CENTER);
-                        publish(notificationLabel); // Send to process() for GUI update
+                    if (bookingInfo.getStatus().equals("active")) {
+                        LocalDateTime endDate = bookingInfo.getEnd_date().toLocalDateTime();
+                        if (bookingInfo.getBookedAt().toLocalDateTime().toLocalDate().equals(nowDate.toLocalDate())) {
+                            JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " has been accepted", JLabel.CENTER);
+                            publish(notificationLabel); // Send to process() for GUI update
+                        } else if (endDate.isAfter(nowDate) && endDate.isBefore(nowDate.plusDays(1))) {
+                            JLabel notificationLabel = new JLabel("* Your booking number #" + bookingInfo.getId() + " ends soon", JLabel.CENTER);
+                            publish(notificationLabel); // Send to process() for GUI update
+                        }
                     }
+
+
                 }
                 return null;
             }
@@ -272,6 +282,45 @@ public class AccountPage extends JPanel {
 
     }
 
+    private void updateInfoInBackground() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                UserController uc = new UserController();
+                uc.updateCustomerInfo(
+                        emailTf.getText(),
+                        fNameTf.getText(),
+                        lNameTf.getText(),
+                        phoneTf.getText(),
+                        passTf.getText()
+                );
+
+                loggedUser.setName(fNameTf.getText() + " " + lNameTf.getText());
+                loggedUser.setEmail(emailTf.getText());
+                loggedUser.setPhone(phoneTf.getText());
+                loggedUser.setPassword(passTf.getText());
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    saveChangesLabel.setForeground(Color.lightGray);
+                    System.out.println("Saved");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Failed to update customer info: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+
+        worker.execute();
+    }
+
+
     private JPanel makeItFlowPanel(Component label) {
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -285,16 +334,15 @@ public class AccountPage extends JPanel {
     private class infoChangedListener implements DocumentListener {
         @Override
         public void insertUpdate(DocumentEvent e) {
-            if (isInfoChanged()) saveChangesLabel.setForeground(Color.cyan);
+            if (isInfoChanged()) saveChangesLabel.setForeground(Color.BLUE);
             else saveChangesLabel.setForeground(Color.lightGray);
-            isInfoChanged();
 
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
             System.out.println("removeUpdate");
-            if (isInfoChanged()) saveChangesLabel.setForeground(Color.cyan);
+            if (isInfoChanged()) saveChangesLabel.setForeground(Color.BLUE);
             else saveChangesLabel.setForeground(Color.lightGray);
 
         }
@@ -308,7 +356,7 @@ public class AccountPage extends JPanel {
         if (
                 !fNameTf.getText().equals(loggedUser.getName().split(" ")[0])
                         || !lNameTf.getText().equals(loggedUser.getName().split(" ")[1])
-                        || !emailTf.getText().equals(loggedUser.getEmail())
+                        || !passTf.getText().equals(loggedUser.getPassword())
                         || !phoneTf.getText().equals(loggedUser.getPhone())
         ) {
                 return true;
