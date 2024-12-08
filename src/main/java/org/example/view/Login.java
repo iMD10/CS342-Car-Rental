@@ -1,6 +1,6 @@
 package org.example.view;
 
-import com.formdev.flatlaf.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -22,16 +22,10 @@ public class Login extends JFrame {
     public Login() {
 
         this.setTitle("Log In");
-        this.setLocation(250, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(icon);
-        this.setSize(800, 750);
-
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        this.setBounds(W / 4, H / 4 - 200, 800, 750);
+        this.setBounds(350, 450 , 1000, 750);
+        this.setResizable(false);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -52,8 +46,9 @@ public class Login extends JFrame {
 
         // Add logo
         logoLabel = new JLabel();
-        logoIcon = new ImageIcon("src/main/java/org/example/res/R.png");
-        logoLabel.setIcon(scaleImage(logoIcon, 80, 60));
+        logoIcon = new ImageIcon(icon);
+        logoLabel.setIcon(scaleImage(logoIcon, 100,100 ));
+
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -88,18 +83,8 @@ public class Login extends JFrame {
         // Add panels to the frame
         this.add(mainPanel);
 
-        // Resize listener to adjust logo size dynamically
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                adjustLogoSize();
-            }
-        });
-
-        // Make frame visible
         this.setVisible(true);
 
-        // Add action listener to the button
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,7 +144,7 @@ public class Login extends JFrame {
             }
         });
 
-        // Add Enter key functionality
+
         emailTextField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -184,13 +169,6 @@ public class Login extends JFrame {
         panel.add(label, gbc);
         gbc.gridx = 1;
         panel.add(field, gbc);
-    }
-
-    private void adjustLogoSize() {
-        int frameWidth = getWidth();
-        int newWidth = frameWidth / 10; // Adjust the factor as needed
-        int newHeight = (int) (newWidth * 0.70); // Maintain aspect ratio
-        logoLabel.setIcon(scaleImage(logoIcon, newWidth, newHeight));
     }
 
     private ImageIcon scaleImage(ImageIcon icon, int width, int height) {
