@@ -26,6 +26,7 @@ public class Signup extends JFrame {
         setIconImage(icon);
         this.setBounds(350, 450 , 1000, 750);
         this.setResizable(false);
+        setLocationRelativeTo(null);
 
 
 

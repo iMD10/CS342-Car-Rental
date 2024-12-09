@@ -28,6 +28,7 @@ public class Login extends JFrame {
 
         this.setBounds(350, 450 , 1000, 750);
         this.setResizable(false);
+        setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
