@@ -80,7 +80,7 @@ public class BookingHistory extends JPanel {
 
                 bookingsList = bookingsController.getAllBookingsByUserid(loggedUser.getId());
                 List<Vehicle> vehiclesList = vehicleController.getAllVehicles();
-                List<Invoice> invoicesList = invoiceController.getAllInvoicesByUserId(loggedUser.getId());
+//                List<Invoice> invoicesList = invoiceController.getAllInvoicesByUserId(loggedUser.getId());
 
 
                 bookingsList.sort(new bookingDatesComparator().reversed()); // Latest bookings first
@@ -93,11 +93,7 @@ public class BookingHistory extends JPanel {
                             .findFirst()
                             .orElse(null);
 
-                    Invoice invoiceInfo =  invoicesList.stream()
-
-                            .filter(invoice -> invoice.getBooking_id() == booking.getId())
-                            .findFirst()
-                            .orElse(null);
+                    Invoice invoiceInfo = invoiceController.getInvoiceByBookingId(booking.getId());
 
 
                     if (vehicleInfo == null) continue;
@@ -206,7 +202,6 @@ public class BookingHistory extends JPanel {
         }else {
             printInvoice.setVisible(false);
             showAgreement.setVisible(true);
-
         }
 
 
