@@ -4,6 +4,7 @@ import org.example.classes.User;
 import javax.swing.*;
 import java.awt.*;
 import com.formdev.flatlaf.*;
+import org.example.views.UserUIWindow;
 
 public class MainFrame extends JFrame {
 
@@ -48,8 +49,9 @@ public class MainFrame extends JFrame {
         JButton notificationsButton = new JButton("Notifications");
         JButton myAccountButton = new JButton("My Account");
         JButton logoutButton = new JButton("Logout");
+        JButton legacyButton = new JButton("New GUI");
 
-        JButton[] buttons = {homeButton, myBookingsButton, invoicesButton, agreementsButton, notificationsButton, myAccountButton, logoutButton};
+        JButton[] buttons = {homeButton, myBookingsButton, invoicesButton, agreementsButton, notificationsButton, myAccountButton, logoutButton, legacyButton};
         for (JButton button : buttons) {
             button.setBackground(Cyan);
             button.setForeground(White);
@@ -86,6 +88,10 @@ public class MainFrame extends JFrame {
             new Login();
         });
         NotificationsPanel.sendReminder(loggedUser);
+        legacyButton.addActionListener(e -> {
+            dispose();
+            new UserUIWindow(loggedUser);
+        });
 
         JButton darkModeButton = new JButton("Dark Mode");
         darkModeButton.setBackground(Color.GRAY);
