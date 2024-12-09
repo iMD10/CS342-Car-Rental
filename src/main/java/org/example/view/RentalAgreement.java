@@ -126,10 +126,7 @@ public class RentalAgreement extends JFrame {
     }
 
     void test(){
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println("This is not my first commit :(");
 
     }
 
