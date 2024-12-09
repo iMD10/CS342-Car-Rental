@@ -122,7 +122,7 @@ CS342-Car-Rental/
 
 This project was collaboratively developed by:
 - **Muhannad Majed**  
-  GitHub: [@iMD_10](https://github.com/iMD_10)
+  GitHub: [@iMD_10](https://github.com/iMD10)
 
 - **Mohammed Saleh**  
   GitHub: [@rayq-q](https://github.com/rayq-q)
