@@ -125,4 +125,12 @@ public class RentalAgreement extends JFrame {
         worker.execute();
     }
 
+    void test(){
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+
+    }
+
 }
