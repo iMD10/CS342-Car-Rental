@@ -37,7 +37,7 @@
 ![Customer Dashboard](https://github.com/user-attachments/assets/ba5ee14e-efc5-4525-8f98-cb78f10983e0)
 
 The customer dashboard provides a simple and intuitive interface for users to browse vehicles, book rentals, and view notifications.
-
+---
 ![Admin Dashboard](https://github.com/user-attachments/assets/5a559ba9-cdc7-4246-87de-e9e6ff05c673)
 
 The admin dashboard allows administrators to manage vehicles, bookings, and view detailed reports.
