@@ -26,38 +26,6 @@ public class BookingDone extends JPanel {
         carImageSource = new ImageIcon(scaledImage);
         JLabel carImage = new JLabel(carImageSource);
 
-        // Print agreement label setup
-       /* JLabel printInvoiceLabel = new JLabel("<html><u>Print Invoice?</u></html>");
-        printInvoiceLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        printInvoiceLabel.setForeground(Color.BLUE);
-        printInvoiceLabel.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                InvoiceController invoiceController = new InvoiceController();
-//                invoiceController.getAllInvoicesByUserId();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-*/
 
         JLabel goBackLabel = new JLabel("<html><u>Browse Vehicles</u></html>");
         goBackLabel.setFont(new Font("SansSerif", Font.PLAIN, 19));

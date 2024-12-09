@@ -106,7 +106,6 @@ public class CarDetails extends JPanel {
         bookBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
                 new RentalAgreement(selectedCar, loggedUser, startingDate, endingDate, true, cardLayout, cardPanel);
             }
         });
