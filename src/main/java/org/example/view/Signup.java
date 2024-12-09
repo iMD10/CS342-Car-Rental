@@ -27,7 +27,8 @@ public class Signup extends JFrame {
         this.setBounds(350, 450 , 1000, 750);
         this.setResizable(false);
 
-        this.setLocationRelativeTo(null);
+
+
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;

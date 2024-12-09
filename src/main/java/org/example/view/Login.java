@@ -26,21 +26,7 @@ public class Login extends JFrame {
         this.setIconImage(icon);
 
 
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int W = screenSize.width;
-        int H = screenSize.height;
-        // Define the new width and height
-        int newWidth = (int) (W / 1.65);  // Set desired width (can adjust this value)
-        int newHeight = (int) (H / 1.65); // Set desired height (can adjust this value)
-
-        // Calculate the position to keep the window centered
-        int x = (W - newWidth) / 2;
-        int y = (H - newHeight) / 2;
-
-        // Set the new bounds (position and size)
-        this.setBounds(x, y, newWidth, newHeight);
-
+        this.setBounds(350, 450 , 1000, 750);
         this.setResizable(false);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
