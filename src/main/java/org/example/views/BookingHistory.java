@@ -242,7 +242,7 @@ public class BookingHistory extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                PDFInvoiceGenerator.generateInvoice(loggedUser.getName(), vehicle.getCarModel().getName(), booking.getStart_date().toLocalDateTime().toLocalDate(), booking.getEnd_date().toLocalDateTime().toLocalDate(), booking.getCost(), invoice.getLate_fees());
+                PDFInvoiceGenerator.generateInvoice(loggedUser.getName(), vehicle.getCarModel().getName(), booking.getStart_date().toLocalDateTime().toLocalDate(), booking.getEnd_date().toLocalDateTime().toLocalDate(), booking.getCost() + invoice.getLate_fees(), invoice.getLate_fees());
             }
 
             @Override
