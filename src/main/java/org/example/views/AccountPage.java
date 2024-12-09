@@ -23,7 +23,7 @@ public class AccountPage extends JPanel {
 
     private User loggedUser;
     private  JPanel notificationsList;
-    private JLabel saveChangesLabel;
+    private JLabel saveChangesLabel, changeUILabel;
     private JTextField fNameTf, lNameTf, emailTf, phoneTf, passTf;
     private JPanel mainPanel;
 
@@ -122,7 +122,7 @@ public class AccountPage extends JPanel {
         contentPanel.add(makeItFlowPanel(lNameLabel));
         contentPanel.add(makeItFlowPanel(lNameTf));
         contentPanel.add(Box.createVerticalGlue());
-//        contentPanel.add(Box.createRigidArea(new Dimension(1, 20)));
+
 
 
         contentPanel.add(makeItFlowPanel(emailLabel));
@@ -136,11 +136,26 @@ public class AccountPage extends JPanel {
 
         contentPanel.add(makeItFlowPanel(phoneLabel));
         contentPanel.add(makeItFlowPanel(phoneTf));
-        contentPanel.add(makeItFlowPanel(saveChangesLabel));
+
+        JPanel labelPanel = new JPanel();
+        labelPanel .setLayout(new FlowLayout(FlowLayout.CENTER));
+        labelPanel .add(saveChangesLabel);
+
+
+
+        changeUILabel = new JLabel("<html><u>Save Changes</u></html>");
+        changeUILabel .setFont(new Font("SansSerif", Font.PLAIN, 15));
+        changeUILabel .setForeground(Color.GRAY);
+
+
+
+        labelPanel.add(Box.createHorizontalGlue());
+        labelPanel.add(changeUILabel);
+
+
+        contentPanel.add(labelPanel);
         contentPanel.add(Box.createVerticalGlue());
 
-
-//        mainPanel.add(Components.createSideBarPanel(), BorderLayout.WEST);
 
         JLabel notificationsTitle = new JLabel("Notifications", JLabel.CENTER);
         notificationsTitle.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -152,6 +167,7 @@ public class AccountPage extends JPanel {
         JLabel logOutLabel = new JLabel("<html><u>Log out </u></html>", JLabel.CENTER);
         logOutLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
         logOutLabel.setForeground(Color.RED);
+
         logOutLabel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -196,7 +212,9 @@ public class AccountPage extends JPanel {
 
         sidePanel.add(header, BorderLayout.NORTH);
         sidePanel.add(logOutLabel, BorderLayout.SOUTH);
-//        sidePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2)); // Line border with thickness of 2
+
+
+
         fullSpace.add(sidePanel, BorderLayout.CENTER);
         fullSpace.add(Box.createRigidArea(new Dimension(1,15)), BorderLayout.SOUTH);
         JPanel paddingPanel = new JPanel();
