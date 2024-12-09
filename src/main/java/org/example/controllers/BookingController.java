@@ -151,7 +151,7 @@ public class BookingController {
     public List<Booking> getAllBookings(){
         List<Booking> bookings = new ArrayList<>();
         DbHandler = new DatabaseHandler();
-        String query = "select * from booking;";
+        String query = "select * from booking order by id asc;";
         try( ResultSet resSet = DbHandler.executeQuery(query)) {
             while (resSet != null && resSet.next()) {
                 bookings.add( new Booking(
