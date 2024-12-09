@@ -29,10 +29,10 @@ public class CarDetails extends JPanel {
     private JLabel carImage, totalPriceLabel;
     private CardLayout cardLayout;
     private JPanel cardPanel;
-    CarDetails(User loggedUser, JPanel parentCardPanel, CardLayout parentcardLayout, Vehicle selectedCar, LocalDate startingDate, LocalDate endingDate) {
+    CarDetails(User loggedUser, JPanel parentCardPanel, CardLayout parentcardLayout, Vehicle selectedCar, LocalDate startingDate_, LocalDate endingDate_) {
         this.selectedCar = selectedCar;
-        this.startingDate = startingDate;
-        this.endingDate = endingDate;
+        this.startingDate = startingDate_;
+        this.endingDate = endingDate_;
         this.totalPrice = calculateTotalPrice();
         JPanel contentPanel = new JPanel(new BorderLayout());
 
