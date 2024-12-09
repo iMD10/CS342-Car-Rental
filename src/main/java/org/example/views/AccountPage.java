@@ -5,6 +5,7 @@ import org.example.classes.User;
 import org.example.controllers.BookingController;
 import org.example.controllers.UserController;
 import org.example.view.Login;
+import org.example.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
@@ -84,28 +85,28 @@ public class AccountPage extends JPanel {
 
 
 
-        fNameTf = new JTextField(loggedUser.getName().split(" ")[0], 20);
+        fNameTf = new JTextField(loggedUser.getName().split(" ")[0], 23);
         fNameTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         fNameTf.setMaximumSize(new Dimension(200, 30));
         fNameTf.getDocument().addDocumentListener(new infoChangedListener());
 
-        lNameTf = new JTextField(loggedUser.getName().split(" ")[1], 20);
+        lNameTf = new JTextField(loggedUser.getName().split(" ")[1], 23);
         lNameTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         lNameTf.setMaximumSize(new Dimension(200, 30));
         lNameTf.getDocument().addDocumentListener(new infoChangedListener());
 
-        emailTf = new JTextField(loggedUser.getEmail(), 20);
+        emailTf = new JTextField(loggedUser.getEmail(), 23);
         emailTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         emailTf.setMaximumSize(new Dimension(200, 30));
         //emailTf.getDocument().addDocumentListener(new infoChangedListener());
         emailTf.setEditable(false);
 
-        passTf = new JTextField(loggedUser.getPassword(), 20);
+        passTf = new JTextField(loggedUser.getPassword(), 23);
         passTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         passTf.setMaximumSize(new Dimension(200, 30));
         passTf.getDocument().addDocumentListener(new infoChangedListener());
 
-        phoneTf = new JTextField(loggedUser.getPhone(), 20);
+        phoneTf = new JTextField(loggedUser.getPhone(), 23);
         phoneTf.setFont(new Font("SansSerif", Font.PLAIN, 15));
         phoneTf.setMaximumSize(new Dimension(200, 30));
         phoneTf.getDocument().addDocumentListener(new infoChangedListener());
@@ -138,17 +139,50 @@ public class AccountPage extends JPanel {
         contentPanel.add(makeItFlowPanel(phoneTf));
 
         JPanel labelPanel = new JPanel();
-        labelPanel .setLayout(new FlowLayout(FlowLayout.CENTER));
-        labelPanel .add(saveChangesLabel);
+        labelPanel .setLayout(new FlowLayout(FlowLayout.LEFT));
 
 
 
-        changeUILabel = new JLabel("<html><u>Save Changes</u></html>");
+        changeUILabel = new JLabel("<html><u>Legacy UI</u></html>");
         changeUILabel .setFont(new Font("SansSerif", Font.PLAIN, 15));
-        changeUILabel .setForeground(Color.GRAY);
+        changeUILabel .setForeground(Color.BLACK);
+        changeUILabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new MainFrame(loggedUser);
+                java.awt.Window window = SwingUtilities.getWindowAncestor(changeUILabel);
+                if (window != null) {
+                    window.dispose();
+                }
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                changeUILabel .setFont(new Font("SansSerif", Font.BOLD, 15));
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                changeUILabel .setFont(new Font("SansSerif", Font.PLAIN, 15));
+            }
+        });
 
 
-
+        labelPanel.add(saveChangesLabel);
+        labelPanel.add(Box.createHorizontalGlue());
+        labelPanel.add(Box.createRigidArea(new Dimension(100,10)));
         labelPanel.add(Box.createHorizontalGlue());
         labelPanel.add(changeUILabel);
 

@@ -285,7 +285,7 @@ public class BrowseVehicles extends JPanel {
      * Reload the gridList with new cars based on availability of selected dates
      */
     private void loadVehicles() {
-        if (vehiclesList == null)
+//        if (vehiclesList == null)
         showResultMessage("Loading...");
 
         System.out.println("loadCars start");
