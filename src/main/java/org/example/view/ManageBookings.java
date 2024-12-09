@@ -37,7 +37,7 @@ public class ManageBookings extends JPanel  {
         topPanel.add(searchButton);
 
         // Center panel for table
-        String[] columnNames = {"ID", "Customer Name", "Car ID", "Start Date", "End Date", "Status", "Cost"};
+        String[] columnNames = {"ID", "Customer Name", "Car ID", "Start Date", "End Date", "Status", "Cost", "Late Fees", "Total Price"};
 
 
 
@@ -190,8 +190,8 @@ public class ManageBookings extends JPanel  {
                 for (Booking booking : allBookings) {
                     User user = userMap.get(booking.getUserId());
                     InvoiceController invoiceController = new InvoiceController();
-                    Invoice invoice = null;
-                   // invoice = invoiceController.getInvoiceByBookingId(booking.getId());
+                    //Invoice invoice = null;
+                    Invoice invoice = invoiceController.getInvoiceByBookingId(booking.getId());
                     rows.add(new Object[] {
                             booking.getId(),
                             user != null ? user.getName() : "Unknown",
@@ -199,6 +199,8 @@ public class ManageBookings extends JPanel  {
                             booking.getStart_date().toLocalDateTime().toLocalDate(),
                             booking.getEnd_date().toLocalDateTime().toLocalDate(),
                             booking.getStatus(),
+                            booking.getCost(),
+                            invoice != null ? invoice.getLate_fees() : "-",
                             invoice != null ? invoice.getTotal_price() : booking.getCost()
                     });
                 }
