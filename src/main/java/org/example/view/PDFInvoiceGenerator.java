@@ -32,7 +32,7 @@ public class PDFInvoiceGenerator {
                 com.itextpdf.kernel.pdf.PdfDocument pdfDocument = new com.itextpdf.kernel.pdf.PdfDocument(writer);
                 Document document = new Document(pdfDocument);
 
-                document.add(new Paragraph("Invoice").setFontSize(18).setBold());
+                document.add(new Paragraph("Invoice").setFontSize(18).simulateBold());
                 document.add(new Paragraph("Customer Name: " + customerName));
                 document.add(new Paragraph("Vehicle Name: " + vehicleName));
                 document.add(new Paragraph("Booking start at: " + fromDate));
