@@ -49,7 +49,7 @@ public class MainFrame extends JFrame {
         JButton notificationsButton = new JButton("Notifications");
         JButton myAccountButton = new JButton("My Account");
         JButton logoutButton = new JButton("Logout");
-        JButton legacyButton = new JButton("New GUI");
+        JButton legacyButton = new JButton("New UI");
 
         JButton[] buttons = {homeButton, myBookingsButton, invoicesButton, agreementsButton, notificationsButton, myAccountButton, logoutButton, legacyButton};
         for (JButton button : buttons) {

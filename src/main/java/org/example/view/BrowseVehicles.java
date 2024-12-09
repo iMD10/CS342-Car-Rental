@@ -30,7 +30,7 @@ public class BrowseVehicles extends JPanel {
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JLabel typeLabel = new JLabel("Type:");
-        typeComboBox = new JComboBox<>(getVehicleTypes());
+
 
         JLabel fromLabel = new JLabel("From:");
         DatePickerSettings fromSettings = new DatePickerSettings();
@@ -46,6 +46,7 @@ public class BrowseVehicles extends JPanel {
         toDatePicker.setDate(LocalDate.now().plusDays(1));
         toDatePicker.getSettings().setDateRangeLimits(LocalDate.now().plusDays(1), null);
 
+        typeComboBox = new JComboBox<>(getVehicleTypes());
         fromDatePicker.addDateChangeListener(event -> {
             LocalDate newFromDate = event.getNewDate();
             if (newFromDate != null) {
@@ -132,7 +133,8 @@ public class BrowseVehicles extends JPanel {
         add(tableScrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
+
+        //updateTableAutomatically(typeComboBox, fromDatePicker, toDatePicker);
     }
 
     private void updateTableAutomatically(JComboBox<String> typeComboBox, DatePicker fromDatePicker, DatePicker toDatePicker) {
@@ -150,7 +152,7 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<Vehicle>, Void>() {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
-                List<Vehicle> vehicles = null ;
+                List<Vehicle> vehicles = new ArrayList<>() ;
                 String selectedType1 = (String) typeComboBox.getSelectedItem();
                 if(selectedType1 == null) {
                     vehicles =  vehicleController.getAvailableVehicles(fromstamp, tostamp);
@@ -161,7 +163,7 @@ public class BrowseVehicles extends JPanel {
                     vehicles = vehicleController.getAvailableVehiclesByType(selectedType1, fromstamp, tostamp);
                 }
                 if (vehicles == null) {
-                    vehicles = null;
+                    return new ArrayList<>();
                 }
                 return vehicles;
             }
@@ -172,6 +174,8 @@ public class BrowseVehicles extends JPanel {
                 try {
                     List<Vehicle> vehicles = get();
 
+                    if (vehicles == null)
+                        return;
                     updateTable(tableModel, vehicles);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -207,12 +211,15 @@ public class BrowseVehicles extends JPanel {
         new SwingWorker<List<Vehicle>, Void>() {
             @Override
             protected List<Vehicle> doInBackground() throws Exception {
+                List<Vehicle> vehicles = new ArrayList<>() ;
                 if (selectedType == null)
-                    return vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                    vehicles= vehicleController.getAvailableVehicles(fromstamp, tostamp);
                else if (selectedType.equals("All")){
-                    return vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                    vehicles= vehicleController.getAvailableVehicles(fromstamp, tostamp);
+                }else {
+                    vehicles = vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
                 }
-                return vehicleController.getAvailableVehiclesByType(selectedType, fromstamp, tostamp);
+               return vehicles;
             }
 
             @Override
@@ -221,7 +228,7 @@ public class BrowseVehicles extends JPanel {
 
                     List<Vehicle> vehicles = get();
                     if (vehicles == null) {
-                        vehicles = null;
+                        return;
                     }
                     updateTable(tableModel, vehicles);
                 } catch (Exception e) {
@@ -235,8 +242,9 @@ public class BrowseVehicles extends JPanel {
 
     private void updateTable(DefaultTableModel tableModel, List<Vehicle> vehicles) {
         tableModel.setRowCount(0); // Clear existing rows
-        if(vehicles == null) {
-            return;
+
+        if (vehicles == null) {
+           return;
         }
         for (Vehicle vehicle : vehicles) {
             String path = "src/main/java/org/example/res/" + vehicle.getCarModel().getName() + ".png";
@@ -261,14 +269,26 @@ public class BrowseVehicles extends JPanel {
             @Override
             protected List<String> doInBackground() throws Exception {
 
-                return vehicleController.getCarTypes();
+                List<String> strings = new ArrayList<>();
+                strings = vehicleController.getCarTypes();
+                if (strings == null) {
+                    strings = new ArrayList<>() ;
+                }
+                return strings;
             }
 
             @Override
             protected void done() {
                 try {
                     types.add("All");
+
+                    List<String> typesFirst = get();
+                    System.out.println("SwingWorker finished execution types.");
+                    if (typesFirst == null) {
+                        return;
+                    }
                     types.addAll(get());
+
                     SwingUtilities.invokeLater(() -> typeComboBox.setModel(new DefaultComboBoxModel<>(types.toArray(new String[0]))));
                 } catch (Exception e) {
                     e.printStackTrace();

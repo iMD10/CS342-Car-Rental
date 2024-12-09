@@ -62,12 +62,13 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         }finally {
             db.closeConnection();
         }
-        return null;
     }
 
     public List<Vehicle> getAvailableVehiclesByType(String type, Timestamp start, Timestamp end) {
@@ -80,12 +81,13 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         }finally {
             db.closeConnection();
         }
-        return null;
     }
 
     public int addVehicle(int car_modelId, String serialNumber, String color ) {
@@ -126,12 +128,13 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         }finally {
             db.closeConnection();
         }
-        return null;
     }
 
     public List<String> getCarTypes() {
@@ -147,12 +150,13 @@ public class VehicleController {// Add Vehicle, update Vehicle needs to be done
 
         } catch (SQLException e) {
             ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorHandler.handleException(e,e.getMessage());
+            return new ArrayList<>();
         }finally {
             db.closeConnection();
         }
-        return null;
     }
 
     public Vehicle getVehicleByVehicleId(int vehicleId) {

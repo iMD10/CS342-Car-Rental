@@ -149,11 +149,11 @@ public class AccountPage extends JPanel {
         changeUILabel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new MainFrame(loggedUser);
                 java.awt.Window window = SwingUtilities.getWindowAncestor(changeUILabel);
                 if (window != null) {
                     window.dispose();
                 }
+                new MainFrame(loggedUser);
 
             }
 
