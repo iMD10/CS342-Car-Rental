@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.classes.Booking;
 import org.example.classes.Vehicle;
 import org.example.classes.User;
+import org.example.common.ErrorHandler;
 import org.example.controllers.AgreementController;
 import org.example.controllers.BookingController;
 import org.example.views.UserUIWindow;
@@ -17,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 
 public class RentalAgreement extends JFrame {
 
+    private boolean finish = false;
     public RentalAgreement(Vehicle vehicle, User user, LocalDate start, LocalDate end, boolean isConfirm,  CardLayout cardLayout, JPanel cardPanel) {
         super("Rental Agreement");
 
@@ -71,7 +73,8 @@ public class RentalAgreement extends JFrame {
                 if (cardPanel != null && cardLayout != null )
                     cardLayout.show(cardPanel, UserUIWindow.BOOKING_DONE_PANEL);
 
-                dispose();
+                if (finish)
+                    dispose();
             });
 
             cancelButton.addActionListener(e -> {
@@ -117,6 +120,16 @@ public class RentalAgreement extends JFrame {
                 agreementController.createAgreement(booking.getId(), new Timestamp(System.currentTimeMillis()));
                 return null;
             }
+
+            @Override
+            protected void done() {
+                try {
+                    finish = false;
+                } catch (Exception e) {
+                    ErrorHandler.handleException(e,"Loading Failed");
+                }
+            }
+
 
         };
 
