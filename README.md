@@ -135,7 +135,7 @@ This project was collaboratively developed by:
 - **Eyad Fahad**  
   GitHub: [@commando-xxt](https://github.com/commando-xxt)
 
-- **Ammer Mohammed**  
+- **Amer Mohammed**  
   GitHub: [@3wex](https://github.com/3wex)
 
 - **Faisal Qasim**  
