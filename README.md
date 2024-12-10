@@ -34,12 +34,13 @@
 ---
 ## Application Overview
 
-![Customer Dashboard](https://github.com/user-attachments/assets/ba5ee14e-efc5-4525-8f98-cb78f10983e0)
+![Customer Dashboard](https://github.com/user-attachments/assets/52feb2ad-b442-4ff4-9f7b-d6f9a68d4af8)
 
 The customer dashboard provides a simple and intuitive interface for users to browse vehicles, book rentals, and view notifications.
 
 ---
-![Admin Dashboard](https://github.com/user-attachments/assets/5a559ba9-cdc7-4246-87de-e9e6ff05c673)
+![Admin Dashboard](https://github.com/user-attachments/assets/61cfdb6b-3e9c-460c-a8bd-050bbf53ad1c)
+
 
 The admin dashboard allows administrators to manage vehicles, bookings, and view detailed reports.
 
