@@ -50,7 +50,7 @@ The admin dashboard allows administrators to manage vehicles, bookings, and view
 ```
 CS342-Car-Rental/
 ├── .idea/                 # IntelliJ IDEA configuration files
-├── report/                # Documentation files for the project (Report.pdf, ERD.png)
+├── report/                # Documentation files for the project
 ├── src/
 │   ├── main/java/org/example/
 │       ├── classes/       # Core business entities (e.g., User, Booking, Vehicle)
