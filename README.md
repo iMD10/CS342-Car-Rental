@@ -1,6 +1,6 @@
 # CS342 Car Rental System
 
-**CS342 Car Rental System** is a Java-based desktop application designed to provide a seamless vehicle rental experience. This project features a graphical user interface for customers and admins, built using Java Swing, with PostgreSQL as the database hosted on AWS. The system supports vehicle booking, user management, and administrative controls.
+Java-based desktop application designed to provide a seamless vehicle rental experience. This project features a graphical user interface for customers and admins, built using Java Swing, with PostgreSQL as the database hosted on AWS. The system supports vehicle booking, user management, and administrative controls.
 
 ---
 
